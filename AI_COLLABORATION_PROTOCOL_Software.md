@@ -52,7 +52,7 @@
 | `_DEBATE.json` | `prompts/<conversation_id>__<step>.md` | 討論結果の伝達形式 |
 | `cursor_task` | `allowed_paths` + `expected_outputs` | 実装範囲の指定 |
 | `dod`（Definition of Done） | `constraints` + 受入条件 | 完了条件の明示 |
-| `_REPORT.md` | `reports/<conversation_id>__<step>__<status>.md` | 実装結果の報告 |
+| `_REPORT.md` | `reports/YYYYMMDD_HHMM_<conversation_id>__<step>__<status>.md` | 実装結果の報告 |
 | `_QUESTION.md` | `reports/QUESTION_*`（拡張予定） | 不明点の問い合わせ |
 | PRベースレビュー | pre-pushローカルCI | 品質保証の仕組み |
 
@@ -90,7 +90,7 @@
    ↓
 7. scripts/make_report.py でレポート生成
    ↓
-8. reports/<conversation_id>__<step>__<status>.md をpush
+8. reports/YYYYMMDD_HHMM_<conversation_id>__<step>__<status>.md をpush
    ↓
 9. Agent HQがレポート確認 → 次ステップへ
 ```

@@ -17,7 +17,7 @@ constraints:
 expected_outputs:
   - "サンプルスクリプトの追加"
   - "ドキュメントの更新"
-success_report_path_template: "reports/{conversation_id}__{step}__{status}.md"
+success_report_path_template: "reports/YYYYMMDD_HHMM_{conversation_id}__{step}__{status}.md"
 ---
 
 # サンプルタスク: 新機能の実装

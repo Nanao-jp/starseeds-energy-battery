@@ -53,7 +53,7 @@ success_report_path_template: "reports/{conversation_id}__{step}__{status}.md"
 | `co_authors` | array | 共同執筆者（AIモデル） | `["GPT-4.1", "Claude 3.5"]` |
 | `priority` | string | 優先度 | `"high"`, `"medium"`, `"low"` |
 | `timebox` | string | 推定所要時間 | `"90m"`, `"2h"` |
-| `success_report_path_template` | string | レポートパステンプレート | `"reports/{id}__{step}__{status}.md"` |
+| `success_report_path_template` | string | レポートパステンプレート | `"reports/YYYYMMDD_HHMM_{id}__{step}__{status}.md"` |
 
 ## 本文セクション推奨構造
 

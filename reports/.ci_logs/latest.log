@@ -1,19 +1,10 @@
 CI Execution Log
-Started at: 2025-10-31T21:33:47.873114
+Started at: 2025-10-31T23:24:29.479261
 Project: starseeds-energy-battery
 
 ============================================================
 Build: npm run build
 ============================================================
-
-STDERR:
- 笞 Warning: Next.js inferred your workspace root, but it may not be correct.
- We detected multiple lockfiles and selected the directory of C:\Users\7sena\package-lock.json as the root directory.
- To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
-   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
- Detected additional lockfiles: 
-   * C:\Users\7sena\Desktop\02_Creation\web-site\starseeds-energy\starseeds-energy-battery\package-lock.json
-
 
 
 ============================================================
@@ -33,5 +24,5 @@ STDOUT:
 
 
 ============================================================
-Completed at: 2025-10-31T21:34:08.483984
+Completed at: 2025-10-31T23:24:55.003716
 ============================================================

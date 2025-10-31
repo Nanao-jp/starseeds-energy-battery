@@ -53,7 +53,7 @@
 | `_DEBATE.json` | `prompts/<conversation_id>__<step>.md` | Scene構成、Prefab階層を本文に記述 |
 | `cursor_task.where` | `allowed_paths` | `Assets/Scripts/`, `Assets/Prefabs/`等を明示 |
 | `dod`（パフォーマンス要件） | `constraints` + 受入条件 | FPS60、メモリ<500MB等を明記 |
-| `_REPORT.md` | `reports/<conversation_id>__<step>__<status>.md` | Profilerスクリーンショットを含める |
+| `_REPORT.md` | `reports/YYYYMMDD_HHMM_<conversation_id>__<step>__<status>.md` | Profilerスクリーンショットを含める |
 | PRプレビュービルド | ローカルビルド | Windowsビルドで動作確認 |
 
 ### 運用モード選択の指針（Unity開発）
@@ -93,7 +93,7 @@
 7. scripts/make_report.py でレポート生成
    （Profilerスクリーンショット、FPS実測値を添付推奨）
    ↓
-8. reports/<conversation_id>__<step>__<status>.md をpush
+8. reports/YYYYMMDD_HHMM_<conversation_id>__<step>__<status>.md をpush
    ↓
 9. Agent HQがレポート確認 → 次ステップへ
 ```

@@ -3,7 +3,7 @@
 レポート生成スクリプト
 
 直近の変更差分・実行コマンド結果を収集し、
-reports/<conversation_id>__<step>__<status>.md を生成します。
+reports/YYYYMMDD_HHMM_<conversation_id>__<step>__<status>.md を生成します。
 """
 
 import argparse
@@ -292,7 +292,9 @@ def main():
     reports_dir = Path(__file__).parent.parent / "reports"
     reports_dir.mkdir(exist_ok=True)
     
-    report_filename = f"{conversation_id}__{args.step}__{args.status}.md"
+    # 日付時刻をファイル名に追加
+    timestamp_str = datetime.now().strftime("%Y%m%d_%H%M")
+    report_filename = f"{timestamp_str}_{conversation_id}__{args.step}__{args.status}.md"
     report_path = reports_dir / report_filename
     
     with open(report_path, "w", encoding="utf-8") as f:

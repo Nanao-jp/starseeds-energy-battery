@@ -80,12 +80,16 @@ timestamp: "2025-10-31T12:34:56Z"
 ## ファイル命名規則
 
 ```
-reports/<conversation_id>__<step>__<status>.md
+reports/YYYYMMDD_HHMM_<conversation_id>__<step>__<status>.md
 ```
 
 例:
-- `reports/hq-cursor-bootstrap__1__success.md`
-- `reports/feature-auth__2__failed.md`
+- `reports/20251031_1510_package-selection__1__success.md`
+- `reports/20251031_1620_feature-auth__2__failed.md`
+
+**日付時刻の形式**:
+- `YYYYMMDD`: 年月日（例: 20251031）
+- `HHMM`: 時分（24時間制、例: 1510）
 
 ## ISO 8601 Duration フォーマット
 
@@ -107,7 +111,7 @@ reports/<conversation_id>__<step>__<status>.md
 
 | フル運用プロトコル | 本テンプレート（軽量ローカル） | 説明 |
 |---|---|---|
-| **`_REPORT.md`** | `reports/<conversation_id>__<step>__<status>.md` | 実装結果の報告形式 |
+| **`_REPORT.md`** | `reports/YYYYMMDD_HHMM_<conversation_id>__<step>__<status>.md` | 実装結果の報告形式 |
 | **`status`** | `status` (success/failed) | 実行結果のステータス |
 | **`commit`** | `commit_sha` | コミットハッシュ |
 | **`changed_files`** | `changed_files` | 変更されたファイル一覧 |
