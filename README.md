@@ -72,24 +72,89 @@
 - **アクセシビリティの向上**:
     - WCAG AA準拠をより厳密にチェックし、改善する。
 
+## 🤖 Agent HQ ↔ Cursor ブリッジ
+
+このプロジェクトは **Agent HQ（複数AI討論）** と **Cursor（実装）** を連携させた AI 協働開発ワークフローを採用しています。
+
+### 🔄 開発サイクル
+
+```
+1. Agent HQ（GPT + Claude + その他LLM）が討論
+   ↓ 最適なプロンプト・実装戦略を合意
+2. prompts/ にタスクを配置
+   ↓ Cursor が実装指示を読み取る
+3. Cursor で実装・コミット
+   ↓ pre-push フックでローカルCI実行（Build + Lint）
+4. CI成功 → main に push
+   ↓ レポート生成スクリプトを実行
+5. reports/ にレポート出力
+   ↓ Agent HQ が結果を確認
+6. 次のステップを討論（1に戻る）
+```
+
+### 📁 ブリッジ関連ディレクトリ
+
+- **`prompts/`**: Agent HQ からの指示受信 inbox
+- **`reports/`**: Cursor からのレポート送信 outbox
+- **`scripts/`**: CI・レポート生成の自動化スクリプト
+- **`.agent/`**: プロジェクト設定・状態管理
+- **`.githooks/`**: pre-push フック（ローカルCI）
+
+### 🛠️ ブリッジ用コマンド
+
+```bash
+# ローカルCIを手動実行
+python scripts/ci_local.py
+
+# レポート生成（成功時）
+python scripts/make_report.py \
+  --conversation-id <タスクID> \
+  --step 1 \
+  --status success \
+  --duration 300
+
+# レポート生成（失敗時）
+python scripts/make_report.py \
+  --conversation-id <タスクID> \
+  --step 1 \
+  --status failed
+```
+
+### 🔐 安全策
+
+- ✅ **PRなし・ローカルCI**: pre-push フックで Build + Lint を自動実行
+- ✅ **allow_paths 制限**: `.agent/project.json` で編集可能なディレクトリを制限
+- ✅ **依存ゼロ**: Python標準ライブラリのみ（pip不要）
+- ✅ **冪等性**: スクリプトは何度実行しても安全
+
+詳細は `.cursorrules` および `prompts/_SCHEMA.md`、`reports/_SCHEMA.md` を参照してください。
+
+---
+
 ## セットアップと開発
 
 ### 必要なもの
 
 - Node.js 18.17 以降
 - npm (または pnpm/yarn)
+- Python 3.7+ (ブリッジスクリプト用)
 
 ### インストール
 
 1.  リポジトリをクローンします:
     ```bash
-    git clone https://github.com/your-username/bess-corp.git
-    cd bess-corp
+    git clone https://github.com/Nanao-jp/starseeds-energy-battery.git
+    cd starseeds-energy-battery
     ```
 
 2.  依存関係をインストールします:
     ```bash
     npm install
+    ```
+
+3.  Git hooks をインストール（初回のみ）:
+    ```bash
+    python scripts/install_hooks.py
     ```
 
 ### 開発サーバーの起動
@@ -109,7 +174,13 @@
 
 ### 利用可能なスクリプト
 
+#### Next.js コマンド
 - `npm run dev`: 開発サーバーを起動
 - `npm run build`: プロダクションビルドを作成
 - `npm run start`: プロダクションサーバーを起動
 - `npm run lint`: ESLint を実行
+
+#### ブリッジコマンド（Python）
+- `python scripts/ci_local.py`: ローカルCI実行
+- `python scripts/make_report.py`: レポート生成
+- `python scripts/install_hooks.py`: Git hooks 再インストール
