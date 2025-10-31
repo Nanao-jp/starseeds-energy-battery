@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
+import "@fontsource-variable/orbitron";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -25,11 +26,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" className={notoSansJp.variable}>
+    <html lang="ja" className={`dark ${notoSansJp.variable}`}>
       <body>
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen relative">
           <Header />
-          <main className="flex-grow">{children}</main>
+          <main className="flex-grow relative z-10">{children}</main>
           <Footer />
         </div>
         <Toaster />

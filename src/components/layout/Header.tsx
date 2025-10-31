@@ -13,11 +13,11 @@ const navItems = [
 
 export function Header() {
   return (
-    <header className="bg-white/80 backdrop-blur-sm sticky top-0 z-50 border-b">
+    <header className="bg-white/80 dark:glass backdrop-blur-sm sticky top-0 z-50 border-b">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <Link href="/" className="flex items-center gap-3 text-xl font-bold">
+            <Link href="/" className="flex items-center gap-3 text-xl font-bold font-heading">
               <Image 
                 src="/images/logo.png" 
                 alt="Starseeds energy Battery Logo" 
@@ -32,7 +32,7 @@ export function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm font-medium text-gray-700 hover:text-green-600 transition-colors"
+                className="text-sm font-medium text-gray-700 dark:text-foreground hover:text-primary dark:hover:text-primary transition-colors"
               >
                 {item.label}
               </Link>

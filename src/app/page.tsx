@@ -48,8 +48,8 @@ export default function HomePage() {
             />
           </div>
           <div>
-            <h2 className="text-3xl font-bold tracking-tight mb-4">再生可能エネルギーを、<br/>安定した主力電源へ。</h2>
-            <p className="text-gray-600 leading-relaxed">
+            <h2 className="text-3xl font-bold tracking-tight mb-4 font-heading">再生可能エネルギーを、<br/>安定した主力電源へ。</h2>
+            <p className="text-muted-foreground leading-relaxed">
               天候に左右される太陽光や風力発電の不安定な電力を大規模蓄電池に貯蔵。クリーンなエネルギーを安定的にお届けし、脱炭素社会の実現に貢献します。
             </p>
           </div>
@@ -67,8 +67,8 @@ export default function HomePage() {
             />
           </div>
           <div className="md:order-1">
-            <h2 className="text-3xl font-bold tracking-tight mb-4">独自のEMSが、<br/>電力取引を最適化し収益を最大化。</h2>
-            <p className="text-gray-600 leading-relaxed">
+            <h2 className="text-3xl font-bold tracking-tight mb-4 font-heading">独自のEMSが、<br/>電力取引を最適化し収益を最大化。</h2>
+            <p className="text-muted-foreground leading-relaxed">
               自社開発のエネルギーマネジメントシステム（EMS）が、電力市場の価格変動や気象データをリアルタイムに分析。AIが最適な充放電を判断し、お客様の収益を最大化します。
             </p>
           </div>
@@ -78,8 +78,8 @@ export default function HomePage() {
       {/* Navigation Cards Section */}
       <section className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight">さらに詳しく</h2>
-          <p className="mt-2 text-lg text-gray-600">
+          <h2 className="text-3xl font-bold tracking-tight font-heading">さらに詳しく</h2>
+          <p className="mt-2 text-lg text-muted-foreground">
             私たちの取り組みや技術について、より深く知る
           </p>
         </div>
@@ -93,7 +93,7 @@ export default function HomePage() {
               </CardHeader>
               <CardContent className="flex-grow p-6">
                 <CardTitle>{card.title}</CardTitle>
-                <p className="mt-2 text-sm text-gray-600">{card.description}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{card.description}</p>
               </CardContent>
               <CardFooter className="p-6 pt-0">
                 <Link href={card.href} className="flex items-center font-semibold text-green-600 hover:text-green-700">
