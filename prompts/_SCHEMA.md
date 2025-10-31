@@ -63,6 +63,26 @@ success_report_path_template: "reports/{conversation_id}__{step}__{status}.md"
 4. **受入条件 (Acceptance Criteria)**: 完了の定義
 5. **注意**: 特記事項
 
+## プロンプト作成時の原則
+
+Cursor の能力を最大限引き出すため、以下の原則に従ってプロンプトを作成してください：
+
+- ✅ **What（何を）を明確に**、**How（どのように）は Cursor に任せる**
+  - 良い例: 「KPI セクションにカウントアップアニメーションを追加」
+  - 悪い例: 「useState と useEffect を使ってカウントアップを実装」
+
+- ✅ **細かいコード指示は避ける**
+  - 良い例: 「適切な命名でカスタムフックを作成」
+  - 悪い例: 「useCountUp という名前で、start, end, duration を引数に取るフックを作成」
+
+- ✅ **コマンド列挙は最小限**
+  - 良い例: 「必要な依存パッケージをインストール」
+  - 悪い例: 「npm install package-a && npm install package-b && ...」
+
+- ✅ **目的と制約を伝え、実装の詳細は Cursor の判断を尊重**
+  - 良い例: 「パフォーマンスを考慮してアニメーションを実装」
+  - 悪い例: 「requestAnimationFrame を使い、easeOutExpo 関数で...」
+
 ## ファイル命名規則
 
 ```

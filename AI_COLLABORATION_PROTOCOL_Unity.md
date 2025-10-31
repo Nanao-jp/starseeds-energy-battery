@@ -137,6 +137,12 @@
   - Addressables
   - Input System（新）
 
+- **実装時の原則**:
+  - ✅ **What（何を）を明確に**、**How（どのように）は Cursor に任せる**
+  - ✅ **細かいコード指示は避ける**（例: 「MonoBehaviour を継承」ではなく「Unity コンポーネントとして実装」）
+  - ✅ **Unity特有の手順は最小限**（Cursor は Prefab 編集、Asset参照を自動推論できる）
+  - ✅ **目的と制約を伝え、実装の詳細は Cursor の判断を尊重**
+
 ---
 
 ## 📦 成果物 - Unity開発固有フィールド
