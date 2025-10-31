@@ -1,0 +1,72 @@
+# Cursor Rules for Starseeds Energy Battery (HQ-Cursor Bridge)
+
+## 目的
+このプロジェクトは、スターシーズ株式会社の系統用蓄電池（BESS）事業を紹介するコーポレートサイトです。
+Agent HQ（複数AI討論）と Cursor（実装）を連携させて、最高品質の Web サイトを構築します。
+
+## 技術スタック
+- Next.js 15 (App Router)
+- React 19
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Framer Motion
+
+## 編集対象ディレクトリ
+- `.agent` - HQ-Cursor ブリッジ設定
+- `scripts` - 自動化スクリプト（Python標準のみ）
+- `prompts` - HQ→Cursor 指示の受信 inbox
+- `reports` - Cursor→HQ レポートの outbox
+- `.githooks` - Git hooks
+- `src` - Next.js アプリケーション本体
+- `public` - 静的ファイル（画像等）
+- `docs` - プロジェクトドキュメント
+
+**注意**: `allowed_paths` 表記は末尾スラッシュなし（例: `src`, `docs`）で統一してください。
+
+## 編集禁止
+- `.git` ディレクトリ配下（hooksのインストールはスクリプト経由で実施）
+- `node_modules`
+- `.next` ビルド成果物
+
+## 開発原則
+
+### 1. 依存関係ゼロ
+- **Python標準ライブラリのみ**を使用（pip不要）
+- 外部パッケージへの依存は禁止
+
+### 2. 冪等性の確保
+- 同じスクリプトを何度実行しても安全
+- 既存ファイルは検知してマージ・追記・スキップ
+- 破壊的変更は行わない
+
+### 3. クロスプラットフォーム対応
+- Windows/macOS/Linux で動作すること
+- パス結合は `os.path.join()` または `pathlib.Path`
+- 改行コードは LF 推奨だが CRLF でも動作すること
+
+### 4. エラーハンドリング
+- スクリプトは明確な終了コード（0=成功、非0=失敗）
+- エラーメッセージは標準エラー出力に
+- ログは reports/.ci_logs/ に保存
+
+### 5. PR なし・ローカルCI方式（軽量ローカル運用モード）
+- pre-push フックでローカルCIを実行
+- CI通過後のみ main に直接 push
+- PRは作成しない（これが本テンプレートの既定運用）
+
+**運用モード**:
+- 本テンプレートは**軽量ローカル運用モード**を既定とします
+- 破壊的変更・広範囲変更の場合は**フル運用（PR+レビュー）**を推奨
+- 詳細は `AI_COLLABORATION_PROTOCOL_Software.md` の「運用モード選択の指針」を参照
+
+## 安全策
+- `scripts/ci_local.py` が失敗したら push を中断
+- `.agent/project.json` の `allowed_paths` 外への変更は警告
+- 機密情報・トークンは書き込まない
+
+## 拡張時の注意
+- 新機能は既存の構造を壊さない
+- スクリプトには `--help` オプションを実装
+- ドキュメントは README に反映
+

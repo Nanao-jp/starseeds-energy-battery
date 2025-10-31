@@ -1,0 +1,29 @@
+{
+  "name": "starseeds-energy-battery",
+  "ci": {
+    "build": "npm run build",
+    "test": "",
+    "format": "npm run lint"
+  },
+  "allow_paths": [
+    ".agent",
+    "scripts",
+    "prompts",
+    "reports",
+    ".githooks",
+    ".cursorrules",
+    "src",
+    "public",
+    "components.json",
+    "next.config.ts",
+    "tailwind.config.ts",
+    "tsconfig.json",
+    "package.json",
+    "README.md",
+    "docs"
+  ],
+  "auto_trigger": false,
+  "push_main_when_ci_passed": true,
+  "report_template": "reports/_TEMPLATE__report.md"
+}
+
