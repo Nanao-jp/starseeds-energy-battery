@@ -372,6 +372,107 @@
   .animate-shimmer {
     animation: shimmer 2s ease-in-out infinite;
   }
+
+  /* FeatureCard - パルスドットアニメーション */
+  @keyframes pulse-dot {
+    0%, 100% {
+      opacity: 0.4;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+
+  .animate-pulse-dot {
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  .animate-pulse-dot-delay-1 {
+    animation: pulse-dot 2s ease-in-out infinite;
+    animation-delay: 0.3s;
+  }
+
+  .animate-pulse-dot-delay-2 {
+    animation: pulse-dot 2s ease-in-out infinite;
+    animation-delay: 0.6s;
+  }
+
+  /* Section Divider - 装飾的なセクション区切り線 */
+  @keyframes section-divider-glow {
+    0%, 100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 0.6;
+    }
+  }
+
+  @keyframes section-divider-shimmer {
+    0% {
+      background-position: -100% 0;
+    }
+    100% {
+      background-position: 100% 0;
+    }
+  }
+
+  .section-divider {
+    position: relative;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      oklch(0.72 0.15 210 / 20%) 20%,
+      oklch(0.72 0.15 210 / 40%) 50%,
+      oklch(0.72 0.15 210 / 20%) 80%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: section-divider-shimmer 8s ease-in-out infinite;
+  }
+
+  .section-divider::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -0.5px;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      oklch(0.72 0.15 210 / 60%) 50%,
+      transparent 100%
+    );
+    opacity: 0;
+    animation: section-divider-glow 3s ease-in-out infinite;
+  }
+
+  .section-divider::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: -2px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: oklch(0.72 0.15 210 / 80%);
+    box-shadow:0 0 8px oklch(0.72 0.15 210 / 60%);
+    transform: translateX(-50%);
+    animation: section-divider-glow 2s ease-in-out infinite;
+  }
+
+  /* NavigationCard - 光が周囲を回るアニメーション（滑らか） */
+  @keyframes corner-rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 }
 
 /* Energy Pulse Animation - 中央から外側へ広がる波 */
@@ -478,24 +579,6 @@
   }
 }
 
-@keyframes rotate-particle-2 {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes rotate-particle-3 {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .animated-icon-ring {
   animation: rotate-ring 8s linear infinite;
   will-change: transform;
@@ -504,18 +587,6 @@
 
 .animated-icon-particle-1 {
   animation: rotate-particle-1 6s linear infinite;
-  will-change: transform;
-  transform-origin: center center;
-}
-
-.animated-icon-particle-2 {
-  animation: rotate-particle-2 6.5s linear infinite;
-  will-change: transform;
-  transform-origin: center center;
-}
-
-.animated-icon-particle-3 {
-  animation: rotate-particle-3 7s linear infinite;
   will-change: transform;
   transform-origin: center center;
 }
@@ -572,9 +643,7 @@
 
   /* スクロールがたつき対策：will-changeを削減 */
   .animated-icon-ring,
-  .animated-icon-particle-1,
-  .animated-icon-particle-2,
-  .animated-icon-particle-3 {
+  .animated-icon-particle-1 {
     will-change: auto !important;
   }
 

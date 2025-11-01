@@ -54,6 +54,7 @@ export function KpiSection() {
   return (
     <section className="kpi-section" aria-label="主要なKPI指標">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="section-divider mb-20" aria-hidden="true" />
         <motion.div
           className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center"
           variants={containerVariants}

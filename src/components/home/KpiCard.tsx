@@ -88,37 +88,21 @@ export const KpiCard = memo(function KpiCard({
       <div className="mb-6">
         <AnimatedIcon 
           icon={icon} 
-          delay={0.2 + index * 0.1}
         />
       </div>
 
       {/* テキストエリア - 日本語をメインに */}
-      <motion.p 
-        className="text-3xl font-bold text-foreground cursor-default mb-2"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 + index * 0.1, duration: 0.5 }}
-      >
+      <p className="text-3xl font-bold text-foreground cursor-default mb-2">
         {label}
-      </motion.p>
+      </p>
       
-      <motion.p 
-        className="text-sm font-medium text-muted-foreground cursor-default mb-1"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 + index * 0.1, duration: 0.5 }}
-      >
+      <p className="text-sm font-medium text-muted-foreground cursor-default mb-1">
         {value}
-      </motion.p>
+      </p>
       
-      <motion.p 
-        className="text-sm font-medium text-foreground/90 cursor-default leading-relaxed"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 + index * 0.1, duration: 0.5 }}
-      >
+      <p className="text-sm font-medium text-foreground/90 cursor-default leading-relaxed">
         {description}
-      </motion.p>
+      </p>
     </motion.div>
   );
 });

@@ -26,6 +26,37 @@ export const NAV_ITEMS: NavItem[] = [
 export const FOOTER_NAV_ITEMS: NavItem[] = NAV_ITEMS.filter(item => item.href !== '/');
 
 /**
+ * ホームページのナビゲーションカードデータ
+ */
+export interface NavigationCardData {
+  href: string;
+  title: string;
+  description: string;
+  imgSrc: string;
+}
+
+export const HOME_NAVIGATION_CARDS: NavigationCardData[] = [
+  {
+    href: '/solutions',
+    title: '事業紹介',
+    description: '系統用蓄電の役割から、私たちのサービスと収益モデルについてご紹介します。',
+    imgSrc: '/images/nav-solutions.webp',
+  },
+  {
+    href: '/products',
+    title: '製品・技術',
+    description: 'コンテナ型BESSのラインナップ、最先端のEMS/BMS、そして安全性への取り組みについて。',
+    imgSrc: '/images/photo/photo-02.webp',
+  },
+  {
+    href: '/status',
+    title: '実績・工事状況',
+    description: '現在稼働中、建設中、そして計画中のプロジェクト一覧をご覧いただけます。',
+    imgSrc: '/images/nav-status.webp',
+  },
+];
+
+/**
  * サイト設定
  */
 export const SITE_CONFIG = {

@@ -38,3 +38,21 @@ export interface KpiData {
   /** 日本語の説明文 */
   description: string;
 }
+
+/**
+ * FeatureCardのデータ型定義
+ */
+export interface FeatureCardData {
+  /** 画像のパス */
+  imageSrc: string;
+  /** 画像の代替テキスト */
+  imageAlt: string;
+  /** タイトル */
+  title: string;
+  /** 説明文 */
+  description: string;
+  /** アイコン名 */
+  iconName: 'zap' | 'radio';
+  /** 左右反転フラグ（画像を右側に配置） */
+  reverse?: boolean;
+}

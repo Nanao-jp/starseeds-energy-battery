@@ -20,15 +20,13 @@ import { useEffect, useRef } from "react";
 interface AnimatedIconProps {
   /** Lucide Reactアイコンコンポーネント */
   icon: LucideIcon;
-  /** アニメーション開始の遅延時間（秒） */
-  delay?: number;
   /** カスタムクラス名 */
   className?: string;
 }
 
-const PARTICLE_COUNT = 3;
+const PARTICLE_COUNT = 1;
 
-export function AnimatedIcon({ icon: IconComponent, delay = 0, className }: AnimatedIconProps) {
+export function AnimatedIcon({ icon: IconComponent, className }: AnimatedIconProps) {
   const { elementRef, isIntersecting } = useIntersectionObserver<HTMLDivElement>({
     threshold: 0.1,
     rootMargin: "50px",
@@ -59,18 +57,7 @@ export function AnimatedIcon({ icon: IconComponent, delay = 0, className }: Anim
 
   return (
     <div ref={elementRef} className={`relative flex justify-center ${className || ""}`}>
-      <motion.div
-        initial={{ scale: 0, opacity: 0 }}
-        whileInView={{ scale: 1, opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{
-          type: "spring",
-          stiffness: 200,
-          damping: 15,
-          delay: delay,
-        }}
-        className="relative w-24 h-24 flex items-center justify-center"
-      >
+      <div className="relative w-24 h-24 flex items-center justify-center">
         {/* 回転するグラデーションリング（CSSアニメーション化でJS負荷削減） */}
         <div
           className="absolute inset-0 rounded-full animated-icon-ring"
@@ -123,7 +110,7 @@ export function AnimatedIcon({ icon: IconComponent, delay = 0, className }: Anim
             background: 'radial-gradient(circle, oklch(0.72 0.15 210 / 25%), transparent 70%)',
           }}
         />
-      </motion.div>
+      </div>
     </div>
   );
 }
