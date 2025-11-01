@@ -33,12 +33,6 @@ const itemVariants: Variants = {
   },
 };
 
-// テキストアニメーションの設定
-const getTextTransition = (index: number, delayOffset: number) => ({
-  delay: delayOffset + index * 0.1,
-  duration: 0.5,
-});
-
 // カードの背景スタイル
 const cardBackgroundStyle: React.CSSProperties = {
   background: 'linear-gradient(to bottom right, oklch(0.18 0.02 240 / 80%), oklch(0.15 0.02 240 / 80%))',
@@ -102,9 +96,8 @@ export const KpiCard = memo(function KpiCard({
       <motion.p 
         className="text-3xl font-bold text-foreground cursor-default mb-2"
         initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={getTextTransition(index, 0.3)}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 + index * 0.1, duration: 0.5 }}
       >
         {label}
       </motion.p>
@@ -112,9 +105,8 @@ export const KpiCard = memo(function KpiCard({
       <motion.p 
         className="text-sm font-medium text-muted-foreground cursor-default mb-1"
         initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={getTextTransition(index, 0.4)}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 + index * 0.1, duration: 0.5 }}
       >
         {value}
       </motion.p>
@@ -122,9 +114,8 @@ export const KpiCard = memo(function KpiCard({
       <motion.p 
         className="text-sm font-medium text-foreground/90 cursor-default leading-relaxed"
         initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={getTextTransition(index, 0.5)}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 + index * 0.1, duration: 0.5 }}
       >
         {description}
       </motion.p>

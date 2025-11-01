@@ -58,8 +58,7 @@ export function KpiSection() {
           className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center"
           variants={containerVariants}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.5 }}
+          animate="visible"
         >
           {kpiData.map((item, index) => (
             <KpiCard

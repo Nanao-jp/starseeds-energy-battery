@@ -310,7 +310,8 @@
   }
   
   .animate-gradientGlow {
-    background: linear-gradient(
+    /* テスト用：一時的に無効化（パフォーマンステスト） */
+    /* background: linear-gradient(
       90deg,
       rgba(255, 100, 150, 1),
       rgba(255, 150, 0, 1),
@@ -327,17 +328,23 @@
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: gradientGlow 8s ease-in-out infinite;
+    animation: gradientGlow 8s ease-in-out infinite; */
+    /* 代替：シンプルな白色テキスト */
+    color: white;
+    -webkit-text-fill-color: white;
   }
   
   .drop-shadow-glow {
-    text-shadow:
+    /* テスト用：一時的に無効化（パフォーマンステスト） */
+    /* text-shadow:
       0 0 6px rgba(255, 255, 0, 0.7),
       0 0 12px rgba(255, 200, 0, 0.5),
       0 0 20px rgba(255, 150, 0, 0.4),
       0 0 30px rgba(255, 255, 0, 0.8),
       0 0 60px rgba(255, 255, 0, 0.6),
-      0 0 90px rgba(255, 255, 0, 0.4);
+      0 0 90px rgba(255, 255, 0, 0.4); */
+    /* 代替：軽量なシンプルなグロー */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
   }
 
   /* Shimmer animation for KPI cards */
