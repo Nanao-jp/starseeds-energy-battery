@@ -8,25 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ShieldCheck, Siren, Thermometer, Zap } from 'lucide-react';
-
-const PageHeader = ({ title, subtitle }: { title: string; subtitle: string }) => (
-  <div className="text-center py-16 bg-gray-50">
-    <h1 className="text-4xl font-bold tracking-tight">{title}</h1>
-    <p className="mt-4 text-xl text-gray-600">{subtitle}</p>
-  </div>
-);
-
-const Section = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <section className={`container mx-auto px-4 sm:px-6 lg:px-8 py-16 ${className || ''}`}>
-    {children}
-  </section>
-);
-
-const SectionTitle = ({ children }: { children: React.ReactNode }) => (
-  <div className="text-center mb-12">
-    <h2 className="text-3xl font-bold tracking-tight">{children}</h2>
-  </div>
-);
+import { PageHeader, Section, SectionTitle } from '@/components/layout/PageLayout';
 
 const productLineup = [
   { model: 'GB-2000', energyMWh: 2, powerMW: 1, footprint: '20ftコンテナ', cycleLife: '12,000回', efficiency: '95%' },
@@ -67,7 +49,7 @@ export default function ProductsPage() {
         <div className="grid md:grid-cols-2 gap-8 items-center mb-12">
           <div>
             <h3 className="text-2xl font-bold mb-4">モジュール設計による高い拡張性</h3>
-            <p className="text-gray-600 leading-relaxed">
+            <p className="text-gray-600 dark:text-muted-foreground leading-relaxed">
               当社のコンテナ型BESS（Battery Energy Storage System）は、標準化されたモジュールを組み合わせることで、お客様のニーズに合わせた容量と出力を柔軟に構成できます。小規模なものから大規模なプロジェクトまで、最適なソリューションを提供します。
             </p>
           </div>
@@ -108,16 +90,16 @@ export default function ProductsPage() {
         </Table>
       </Section>
       
-      <Section className="bg-gray-50">
+      <Section className="bg-gray-50 dark:bg-card">
         <SectionTitle>最高水準の安全性</SectionTitle>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {safetyFeatures.map((feature) => (
-            <div key={feature.title} className="p-6 bg-white rounded-lg shadow-md">
+            <div key={feature.title} className="p-6 bg-white dark:bg-card rounded-lg shadow-md">
               <div className="flex items-center gap-4 mb-4">
                 {feature.icon}
                 <h3 className="text-xl font-bold">{feature.title}</h3>
               </div>
-              <p className="text-gray-600">{feature.description}</p>
+              <p className="text-gray-600 dark:text-muted-foreground">{feature.description}</p>
             </div>
           ))}
         </div>
@@ -137,19 +119,19 @@ export default function ProductsPage() {
           </div>
           <div>
             <h3 className="text-2xl font-bold mb-4">インテリジェントな運用と監視</h3>
-            <p className="text-gray-600 leading-relaxed mb-4">
+            <p className="text-gray-600 dark:text-muted-foreground leading-relaxed mb-4">
               自社開発の統合制御システムが、BESSの頭脳として機能します。
             </p>
             <ul className="space-y-4">
               <li>
                 <h4 className="font-bold text-lg">EMS (エネルギーマネジメントシステム)</h4>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-muted-foreground">
                   電力市場の価格や天候予測データを基に、最適な充放電スケジュールを自動で作成・実行し、収益を最大化します。
                 </p>
               </li>
               <li>
                 <h4 className="font-bold text-lg">BMS (バッテリーマネジメントシステム)</h4>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-muted-foreground">
                   個々のバッテリーセルの状態（電圧、温度、電流）をリアルタイムで監視し、劣化を抑制。システムの長寿命化と安全な運用を実現します。
                 </p>
               </li>

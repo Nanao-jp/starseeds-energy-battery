@@ -88,7 +88,7 @@ export default function HomePage() {
             <Card key={card.href} className="flex flex-col overflow-hidden hover:shadow-lg transition-shadow">
               <CardHeader className="p-0">
                 <div className="relative h-48 w-full">
-                  <Image src={card.imgSrc} alt={card.title} layout="fill" objectFit="cover" />
+                  <Image src={card.imgSrc} alt={card.title} fill className="object-cover" />
                 </div>
               </CardHeader>
               <CardContent className="flex-grow p-6">

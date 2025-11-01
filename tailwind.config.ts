@@ -22,6 +22,9 @@ const config = {
         sans: ["var(--font-sans)", "sans-serif"],
         heading: ["var(--font-heading)", "sans-serif"],
       },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },

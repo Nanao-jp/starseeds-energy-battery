@@ -7,12 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { MapPin, Zap, Clock } from 'lucide-react';
 
-const PageHeader = ({ title, subtitle }: { title: string; subtitle: string }) => (
-  <div className="text-center py-16 bg-gray-50 dark:bg-card">
-    <h1 className="text-4xl font-bold tracking-tight font-heading">{title}</h1>
-    <p className="mt-4 text-xl text-gray-600 dark:text-muted-foreground">{subtitle}</p>
-  </div>
-);
+import { PageHeader } from '@/components/layout/PageLayout';
 
 const ProjectCard = ({ project }: { project: Project }) => {
   const getStatusLabel = (status: ProjectStatus) => {

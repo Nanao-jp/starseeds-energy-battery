@@ -1,25 +1,7 @@
 import { Handshake, Target, BarChart3, Recycle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-
-const PageHeader = ({ title, subtitle }: { title: string; subtitle: string }) => (
-  <div className="text-center py-16 bg-gray-50">
-    <h1 className="text-4xl font-bold tracking-tight">{title}</h1>
-    <p className="mt-4 text-xl text-gray-600">{subtitle}</p>
-  </div>
-);
-
-const Section = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <section className={`container mx-auto px-4 sm:px-6 lg:px-8 py-16 ${className || ''}`}>
-    {children}
-  </section>
-);
-
-const SectionTitle = ({ children }: { children: React.ReactNode }) => (
-  <div className="text-center mb-12">
-    <h2 className="text-3xl font-bold tracking-tight">{children}</h2>
-  </div>
-);
+import { PageHeader, Section, SectionTitle } from '@/components/layout/PageLayout';
 
 const services = [
   {
@@ -59,21 +41,21 @@ export default function SolutionsPage() {
           </div>
           <div>
             <h3 className="text-2xl font-bold mb-4">未来の電力網を支えるキーテクノロジー</h3>
-            <p className="text-gray-600 leading-relaxed">
+            <p className="text-gray-600 dark:text-muted-foreground leading-relaxed">
               太陽光や風力といった再生可能エネルギーは、天候によって発電量が変動します。系統用蓄電池は、発電しすぎた電力を貯蔵し、不足時に供給することで、電力の需要と供給のバランスを保ちます。これにより、再生可能エネルギーの導入を拡大し、安定的でクリーンな電力網の実現に貢献します。
             </p>
           </div>
         </div>
       </Section>
 
-      <Section className="bg-gray-50">
+      <Section className="bg-gray-50 dark:bg-card">
         <SectionTitle>提供サービス</SectionTitle>
         <div className="grid md:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <div key={index} className="p-8 bg-white rounded-lg shadow-md text-center">
+            <div key={index} className="p-8 bg-white dark:bg-card rounded-lg shadow-md text-center">
               <div className="flex justify-center mb-4">{service.icon}</div>
               <h3 className="text-xl font-bold mb-2">{service.title}</h3>
-              <p className="text-gray-600">{service.description}</p>
+              <p className="text-gray-600 dark:text-muted-foreground">{service.description}</p>
             </div>
           ))}
         </div>
@@ -86,10 +68,10 @@ export default function SolutionsPage() {
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
               <h3 className="text-2xl font-bold mb-4">アービトラージ（価格差益取引）</h3>
-              <p className="text-gray-600 leading-relaxed mb-4">
+              <p className="text-gray-600 dark:text-muted-foreground leading-relaxed mb-4">
                 電力市場では、需要と供給のバランスによって価格が常に変動しています。私たちは、電力が安い時間帯に蓄電池を充電し、高い時間帯に放電することで、その価格差から収益を得ます。
               </p>
-              <ul className="list-disc list-inside space-y-2 text-gray-600">
+              <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-muted-foreground">
                 <li><span className="font-bold">充電：</span>電力価格が安い深夜などに電力を購入・充電。</li>
                 <li><span className="font-bold">放電：</span>電力需要が高まる夕方などに電力を売却・放電。</li>
               </ul>
@@ -108,10 +90,10 @@ export default function SolutionsPage() {
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="md:order-2">
               <h3 className="text-2xl font-bold mb-4">需給調整市場・容量市場への参加</h3>
-              <p className="text-gray-600 leading-relaxed mb-4">
+              <p className="text-gray-600 dark:text-muted-foreground leading-relaxed mb-4">
                 蓄電池の高速な充放電能力を活かし、電力の安定供給を目的とした「需給調整市場」や「容量市場」に参加します。これにより、電力インフラへの貢献と引き換えに、安定した収益を確保します。
               </p>
-              <ul className="list-disc list-inside space-y-2 text-gray-600">
+              <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-muted-foreground">
                 <li><span className="font-bold">需給調整市場：</span>周波数の乱れに応動し、系統を安定化させる。</li>
                 <li><span className="font-bold">容量市場：</span>将来の電力供給力（kW）を確保し、対価を得る。</li>
               </ul>

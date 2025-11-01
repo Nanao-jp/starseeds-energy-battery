@@ -1,24 +1,6 @@
 import Image from 'next/image';
 import React from 'react';
-
-const PageHeader = ({ title, subtitle }: { title: string; subtitle: string }) => (
-  <div className="text-center py-16 bg-gray-50">
-    <h1 className="text-4xl font-bold tracking-tight">{title}</h1>
-    <p className="mt-4 text-xl text-gray-600">{subtitle}</p>
-  </div>
-);
-
-const Section = ({ children, id, className }: { children: React.ReactNode; id: string; className?: string }) => (
-  <section id={id} className={`container mx-auto px-4 sm:px-6 lg:px-8 py-16 ${className || ''}`}>
-    {children}
-  </section>
-);
-
-const SectionTitle = ({ children }: { children: React.ReactNode }) => (
-  <div className="text-center mb-12">
-    <h2 className="text-3xl font-bold tracking-tight">{children}</h2>
-  </div>
-);
+import { PageHeader, Section, SectionTitle } from '@/components/layout/PageLayout';
 
 const overviewData = [
   { label: '会社名', value: 'スターシーズ株式会社' },
@@ -56,7 +38,7 @@ export default function CompanyPage() {
         </div>
       </Section>
       
-      <Section id="history" className="bg-gray-50">
+      <Section id="history" className="bg-gray-50 dark:bg-card">
         <SectionTitle>沿革</SectionTitle>
         <div className="max-w-3xl mx-auto">
           <dl>
@@ -74,7 +56,7 @@ export default function CompanyPage() {
         <SectionTitle>代表メッセージ</SectionTitle>
         <div className="grid md:grid-cols-3 gap-12 items-center max-w-5xl mx-auto">
           <div className="md:col-span-1">
-            <div className="bg-gray-50 rounded-lg p-8 flex items-center justify-center aspect-square">
+            <div className="bg-gray-50 dark:bg-card rounded-lg p-8 flex items-center justify-center aspect-square">
               <Image
                 src="/images/logo.png"
                 alt="Starseeds energy Battery Logo"
@@ -86,7 +68,7 @@ export default function CompanyPage() {
           </div>
           <div className="md:col-span-2">
             <h3 className="text-2xl font-bold mb-4">エネルギーの未来を、共に創る。</h3>
-            <p className="text-gray-600 leading-relaxed space-y-4">
+            <p className="text-gray-600 dark:text-muted-foreground leading-relaxed space-y-4">
               <span>
                 脱炭素化という世界的な潮流の中、電力システムのあり方は大きな変革の時を迎えています。再生可能エネルギーの導入拡大は急務ですが、その不安定さを克服しなければ、真に持続可能なエネルギー社会は実現できません。
               </span>

@@ -1,41 +1,16 @@
-import Link from 'next/link';
-import Image from 'next/image';
-
-const navItems = [
-  { href: '/', label: 'HOME' },
-  { href: '/solutions', label: '事業紹介' },
-  { href: '/products', label: '製品・技術' },
-  { href: '/status', label: '実績・工事状況' },
-  { href: '/news', label: 'ニュース' },
-  { href: '/company', label: '会社情報' },
-  { href: '/contact', label: '問い合わせ' },
-];
+import { NAV_ITEMS } from '@/lib/constants';
+import { Logo } from './Logo';
+import { NavLink } from './NavLink';
 
 export function Header() {
   return (
-    <header className="bg-white/80 dark:bg-card/50 dark:glass backdrop-blur-sm sticky top-0 z-50 border-b">
+    <header className="bg-white/80 dark:bg-transparent dark:glass backdrop-blur-md sticky top-0 z-50 border-b dark:border-primary/20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center gap-3 text-xl font-bold font-heading">
-              <Image 
-                src="/images/logo.png" 
-                alt="Starseeds energy Battery Logo" 
-                width={180} 
-                height={45} 
-              />
-              <span>{process.env.NEXT_PUBLIC_SITE_NAME}</span>
-            </Link>
-          </div>
+          <Logo />
           <nav className="hidden md:flex md:space-x-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-sm font-medium text-gray-700 dark:text-foreground hover:text-primary dark:hover:text-primary transition-colors"
-              >
-                {item.label}
-              </Link>
+            {NAV_ITEMS.map((item) => (
+              <NavLink key={item.href} item={item} variant="header" />
             ))}
           </nav>
           {/* Mobile menu button will be added later */}

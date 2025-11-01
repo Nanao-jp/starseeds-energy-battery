@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Sans_JP } from "next/font/google";
+import { Noto_Sans_JP, Dancing_Script } from "next/font/google";
 import "@fontsource-variable/orbitron";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
@@ -10,6 +10,12 @@ const notoSansJp = Noto_Sans_JP({
   subsets: ["latin"],
   weight: ["400", "700"],
   variable: "--font-sans",
+});
+
+const dancingScript = Dancing_Script({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-hero",
 });
 
 export const metadata: Metadata = {
@@ -26,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" className={`dark ${notoSansJp.variable}`}>
+    <html lang="ja" className={`dark ${notoSansJp.variable} ${dancingScript.variable}`} suppressHydrationWarning>
       <body>
         <div className="flex flex-col min-h-screen relative">
           <Header />

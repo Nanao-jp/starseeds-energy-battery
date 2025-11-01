@@ -6,6 +6,7 @@
 /* Futuristic font */
 :root {
   --font-heading: "Orbitron Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-hero: var(--font-hero, ui-serif, serif);
 }
 
 @theme inline {
@@ -81,6 +82,10 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  
+  /* Glass morphism - Light mode (base) */
+  --glass-bg: oklch(0.98 0 0 / 80%);
+  --glass-border: oklch(0 0 0 / 10%);
 }
 
 .dark {
@@ -139,6 +144,13 @@
   --glass-bg: oklch(0.12 0.015 240 / 70%);
   --glass-border: oklch(0.72 0.15 210 / 10%);
   --neon-glow: oklch(0.72 0.15 210 / 30%);
+  
+  /* Footer specific - lighter background for better visibility */
+  --footer-bg: oklch(0.20 0.03 240 / 85%);
+  --footer-border: oklch(0.25 0.04 210 / 20%);
+  
+  /* Override glass-bg for footer in dark mode */
+  --footer-glass-bg: oklch(0.20 0.03 240 / 85%);
 }
 
 @layer base {
@@ -147,18 +159,22 @@
   }
   body {
     @apply bg-background text-foreground;
+    color-scheme: dark light;
   }
   
   /* Futuristic dark background gradient */
   body.dark {
     position: relative;
-    background: radial-gradient(
-      ellipse at top,
-      oklch(0.12 0.03 240) 0%,
-      oklch(0.09 0.01 240) 50%,
-      oklch(0.07 0.01 240) 100%
-    );
+    background: 
+      radial-gradient(
+        ellipse 120% 100% at top center,
+        oklch(0.15 0.04 240) 0%,
+        oklch(0.11 0.02 250) 40%,
+        oklch(0.09 0.01 240) 100%
+      ),
+      oklch(0.08 0.01 240);
     background-attachment: fixed;
+    min-height: 100vh;
   }
   
   /* Subtle grid overlay */
@@ -188,9 +204,17 @@
 @layer utilities {
   .glass {
     background: var(--glass-bg);
-    backdrop-filter: blur(12px) saturate(180%);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
     border: 1px solid var(--glass-border);
-    box-shadow: 0 8px 32px 0 oklch(0 0 0 / 20%);
+    box-shadow: 
+      0 8px 32px 0 oklch(0 0 0 / 30%),
+      0 0 0 1px var(--glass-border) inset;
+  }
+  
+  /* Footer specific glass style - lighter background for better visibility in dark mode */
+  .dark footer.glass {
+    background: var(--footer-glass-bg, oklch(0.20 0.03 240 / 85%)) !important;
   }
   
   .glass-card {
@@ -213,6 +237,98 @@
     text-shadow: 
       0 0 10px var(--neon-glow),
       0 0 20px var(--neon-glow);
+  }
+  
+  /* Noise texture (film grain) - dark theme adjusted */
+  .noise-texture {
+    background-image: 
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, transparent 1px, transparent 2px, rgba(0,0,0,0.08) 3px),
+      repeating-linear-gradient(90deg, rgba(0,0,0,0.12) 0px, transparent 1px, transparent 2px, rgba(0,0,0,0.06) 3px);
+    background-size: 3px 3px;
+    mix-blend-mode: multiply;
+    opacity: 0.6;
+    animation: noise-shift 0.08s steps(4) infinite;
+  }
+  
+  @keyframes noise-shift {
+    0% { background-position: 0 0; }
+    25% { background-position: 1px 1px; }
+    50% { background-position: 2px 2px; }
+    75% { background-position: 1px 2px; }
+    100% { background-position: 0 0; }
+  }
+  
+  /* Halftone dot pattern - dark theme adjusted */
+  .halftone-pattern {
+    background-image: 
+      radial-gradient(circle at 50% 50%, rgba(0,0,0,0.3) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(0,0,0,0.2) 0.8px, transparent 0.8px);
+    background-size: 10px 10px, 10px 10px;
+    background-position: 0 0, 5px 5px;
+    mix-blend-mode: multiply;
+    opacity: 0.7;
+  }
+  
+  /* Additional halftone layer for depth - dark theme */
+  .halftone-pattern::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 75% 75%, rgba(0,0,0,0.15) 0.8px, transparent 0.8px);
+    background-size: 14px 14px;
+    background-position: 7px 7px;
+    mix-blend-mode: multiply;
+    opacity: 0.8;
+  }
+  
+  /* Glow gradient animation for hero text - using background-clip */
+  @keyframes gradientGlow {
+    0% {
+      background-position: 0% 50%;
+    }
+    25% {
+      background-position: 50% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    75% {
+      background-position: 50% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  .animate-gradientGlow {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 100, 150, 1),
+      rgba(255, 150, 0, 1),
+      rgba(255, 255, 0, 1),
+      rgba(100, 255, 200, 1),
+      rgba(100, 200, 255, 1),
+      rgba(150, 150, 255, 1),
+      rgba(255, 100, 200, 1),
+      rgba(255, 200, 100, 1),
+      rgba(255, 255, 0, 1),
+      rgba(255, 100, 150, 1)
+    );
+    background-size: 400% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientGlow 8s ease-in-out infinite;
+  }
+  
+  .drop-shadow-glow {
+    text-shadow:
+      0 0 6px rgba(255, 255, 0, 0.7),
+      0 0 12px rgba(255, 200, 0, 0.5),
+      0 0 20px rgba(255, 150, 0, 0.4),
+      0 0 30px rgba(255, 255, 0, 0.8),
+      0 0 60px rgba(255, 255, 0, 0.6),
+      0 0 90px rgba(255, 255, 0, 0.4);
   }
 }
 

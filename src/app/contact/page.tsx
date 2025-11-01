@@ -16,13 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-
-const PageHeader = ({ title, subtitle }: { title: string; subtitle: string }) => (
-  <div className="text-center py-16 bg-gray-50">
-    <h1 className="text-4xl font-bold tracking-tight">{title}</h1>
-    <p className="mt-4 text-xl text-gray-600">{subtitle}</p>
-  </div>
-);
+import { PageHeader } from '@/components/layout/PageLayout';
 
 const formSchema = z.object({
   companyName: z.string().min(1, { message: "会社名を入力してください。" }),
