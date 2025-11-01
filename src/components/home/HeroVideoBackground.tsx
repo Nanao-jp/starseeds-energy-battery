@@ -144,6 +144,7 @@ export function HeroVideoBackground() {
         muted
         loop={false}
         playsInline
+        preload="auto"
         className="absolute"
         style={videoStyle}
         initial={{ opacity: 1 }}
@@ -157,6 +158,7 @@ export function HeroVideoBackground() {
         muted
         loop={false}
         playsInline
+        preload="none"
         className="absolute"
         style={videoStyle}
         initial={{ opacity: 0 }}

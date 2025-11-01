@@ -29,18 +29,17 @@ interface AnimatedIconProps {
 const PARTICLE_COUNT = 3;
 
 export function AnimatedIcon({ icon: IconComponent, delay = 0, className }: AnimatedIconProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { isIntersecting } = useIntersectionObserver({
+  const { elementRef, isIntersecting } = useIntersectionObserver<HTMLDivElement>({
     threshold: 0.1,
     rootMargin: "50px",
   });
 
   // 表示外の時はアニメーションを停止
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!elementRef.current) return;
 
-    const ring = containerRef.current.querySelector(".animated-icon-ring");
-    const particles = containerRef.current.querySelectorAll(`[class*="animated-icon-particle"]`);
+    const ring = elementRef.current.querySelector(".animated-icon-ring");
+    const particles = elementRef.current.querySelectorAll(`[class*="animated-icon-particle"]`);
 
     if (isIntersecting) {
       ring?.classList.remove("animation-paused");
@@ -49,10 +48,10 @@ export function AnimatedIcon({ icon: IconComponent, delay = 0, className }: Anim
       ring?.classList.add("animation-paused");
       particles.forEach((p) => p.classList.add("animation-paused"));
     }
-  }, [isIntersecting]);
+  }, [isIntersecting, elementRef]);
 
   return (
-    <div ref={containerRef} className={`relative flex justify-center ${className || ""}`}>
+    <div ref={elementRef} className={`relative flex justify-center ${className || ""}`}>
       <motion.div
         initial={{ scale: 0, opacity: 0 }}
         whileInView={{ scale: 1, opacity: 1 }}

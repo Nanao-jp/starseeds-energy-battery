@@ -2,34 +2,14 @@
 
 import { motion } from "framer-motion";
 import { HERO_CONFIG } from "@/lib/constants";
-import { useIntersectionObserver } from "@/lib/hooks/useIntersectionObserver";
-import { useEffect, useRef } from "react";
 
 const TEXT_LINE1 = HERO_CONFIG.text.line1;
 const TEXT_LINE2 = HERO_CONFIG.text.line2;
 
 export function HeroGlowOverlay() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { isIntersecting } = useIntersectionObserver({
-    threshold: 0,
-    rootMargin: "50px",
-  });
-
-  // 表示外の時はアニメーションを停止
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const glowElement = containerRef.current;
-    
-    if (isIntersecting) {
-      glowElement.classList.remove("animation-paused");
-    } else {
-      glowElement.classList.add("animation-paused");
-    }
-  }, [isIntersecting]);
-
+  // ヒーローセクションは常に表示されているため、アニメーション停止は不要
   return (
     <div
-      ref={containerRef}
       className="absolute inset-0 pointer-events-none hero-glow-pulse"
     >
       <motion.div

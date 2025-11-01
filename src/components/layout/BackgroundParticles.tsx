@@ -18,28 +18,27 @@ import { useIntersectionObserver } from "@/lib/hooks/useIntersectionObserver";
 export function BackgroundParticles() {
   // 同時に表示する波の数
   const pulseCount = 3;
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { isIntersecting } = useIntersectionObserver({
+  const { elementRef, isIntersecting } = useIntersectionObserver<HTMLDivElement>({
     threshold: 0,
     rootMargin: "100px",
   });
 
   // 表示外の時はアニメーションを停止
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!elementRef.current) return;
 
-    const pulses = containerRef.current.querySelectorAll(".energy-pulse");
+    const pulses = elementRef.current.querySelectorAll(".energy-pulse");
     
     if (isIntersecting) {
       pulses.forEach((pulse) => pulse.classList.remove("animation-paused"));
     } else {
       pulses.forEach((pulse) => pulse.classList.add("animation-paused"));
     }
-  }, [isIntersecting]);
+  }, [isIntersecting, elementRef]);
   
   return (
     <div 
-      ref={containerRef}
+      ref={elementRef}
       className="fixed inset-0 pointer-events-none z-[2] overflow-hidden flex items-center justify-center"
     >
       {Array.from({ length: pulseCount }).map((_, i) => (
