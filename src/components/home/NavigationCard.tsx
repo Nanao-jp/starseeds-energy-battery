@@ -28,7 +28,7 @@ export function NavigationCard({ href, title, description, imgSrc, index }: Navi
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
+      viewport={{ once: true, amount: 0.3, margin: "0px 0px -100px 0px" }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
       className="h-full"
     >

@@ -157,11 +157,20 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    /* スクロールがたつき対策 */
+    scroll-behavior: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
   body {
     @apply bg-background text-foreground;
     color-scheme: dark light;
     /* テキストカーソル（Iカーソル）を透明化 - 編集できない見た目を防止 */
     caret-color: transparent;
+    /* スクロールがたつき対策 */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
   }
   
   /* 入力可能な要素では通常のカーソルを表示 */
@@ -189,7 +198,8 @@
   }
   
   /* Subtle grid overlay - 背景グラデーションの上、パーティクルの下 */
-  .dark body::before {
+  /* テスト用：一時的に完全無効化（スクロールがたつき対策） */
+  /* .dark body::before {
     content: '';
     position: fixed;
     top: 0;
@@ -202,10 +212,8 @@
     background-size: 50px 50px;
     pointer-events: none;
     z-index: 1;
-    /* テスト用：一時的に無効化（スクロールがたつき対策） */
-    /* animation: grid-shift 60s linear infinite; */
-    animation: none;
-  }
+    animation: grid-shift 60s linear infinite;
+  } */
   
   @keyframes grid-shift {
     0% { transform: translate(0, 0); }
@@ -560,5 +568,18 @@
   .backdrop-blur-sm {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+  }
+
+  /* スクロールがたつき対策：will-changeを削減 */
+  .animated-icon-ring,
+  .animated-icon-particle-1,
+  .animated-icon-particle-2,
+  .animated-icon-particle-3 {
+    will-change: auto !important;
+  }
+
+  .hero-glow-pulse,
+  .typing-cursor-blink {
+    will-change: auto !important;
   }
 }
