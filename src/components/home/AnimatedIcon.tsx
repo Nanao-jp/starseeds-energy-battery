@@ -14,27 +14,23 @@ import type { LucideIcon } from "lucide-react";
  * - パフォーマンス最適化済み
  */
 
-// 回転するエネルギーリングのアニメーション
-const rotateRingVariants = {
-  animate: {
-    rotate: [0, 360],
-    transition: {
-      duration: 8,
-      repeat: Infinity,
-      ease: "linear",
-    },
+// 回転するエネルギーリングのアニメーション設定
+const rotateRingAnimation = {
+  rotate: [0, 360],
+  transition: {
+    duration: 8,
+    repeat: Infinity,
+    ease: "linear" as const,
   },
 };
 
-// 粒子が回るアニメーション
-const particleOrbitVariants = (delay: number) => ({
-  animate: {
-    rotate: [0, 360],
-    transition: {
-      duration: 6 + delay,
-      repeat: Infinity,
-      ease: "linear",
-    },
+// 粒子が回るアニメーション設定を取得
+const getParticleOrbitAnimation = (delay: number) => ({
+  rotate: [0, 360],
+  transition: {
+    duration: 6 + delay,
+    repeat: Infinity,
+    ease: "linear" as const,
   },
 });
 
@@ -66,8 +62,7 @@ export function AnimatedIcon({ icon: IconComponent, delay = 0, className }: Anim
       >
         {/* 回転するグラデーションリング */}
         <motion.div
-          variants={rotateRingVariants}
-          animate="animate"
+          animate={rotateRingAnimation}
           className="absolute inset-0 rounded-full"
           style={{
             background: 'conic-gradient(from 0deg, transparent, oklch(0.72 0.15 210 / 30%), transparent, oklch(0.72 0.15 210 / 30%), transparent)',
@@ -81,8 +76,7 @@ export function AnimatedIcon({ icon: IconComponent, delay = 0, className }: Anim
         {Array.from({ length: PARTICLE_COUNT }).map((_, i) => (
           <motion.div
             key={i}
-            variants={particleOrbitVariants(i * 0.5)}
-            animate="animate"
+            animate={getParticleOrbitAnimation(i * 0.5)}
             className="absolute inset-0"
             style={{
               transformOrigin: 'center center',
