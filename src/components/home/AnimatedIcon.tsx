@@ -8,31 +8,11 @@ import type { LucideIcon } from "lucide-react";
  * 近未来的なアイコンアニメーションコンポーネント
  * 
  * 特徴:
- * - 回転するグラデーションリング
- * - 粒子が回る軌道アニメーション
+ * - 回転するグラデーションリング（CSSアニメーション化）
+ * - 粒子が回る軌道アニメーション（CSSアニメーション化）
  * - ホバー時のインタラクティブな効果
- * - パフォーマンス最適化済み
+ * - パフォーマンス最適化済み（JS負荷を大幅削減）
  */
-
-// 回転するエネルギーリングのアニメーション設定
-const rotateRingAnimation = {
-  rotate: [0, 360],
-  transition: {
-    duration: 8,
-    repeat: Infinity,
-    ease: "linear" as const,
-  },
-};
-
-// 粒子が回るアニメーション設定を取得
-const getParticleOrbitAnimation = (delay: number) => ({
-  rotate: [0, 360],
-  transition: {
-    duration: 6 + delay,
-    repeat: Infinity,
-    ease: "linear" as const,
-  },
-});
 
 interface AnimatedIconProps {
   /** Lucide Reactアイコンコンポーネント */
@@ -60,28 +40,21 @@ export function AnimatedIcon({ icon: IconComponent, delay = 0, className }: Anim
         }}
         className="relative w-24 h-24 flex items-center justify-center"
       >
-        {/* 回転するグラデーションリング */}
-        <motion.div
-          animate={rotateRingAnimation}
-          className="absolute inset-0 rounded-full"
+        {/* 回転するグラデーションリング（CSSアニメーション化でJS負荷削減） */}
+        <div
+          className="absolute inset-0 rounded-full animated-icon-ring"
           style={{
             background: 'conic-gradient(from 0deg, transparent, oklch(0.72 0.15 210 / 30%), transparent, oklch(0.72 0.15 210 / 30%), transparent)',
             mask: 'radial-gradient(circle, transparent 60%, black 75%, transparent 85%)',
             WebkitMask: 'radial-gradient(circle, transparent 60%, black 75%, transparent 85%)',
-            willChange: 'transform',
           }}
         />
 
-        {/* 粒子が回る軌道（複数層） */}
+        {/* 粒子が回る軌道（複数層、CSSアニメーション化でJS負荷削減） */}
         {Array.from({ length: PARTICLE_COUNT }).map((_, i) => (
-          <motion.div
+          <div
             key={i}
-            animate={getParticleOrbitAnimation(i * 0.5)}
-            className="absolute inset-0"
-            style={{
-              transformOrigin: 'center center',
-              willChange: 'transform',
-            }}
+            className={`absolute inset-0 animated-icon-particle-${i + 1}`}
           >
             <div
               className="absolute rounded-full"
@@ -95,7 +68,7 @@ export function AnimatedIcon({ icon: IconComponent, delay = 0, className }: Anim
                 height: `${4 + i * 1}px`,
               }}
             />
-          </motion.div>
+          </div>
         ))}
         
         {/* アイコン本体 */}

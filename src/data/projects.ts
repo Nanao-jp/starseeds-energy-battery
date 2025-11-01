@@ -10,7 +10,7 @@ export const projects: Project[] = [
     status: "operational",
     startDate: "2025-04-01",
     description: "北海道での系統安定化と市場運用。",
-    photos: ["/images/projects/sample1.jpg"]
+    photos: ["/images/projects/sample1.webp"]
   },
   {
     id: "chiba-10mw",

@@ -52,6 +52,9 @@ export function NavigationCard({ href, title, description, imgSrc, index }: Navi
               src={imgSrc}
               alt={title}
               fill
+              loading={index === 0 ? undefined : "lazy"}
+              quality={85}
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
               className="object-cover transition-transform duration-500 group-hover:scale-105"
             />
             {/* グラデーションオーバーレイ */}

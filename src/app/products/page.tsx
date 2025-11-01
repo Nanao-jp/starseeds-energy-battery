@@ -55,10 +55,13 @@ export default function ProductsPage() {
           </div>
           <div>
             <Image 
-              src="/images/products-bess.jpg" 
+              src="/images/products-bess.webp" 
               alt="コンテナ型BESS" 
               width={600} 
-              height={400} 
+              height={400}
+              priority
+              quality={85}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
               className="rounded-lg shadow-md"
             />
           </div>
@@ -110,10 +113,13 @@ export default function ProductsPage() {
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>
             <Image 
-              src="/images/products-ui-mockup.png" 
+              src="/images/products-ui-mockup.webp" 
               alt="EMS/BMS UI モックアップ" 
               width={600} 
-              height={450} 
+              height={450}
+              loading="lazy"
+              quality={85}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
               className="rounded-lg shadow-xl border"
             />
           </div>

@@ -32,10 +32,13 @@ export default function SolutionsPage() {
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>
             <Image 
-              src="/images/solutions-role.jpg" 
+              src="/images/solutions-role.webp" 
               alt="系統用蓄電池の役割" 
               width={600} 
-              height={400} 
+              height={400}
+              priority
+              quality={85}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
               className="rounded-lg shadow-md"
             />
           </div>

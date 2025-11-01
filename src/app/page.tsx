@@ -9,19 +9,19 @@ const navigationCards = [
     href: '/solutions',
     title: '事業紹介',
     description: '系統用蓄電の役割から、私たちのサービスと収益モデルについてご紹介します。',
-    imgSrc: '/images/nav-solutions.jpg',
+    imgSrc: '/images/nav-solutions.webp',
   },
   {
     href: '/products',
     title: '製品・技術',
     description: 'コンテナ型BESSのラインナップ、最先端のEMS/BMS、そして安全性への取り組みについて。',
-    imgSrc: '/images/nav-products.jpg',
+    imgSrc: '/images/nav-products.webp',
   },
   {
     href: '/status',
     title: '実績・工事状況',
     description: '現在稼働中、建設中、そして計画中のプロジェクト一覧をご覧いただけます。',
-    imgSrc: '/images/nav-status.jpg',
+    imgSrc: '/images/nav-status.webp',
   },
 ]
 
@@ -38,10 +38,13 @@ export default function HomePage() {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="relative group">
             <Image
-              src="/images/strength-renewable.jpg"
+              src="/images/strength-renewable.webp"
               alt="再生可能エネルギーと蓄電池"
               width={600}
               height={450}
+              priority
+              quality={85}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
               className="rounded-lg shadow-xl dark:opacity-85 transition-opacity group-hover:dark:opacity-95 dark:border dark:border-primary/20"
             />
             <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
@@ -58,10 +61,13 @@ export default function HomePage() {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="md:order-2 relative group">
             <Image
-              src="/images/strength-market.jpg"
+              src="/images/strength-market.webp"
               alt="電力市場での取引イメージ"
               width={600}
               height={450}
+              loading="lazy"
+              quality={85}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
               className="rounded-lg shadow-xl dark:opacity-85 transition-opacity group-hover:dark:opacity-95 dark:border dark:border-primary/20"
             />
             <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
