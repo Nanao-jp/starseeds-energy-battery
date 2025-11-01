@@ -4,6 +4,8 @@ import { memo } from "react";
 import { motion } from "framer-motion";
 import { AnimatedIcon } from "./AnimatedIcon";
 import type { KpiData } from "@/data/types";
+import { cardStyles } from "@/lib/styles";
+import { ANIMATION, VIEWPORT } from "@/lib/animation";
 
 /**
  * KpiCard Component
@@ -23,23 +25,19 @@ interface KpiCardProps extends KpiData {
 
 // カードの背景スタイル
 const cardBackgroundStyle: React.CSSProperties = {
-  background: 'linear-gradient(to bottom right, oklch(0.18 0.02 240 / 80%), oklch(0.15 0.02 240 / 80%))',
-  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)',
+  background: cardStyles.background,
+  boxShadow: cardStyles.defaultShadow,
 };
-
-// ホバー時のシャドウスタイル
-const hoverShadowStyle = '0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px oklch(0.72 0.15 210 / 15%) inset';
-const defaultShadowStyle = '0 4px 16px rgba(0, 0, 0, 0.2)';
 
 /**
  * カードのシャドウスタイルを更新するヘルパー関数
  */
 const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-  e.currentTarget.style.boxShadow = hoverShadowStyle;
+  e.currentTarget.style.boxShadow = cardStyles.hoverShadow;
 };
 
 const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-  e.currentTarget.style.boxShadow = defaultShadowStyle;
+  e.currentTarget.style.boxShadow = cardStyles.defaultShadow;
 };
 
 /**
@@ -61,8 +59,8 @@ export const KpiCard = memo(function KpiCard({
       onMouseLeave={handleMouseLeave}
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.3 }}
+      viewport={VIEWPORT.once}
+      transition={ANIMATION.fast}
       whileHover={{ y: -4 }}
       role="article"
       aria-label={`${label}: ${description}`}

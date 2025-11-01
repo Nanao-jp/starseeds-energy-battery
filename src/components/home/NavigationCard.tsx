@@ -4,6 +4,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { cardStyles, backgroundPatterns, rotatingGlowStyles, cornerAccentStyles } from '@/lib/styles';
+import { PRIMARY_COLOR, CARD_COLORS } from '@/lib/theme';
+import { ANIMATION, VIEWPORT } from '@/lib/animation';
 
 interface NavigationCardProps {
   href: string;
@@ -28,16 +31,22 @@ export function NavigationCard({ href, title, description, imgSrc, index }: Navi
     <motion.div
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.3 }}
+      viewport={VIEWPORT.once}
+      transition={ANIMATION.fast}
       className="h-full"
     >
       <Link href={href} className="group block h-full">
         <div 
-          className="relative h-full flex flex-col overflow-hidden rounded-xl border border-primary/20 backdrop-blur-md active:scale-[0.98] cursor-pointer transition-shadow duration-300 hover:shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_0_0_1px_oklch(0.72_0.15_210_/_0.15)]"
+          className="relative h-full flex flex-col overflow-hidden rounded-xl border border-primary/20 backdrop-blur-md active:scale-[0.98] cursor-pointer transition-shadow duration-300"
           style={{
-            background: 'linear-gradient(to bottom right, oklch(0.18 0.02 240 / 80%), oklch(0.15 0.02 240 / 80%))',
-            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)'
+            background: cardStyles.background,
+            boxShadow: cardStyles.defaultShadow,
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.boxShadow = cardStyles.hoverShadow;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.boxShadow = cardStyles.defaultShadow;
           }}
         >
           {/* ホバー時のシャインエフェクト（軽量、CSSのみ） */}
@@ -62,7 +71,7 @@ export function NavigationCard({ href, title, description, imgSrc, index }: Navi
             <div 
               className="absolute inset-0"
               style={{
-                background: 'linear-gradient(to top, oklch(0.09 0.01 240 / 90%), oklch(0.09 0.01 240 / 40%), transparent)'
+                background: cardStyles.imageOverlay
               }}
             />
           </div>
@@ -71,14 +80,14 @@ export function NavigationCard({ href, title, description, imgSrc, index }: Navi
           <div 
             className="relative flex flex-col flex-grow p-6 backdrop-blur-sm overflow-hidden"
             style={{
-              backgroundColor: 'oklch(0.18 0.02 240 / 60%)'
+              backgroundColor: CARD_COLORS.contentBackground
             }}
           >
             {/* 装飾的な背景パターン（軽量化） */}
             <div 
               className="absolute inset-0 opacity-[0.03] pointer-events-none"
               style={{
-                backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, oklch(0.72 0.15 210 / 20%) 2px, oklch(0.72 0.15 210 / 20%) 4px)',
+                backgroundImage: backgroundPatterns.repeatingLines.medium,
                 backgroundSize: '20px 20px',
               }}
             />
@@ -87,18 +96,14 @@ export function NavigationCard({ href, title, description, imgSrc, index }: Navi
             <div 
               className="absolute inset-0 rounded-xl pointer-events-none overflow-hidden"
               style={{
-                mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                maskComposite: 'exclude',
-                WebkitMaskComposite: 'xor',
-                padding: '1px',
+                ...rotatingGlowStyles.mask,
                 borderRadius: 'inherit'
               }}
             >
               <div 
                 className="absolute inset-0 rounded-xl"
                 style={{
-                  background: 'conic-gradient(from 0deg, transparent 0deg, transparent 280deg, oklch(0.72 0.15 210 / 80%) 300deg, transparent 320deg, transparent 360deg)',
+                  background: rotatingGlowStyles.gradient,
                   borderRadius: 'inherit',
                   animation: 'corner-rotate 6s linear infinite',
                   willChange: 'transform',
@@ -120,7 +125,7 @@ export function NavigationCard({ href, title, description, imgSrc, index }: Navi
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.2 }}
                   style={{
-                    boxShadow: '0 0 8px oklch(0.72 0.15 210 / 50%)'
+                    boxShadow: `0 0 8px ${PRIMARY_COLOR.glow.normal}`
                   }}
                 />
               </span>

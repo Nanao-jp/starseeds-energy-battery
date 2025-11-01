@@ -4,6 +4,9 @@ import { motion } from 'framer-motion';
 import { BookOpen } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { HOME_NAVIGATION_CARDS } from '@/lib/constants';
+import { SectionContainer } from '@/components/layout/SectionContainer';
+import { ANIMATION, VIEWPORT } from '@/lib/animation';
+import { PRIMARY_COLOR } from '@/lib/theme';
 
 // NavigationCardを動的インポート
 const NavigationCard = dynamic(() => import('./NavigationCard').then(mod => ({ default: mod.NavigationCard })), {
@@ -23,26 +26,25 @@ const NavigationCard = dynamic(() => import('./NavigationCard').then(mod => ({ d
 export function NavigationCardsSection() {
   return (
     <section 
-      className="container mx-auto px-4 sm:px-6 lg:px-8 py-16"
       aria-label="さらに詳しく"
     >
-      <div className="section-divider mb-16" aria-hidden="true" />
+      <SectionContainer py="md" withDivider dividerClassName="mb-16">
 
       {/* リッチなセクションタイトル（シンプル化：一括表示） */}
       <motion.div
         className="relative text-center mb-16"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.4 }}
+        viewport={VIEWPORT.once}
+        transition={ANIMATION.normal}
       >
         {/* 装飾的な背景パターン */}
         <div 
           className="absolute inset-0 opacity-5 pointer-events-none"
           style={{
             backgroundImage: `
-              radial-gradient(circle at 50% 50%, oklch(0.72 0.15 210 / 30%) 0%, transparent 50%),
-              repeating-linear-gradient(0deg, transparent, transparent 2px, oklch(0.72 0.15 210 / 10%) 2px, oklch(0.72 0.15 210 / 10%) 4px)
+              radial-gradient(circle at 50% 50%, ${PRIMARY_COLOR.glow.light} 0%, transparent 50%),
+              ${PRIMARY_COLOR.pattern.light}
             `,
             backgroundSize: '100% 100%, 20px 20px',
           }}
@@ -51,12 +53,12 @@ export function NavigationCardsSection() {
         {/* アイコン装飾 */}
         <div className="relative inline-flex items-center gap-3 mb-6">
           <div className="relative">
-            <BookOpen className="h-10 w-10 text-primary" style={{ filter: 'drop-shadow(0 0 12px oklch(0.72 0.15 210 / 70%))' }} />
+            <BookOpen className="h-10 w-10 text-primary" style={{ filter: `drop-shadow(0 0 12px ${PRIMARY_COLOR.glow.intense})` }} />
             {/* アイコンのグロー効果 */}
             <div 
               className="absolute inset-0 rounded-full blur-2xl -z-10 opacity-50"
               style={{
-                background: 'radial-gradient(circle, oklch(0.72 0.15 210 / 40%), transparent 70%)'
+                background: `radial-gradient(circle, ${PRIMARY_COLOR.glow.medium}, transparent 70%)`
               }}
             />
           </div>
@@ -70,7 +72,7 @@ export function NavigationCardsSection() {
             <div
               className="absolute -bottom-3 left-1/2 h-1 w-[70%] bg-primary/60 rounded-full -translate-x-1/2"
               style={{
-                boxShadow: '0 0 12px oklch(0.72 0.15 210 / 60%)'
+                boxShadow: `0 0 12px ${PRIMARY_COLOR.glow.strong}`
               }}
             />
           </span>
@@ -85,7 +87,7 @@ export function NavigationCardsSection() {
         <div 
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full blur-3xl -z-10 opacity-10 pointer-events-none"
           style={{
-            background: 'radial-gradient(circle, oklch(0.72 0.15 210 / 40%), transparent 70%)'
+            background: `radial-gradient(circle, ${PRIMARY_COLOR.glow.medium}, transparent 70%)`
           }}
         />
       </motion.div>
@@ -95,8 +97,8 @@ export function NavigationCardsSection() {
         className="grid gap-8 md:grid-cols-2 lg:grid-cols-3"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.4 }}
+        viewport={VIEWPORT.once}
+        transition={ANIMATION.normal}
       >
         {HOME_NAVIGATION_CARDS.map((card, index) => (
           <NavigationCard
@@ -109,6 +111,7 @@ export function NavigationCardsSection() {
           />
         ))}
       </motion.div>
+      </SectionContainer>
     </section>
   );
 }

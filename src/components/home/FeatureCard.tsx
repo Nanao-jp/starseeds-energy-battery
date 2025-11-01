@@ -3,6 +3,9 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Zap, Radio, LucideIcon } from 'lucide-react';
+import { cardStyles, backgroundPatterns, cornerAccentStyles, TEXT_GRADIENT } from '@/lib/styles';
+import { PRIMARY_COLOR, CARD_COLORS } from '@/lib/theme';
+import { ANIMATION, VIEWPORT } from '@/lib/animation';
 
 interface FeatureCardProps {
   imageSrc: string;
@@ -32,35 +35,26 @@ const iconMap: Record<'zap' | 'radio', LucideIcon> = {
  */
 export function FeatureCard({ imageSrc, imageAlt, title, description, iconName = 'zap', reverse = false }: FeatureCardProps) {
   const IconComponent = iconMap[iconName];
-  // ホバー時のシャドウスタイル
-  const hoverShadowStyle = '0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px oklch(0.72 0.15 210 / 15%) inset';
-  const defaultShadowStyle = '0 4px 16px rgba(0, 0, 0, 0.2)';
 
-  /**
-   * カードのシャドウスタイルを更新するヘルパー関数
-   */
-  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.currentTarget.style.boxShadow = hoverShadowStyle;
-  };
-
-  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.currentTarget.style.boxShadow = defaultShadowStyle;
-  };
 
   return (
     <div className="relative">
       <motion.div
         className="group relative overflow-hidden rounded-2xl border border-primary/20 backdrop-blur-md transition-all duration-300 hover:border-primary/40"
         style={{
-          background: 'linear-gradient(to bottom right, oklch(0.18 0.02 240 / 80%), oklch(0.15 0.02 240 / 80%))',
-          boxShadow: defaultShadowStyle
+          background: cardStyles.background,
+          boxShadow: cardStyles.defaultShadow
         }}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.boxShadow = cardStyles.hoverShadow;
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.boxShadow = cardStyles.defaultShadow;
+        }}
         initial={{ y: 20, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.5 }}
+        viewport={{ ...VIEWPORT.once, amount: 0.3 }}
+        transition={ANIMATION.normal}
       >
         {/* ホバー時のエネルギーフロー効果 */}
         <div 
@@ -87,15 +81,15 @@ export function FeatureCard({ imageSrc, imageAlt, title, description, iconName =
               className="absolute inset-0"
               style={{
                 background: reverse 
-                  ? 'linear-gradient(to left, transparent 0%, oklch(0.18 0.02 240 / 60%) 70%, oklch(0.18 0.02 240 / 90%) 100%)'
-                  : 'linear-gradient(to right, transparent 0%, oklch(0.18 0.02 240 / 60%) 70%, oklch(0.18 0.02 240 / 90%) 100%)'
+                  ? `linear-gradient(to left, ${TEXT_GRADIENT.left.start}, ${TEXT_GRADIENT.left.middle} 70%, ${TEXT_GRADIENT.left.end} 100%)`
+                  : `linear-gradient(to right, ${TEXT_GRADIENT.right.start}, ${TEXT_GRADIENT.right.middle} 70%, ${TEXT_GRADIENT.right.end} 100%)`
               }}
             />
             {/* 左側のグラデーション（モバイル用） */}
             <div 
               className="absolute inset-0 md:hidden"
               style={{
-                background: 'linear-gradient(to bottom, transparent 0%, oklch(0.18 0.02 240 / 60%) 70%, oklch(0.18 0.02 240 / 90%) 100%)'
+                background: `linear-gradient(to bottom, ${TEXT_GRADIENT.bottom.start}, ${TEXT_GRADIENT.bottom.middle} 70%, ${TEXT_GRADIENT.bottom.end} 100%)`
               }}
             />
           </div>
@@ -107,8 +101,8 @@ export function FeatureCard({ imageSrc, imageAlt, title, description, iconName =
               className="absolute inset-0 opacity-5 group-hover:opacity-10 transition-opacity duration-500 pointer-events-none"
               style={{
                 backgroundImage: `
-                  linear-gradient(90deg, transparent 0%, oklch(0.72 0.15 210 / 30%) 50%, transparent 100%),
-                  repeating-linear-gradient(0deg, transparent, transparent 2px, oklch(0.72 0.15 210 / 10%) 2px, oklch(0.72 0.15 210 / 10%) 4px)
+                  linear-gradient(90deg, transparent 0%, ${PRIMARY_COLOR.glow.light} 50%, transparent 100%),
+                  ${backgroundPatterns.repeatingLines.light}
                 `,
                 backgroundSize: '100% 100%, 20px 20px',
               }}
@@ -119,15 +113,15 @@ export function FeatureCard({ imageSrc, imageAlt, title, description, iconName =
               <div 
                 className="absolute top-0 left-0 w-full h-1"
                 style={{
-                  background: 'linear-gradient(to right, oklch(0.72 0.15 210 / 80%), transparent)',
-                  boxShadow: '0 0 10px oklch(0.72 0.15 210 / 50%)'
+                  background: cornerAccentStyles.gradient.right,
+                  boxShadow: cornerAccentStyles.shadow
                 }}
               />
               <div 
                 className="absolute top-0 left-0 w-1 h-full"
                 style={{
-                  background: 'linear-gradient(to bottom, oklch(0.72 0.15 210 / 80%), transparent)',
-                  boxShadow: '0 0 10px oklch(0.72 0.15 210 / 50%)'
+                  background: cornerAccentStyles.gradient.bottom,
+                  boxShadow: cornerAccentStyles.shadow
                 }}
               />
             </div>
@@ -135,15 +129,15 @@ export function FeatureCard({ imageSrc, imageAlt, title, description, iconName =
               <div 
                 className="absolute bottom-0 right-0 w-full h-1"
                 style={{
-                  background: 'linear-gradient(to left, oklch(0.72 0.15 210 / 80%), transparent)',
-                  boxShadow: '0 0 10px oklch(0.72 0.15 210 / 50%)'
+                  background: cornerAccentStyles.gradient.left,
+                  boxShadow: cornerAccentStyles.shadow
                 }}
               />
               <div 
                 className="absolute bottom-0 right-0 w-1 h-full"
                 style={{
-                  background: 'linear-gradient(to top, oklch(0.72 0.15 210 / 80%), transparent)',
-                  boxShadow: '0 0 10px oklch(0.72 0.15 210 / 50%)'
+                  background: cornerAccentStyles.gradient.top,
+                  boxShadow: cornerAccentStyles.shadow
                 }}
               />
             </div>
@@ -158,12 +152,12 @@ export function FeatureCard({ imageSrc, imageAlt, title, description, iconName =
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
                 <div className="relative">
-                  <IconComponent className="h-8 w-8 text-primary" style={{ filter: 'drop-shadow(0 0 8px oklch(0.72 0.15 210 / 70%))' }} />
+                  <IconComponent className="h-8 w-8 text-primary" style={{ filter: `drop-shadow(0 0 8px ${PRIMARY_COLOR.glow.intense})` }} />
                   {/* アイコンのグロー効果 */}
                   <div 
                     className="absolute inset-0 rounded-full blur-xl -z-10 opacity-50 group-hover:opacity-75 transition-opacity duration-300"
                     style={{
-                      background: 'radial-gradient(circle, oklch(0.72 0.15 210 / 40%), transparent 70%'
+                      background: `radial-gradient(circle, ${PRIMARY_COLOR.glow.medium}, transparent 70%`
                     }}
                   />
                 </div>
@@ -176,8 +170,8 @@ export function FeatureCard({ imageSrc, imageAlt, title, description, iconName =
                         i === 0 ? 'animate-pulse-dot' : i === 1 ? 'animate-pulse-dot-delay-1' : 'animate-pulse-dot-delay-2'
                       }`}
                       style={{
-                        background: `oklch(0.72 0.15 210 / ${0.4 + i * 0.2})`,
-                        boxShadow: `0 0 ${4 + i * 2}px oklch(0.72 0.15 210 / ${0.6 + i * 0.2})`
+                        background: PRIMARY_COLOR.glow.medium.replace('/ 40%', `/${40 + i * 20}%`),
+                        boxShadow: `0 0 ${4 + i * 2}px ${PRIMARY_COLOR.glow.medium.replace('/ 40%', `/${60 + i * 20}%`)}`
                       }}
                       initial={{ opacity: 0, scale: 0 }}
                       whileInView={{ opacity: 1, scale: 1 }}
@@ -207,7 +201,7 @@ export function FeatureCard({ imageSrc, imageAlt, title, description, iconName =
                   viewport={{ once: true }}
                   transition={{ duration: 0.8, delay: 0.5 }}
                   style={{
-                    boxShadow: '0 0 8px oklch(0.72 0.15 210 / 50%)'
+                    boxShadow: `0 0 8px ${PRIMARY_COLOR.glow.normal}`
                   }}
                 />
               </span>
