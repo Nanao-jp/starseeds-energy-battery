@@ -1,7 +1,7 @@
 "use client";
 
 import { memo } from "react";
-import { motion, Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import { AnimatedIcon } from "./AnimatedIcon";
 import type { KpiData } from "@/data/types";
 
@@ -20,18 +20,6 @@ interface KpiCardProps extends KpiData {
   /** カードのインデックス（アニメーション遅延に使用） */
   index: number;
 }
-
-// カードアニメーションのバリエーション
-const itemVariants: Variants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.5,
-    },
-  },
-};
 
 // カードの背景スタイル
 const cardBackgroundStyle: React.CSSProperties = {
@@ -71,7 +59,10 @@ export const KpiCard = memo(function KpiCard({
       style={cardBackgroundStyle}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      variants={itemVariants}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.3 }}
       whileHover={{ y: -4 }}
       role="article"
       aria-label={`${label}: ${description}`}

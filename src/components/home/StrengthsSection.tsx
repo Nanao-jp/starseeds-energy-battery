@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import { STRENGTHS_DATA } from '@/data/strengths';
 import type { FeatureCardData } from '@/data/types';
@@ -15,7 +16,7 @@ const FeatureCard = dynamic(() => import('./FeatureCard').then(mod => ({ default
  * 
  * 特徴:
  * - データ駆動型の設計
- * - スムーズなアニメーション
+ * - シンプルなアニメーション（カードは一括表示）
  * - 保守性と拡張性を重視
  */
 export function StrengthsSection() {
@@ -25,9 +26,17 @@ export function StrengthsSection() {
       aria-label="当社の強み"
     >
       <div className="section-divider mb-16" aria-hidden="true" />
-      {STRENGTHS_DATA.map((strength: FeatureCardData, index: number) => (
-        <FeatureCard key={`${strength.title}-${index}`} {...strength} />
-      ))}
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4 }}
+        className="space-y-24"
+      >
+        {STRENGTHS_DATA.map((strength: FeatureCardData, index: number) => (
+          <FeatureCard key={`${strength.title}-${index}`} {...strength} />
+        ))}
+      </motion.div>
     </section>
   );
 }

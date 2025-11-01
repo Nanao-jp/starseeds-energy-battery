@@ -28,13 +28,13 @@ export function NavigationCardsSection() {
     >
       <div className="section-divider mb-16" aria-hidden="true" />
 
-      {/* リッチなセクションタイトル */}
+      {/* リッチなセクションタイトル（シンプル化：一括表示） */}
       <motion.div
         className="relative text-center mb-16"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.4 }}
       >
         {/* 装飾的な背景パターン */}
         <div 
@@ -49,13 +49,7 @@ export function NavigationCardsSection() {
         />
 
         {/* アイコン装飾 */}
-        <motion.div
-          className="relative inline-flex items-center gap-3 mb-6"
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
+        <div className="relative inline-flex items-center gap-3 mb-6">
           <div className="relative">
             <BookOpen className="h-10 w-10 text-primary" style={{ filter: 'drop-shadow(0 0 12px oklch(0.72 0.15 210 / 70%))' }} />
             {/* アイコンのグロー効果 */}
@@ -66,42 +60,26 @@ export function NavigationCardsSection() {
               }}
             />
           </div>
-        </motion.div>
+        </div>
 
         {/* タイトル */}
-        <motion.h2 
-          className="text-4xl md:text-5xl font-bold tracking-tight font-heading text-foreground relative inline-block mb-4"
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-        >
+        <h2 className="text-4xl md:text-5xl font-bold tracking-tight font-heading text-foreground relative inline-block mb-4">
           <span className="relative">
             さらに詳しく
-            {/* タイトルの下に装飾的なアンダーライン */}
-            <motion.div
-              className="absolute -bottom-3 left-1/2 h-1 bg-primary/60 rounded-full"
-              initial={{ width: 0, x: '-50%' }}
-              whileInView={{ width: "70%" }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.5 }}
+            {/* タイトルの下に装飾的なアンダーライン（静止表示） */}
+            <div
+              className="absolute -bottom-3 left-1/2 h-1 w-[70%] bg-primary/60 rounded-full -translate-x-1/2"
               style={{
                 boxShadow: '0 0 12px oklch(0.72 0.15 210 / 60%)'
               }}
             />
           </span>
-        </motion.h2>
+        </h2>
 
         {/* 説明文 */}
-        <motion.p 
-          className="text-lg md:text-xl text-muted-foreground leading-relaxed relative z-10"
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-        >
+        <p className="text-lg md:text-xl text-muted-foreground leading-relaxed relative z-10">
           私たちの取り組みや技術について、より深く知る
-        </motion.p>
+        </p>
 
         {/* 装飾的なグロー背景 */}
         <div 
@@ -112,13 +90,13 @@ export function NavigationCardsSection() {
         />
       </motion.div>
 
-      {/* ナビゲーションカード */}
+      {/* ナビゲーションカード（シンプル化：一括表示） */}
       <motion.div
         className="grid gap-8 md:grid-cols-2 lg:grid-cols-3"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4 }}
       >
         {HOME_NAVIGATION_CARDS.map((card, index) => (
           <NavigationCard

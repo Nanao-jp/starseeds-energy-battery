@@ -24,30 +24,24 @@ export function Footer() {
       <div className="section-divider" aria-hidden="true" />
 
       <div className="container mx-auto py-16 px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* メインコンテンツ */}
-        <div className="grid md:grid-cols-3 gap-12 mb-12">
+        {/* メインコンテンツ（シンプル化：一括表示） */}
+        <motion.div
+          className="grid md:grid-cols-3 gap-12 mb-12"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4 }}
+        >
           {/* 会社情報セクション */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="space-y-6"
-          >
+          <div className="space-y-6">
             <Logo className="text-foreground" />
             <p className="text-sm text-muted-foreground leading-relaxed">
               スターシーズ株式会社は、系統用蓄電池（BESS）事業を通じて、持続可能なエネルギー社会の実現に貢献しています。
             </p>
-          </motion.div>
+          </div>
 
           {/* 連絡先情報セクション */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="space-y-4"
-          >
+          <div className="space-y-4">
             <h3 className="text-lg font-bold font-heading text-foreground mb-4 relative">
               <span className="relative">
                 会社情報
@@ -90,16 +84,10 @@ export function Footer() {
                 </span>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* ナビゲーションセクション */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="space-y-4"
-          >
+          <div className="space-y-4">
             <h3 className="text-lg font-bold font-heading text-foreground mb-4 relative">
               <span className="relative">
                 サイトマップ
@@ -113,15 +101,15 @@ export function Footer() {
                 <NavLink key={item.href} item={item} variant="footer" />
               ))}
             </nav>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
 
-        {/* コピーライト */}
+        {/* コピーライト（シンプル化：一括表示） */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          transition={{ duration: 0.4 }}
           className="pt-8 border-t border-primary/10 text-center"
         >
           <p className="text-sm text-muted-foreground">

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import { BatteryCharging, ShieldCheck, Radio } from "lucide-react";
 import { KpiCard } from "./KpiCard";
 import type { KpiData } from "@/data/types";
@@ -30,19 +30,6 @@ const kpiData: KpiData[] = [
 ];
 
 /**
- * コンテナのアニメーションバリエーション
- */
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-    },
-  },
-};
-
-/**
  * KPIセクションコンポーネント
  * 
  * 特徴:
@@ -57,9 +44,10 @@ export function KpiSection() {
         <div className="section-divider mb-20" aria-hidden="true" />
         <motion.div
           className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4 }}
         >
           {kpiData.map((item, index) => (
             <KpiCard
