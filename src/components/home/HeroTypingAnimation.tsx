@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import { TypingCursor } from "./TypingCursor";
 import { HeroGlowOverlay } from "./HeroGlowOverlay";
+import { HERO_CONFIG } from "@/lib/constants";
 
-const TEXT_LINE1 = "Driven by Nature,";
-const TEXT_LINE2 = "Empowered by Technology.";
-const TYPING_SPEED = 60; // ミリ秒
-const GLOW_DELAY = 300; // ミリ秒
+const TEXT_LINE1 = HERO_CONFIG.text.line1;
+const TEXT_LINE2 = HERO_CONFIG.text.line2;
+const TYPING_SPEED = HERO_CONFIG.typing.speed;
+const GLOW_DELAY = HERO_CONFIG.typing.glowDelay;
 
 export function HeroTypingAnimation() {
   const [displayedChars, setDisplayedChars] = useState(0);

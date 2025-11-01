@@ -1,9 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { HERO_CONFIG } from "@/lib/constants";
 
-const TEXT_LINE1 = "Driven by Nature,";
-const TEXT_LINE2 = "Empowered by Technology.";
+const TEXT_LINE1 = HERO_CONFIG.text.line1;
+const TEXT_LINE2 = HERO_CONFIG.text.line2;
 
 export function HeroGlowOverlay() {
   return (

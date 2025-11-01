@@ -38,3 +38,31 @@ export const SITE_CONFIG = {
   },
 } as const;
 
+/**
+ * ヒーローセクション設定
+ */
+export const HERO_CONFIG = {
+  text: {
+    line1: "Driven by Nature,",
+    line2: "Empowered by Technology.",
+  },
+  video: {
+    fadeDuration: 3000, // クロスフェード時間（ミリ秒）
+    mobileBreakpoint: 768, // モバイル判定のブレークポイント（px）
+    sources: {
+      desktop: '/video/hero_light.webm',
+      mobile: '/video/hero_ultralight.webm',
+    },
+  },
+  typing: {
+    speed: 60, // ミリ秒
+    glowDelay: 300, // ミリ秒
+  },
+  zIndex: {
+    background: 0,
+    overlay: 1,
+    overlayGradient: 2,
+    content: 10,
+  },
+} as const;
+
