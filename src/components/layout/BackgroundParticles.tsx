@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect, useRef } from "react";
+import { useIntersectionObserver } from "@/lib/hooks/useIntersectionObserver";
+
 /**
  * Background Energy Pulse Component
  * エネルギー波パルス - 中央から外側へ広がる控えめな波
@@ -10,13 +13,35 @@
  * - 読みやすさを最優先
  * - エネルギー・拡散・伝播のイメージ
  * - パフォーマンス重視（CSSのみ）
+ * - 表示外ではアニメーション停止
  */
 export function BackgroundParticles() {
   // 同時に表示する波の数
   const pulseCount = 3;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { isIntersecting } = useIntersectionObserver({
+    threshold: 0,
+    rootMargin: "100px",
+  });
+
+  // 表示外の時はアニメーションを停止
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const pulses = containerRef.current.querySelectorAll(".energy-pulse");
+    
+    if (isIntersecting) {
+      pulses.forEach((pulse) => pulse.classList.remove("animation-paused"));
+    } else {
+      pulses.forEach((pulse) => pulse.classList.add("animation-paused"));
+    }
+  }, [isIntersecting]);
   
   return (
-    <div className="fixed inset-0 pointer-events-none z-[2] overflow-hidden flex items-center justify-center">
+    <div 
+      ref={containerRef}
+      className="fixed inset-0 pointer-events-none z-[2] overflow-hidden flex items-center justify-center"
+    >
       {Array.from({ length: pulseCount }).map((_, i) => (
         <EnergyPulse key={i} delay={i * 2.5} />
       ))}

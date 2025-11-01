@@ -2,6 +2,8 @@
 
 import { motion } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
+import { useIntersectionObserver } from "@/lib/hooks/useIntersectionObserver";
+import { useEffect, useRef } from "react";
 
 /**
  * AnimatedIcon Component
@@ -12,6 +14,7 @@ import type { LucideIcon } from "lucide-react";
  * - 粒子が回る軌道アニメーション（CSSアニメーション化）
  * - ホバー時のインタラクティブな効果
  * - パフォーマンス最適化済み（JS負荷を大幅削減）
+ * - 表示外ではアニメーション停止
  */
 
 interface AnimatedIconProps {
@@ -26,8 +29,30 @@ interface AnimatedIconProps {
 const PARTICLE_COUNT = 3;
 
 export function AnimatedIcon({ icon: IconComponent, delay = 0, className }: AnimatedIconProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { isIntersecting } = useIntersectionObserver({
+    threshold: 0.1,
+    rootMargin: "50px",
+  });
+
+  // 表示外の時はアニメーションを停止
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const ring = containerRef.current.querySelector(".animated-icon-ring");
+    const particles = containerRef.current.querySelectorAll(`[class*="animated-icon-particle"]`);
+
+    if (isIntersecting) {
+      ring?.classList.remove("animation-paused");
+      particles.forEach((p) => p.classList.remove("animation-paused"));
+    } else {
+      ring?.classList.add("animation-paused");
+      particles.forEach((p) => p.classList.add("animation-paused"));
+    }
+  }, [isIntersecting]);
+
   return (
-    <div className={`relative flex justify-center ${className || ""}`}>
+    <div ref={containerRef} className={`relative flex justify-center ${className || ""}`}>
       <motion.div
         initial={{ scale: 0, opacity: 0 }}
         whileInView={{ scale: 1, opacity: 1 }}

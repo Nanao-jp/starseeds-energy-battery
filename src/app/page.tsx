@@ -1,7 +1,15 @@
 import Image from 'next/image';
-import { KpiSection } from '@/components/home/KpiSection';
+import dynamic from 'next/dynamic';
 import { HeroSection } from '@/components/home/HeroSection';
-import { NavigationCard } from '@/components/home/NavigationCard';
+
+// 非クリティカルコンポーネントの遅延読み込み
+const KpiSection = dynamic(() => import('@/components/home/KpiSection').then(mod => ({ default: mod.KpiSection })), {
+  ssr: true,
+});
+
+const NavigationCard = dynamic(() => import('@/components/home/NavigationCard').then(mod => ({ default: mod.NavigationCard })), {
+  ssr: true,
+});
 
 
 const navigationCards = [

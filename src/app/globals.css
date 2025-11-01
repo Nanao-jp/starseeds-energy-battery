@@ -529,11 +529,23 @@
   will-change: opacity;
 }
 
+/* アニメーション一時停止（表示外の要素用） */
+.animation-paused {
+  animation-play-state: paused !important;
+}
+
 /* モバイルでのパフォーマンス最適化 */
 @media (max-width: 768px) {
   .kpi-section [style*="will-change"] {
     transform: translateZ(0); /* GPU アクセラレーション強制 */
     backface-visibility: hidden;
     perspective: 1000px;
+  }
+
+  /* モバイルではbackdrop-blurを無効化（パフォーマンス向上） */
+  .backdrop-blur-md,
+  .backdrop-blur-sm {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 }
