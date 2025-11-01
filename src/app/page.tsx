@@ -96,7 +96,7 @@ export default function HomePage() {
                 <p className="mt-2 text-sm text-muted-foreground">{card.description}</p>
               </CardContent>
               <CardFooter className="p-6 pt-0">
-                <Link href={card.href} className="flex items-center font-semibold text-green-600 hover:text-green-700">
+                <Link href={card.href} className="flex items-center font-semibold text-green-600 dark:text-primary hover:text-green-700 dark:hover:text-primary/80 transition-colors">
                   詳しく見る
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>

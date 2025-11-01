@@ -8,9 +8,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { MapPin, Zap, Clock } from 'lucide-react';
 
 const PageHeader = ({ title, subtitle }: { title: string; subtitle: string }) => (
-  <div className="text-center py-16 bg-gray-50">
-    <h1 className="text-4xl font-bold tracking-tight">{title}</h1>
-    <p className="mt-4 text-xl text-gray-600">{subtitle}</p>
+  <div className="text-center py-16 bg-gray-50 dark:bg-card">
+    <h1 className="text-4xl font-bold tracking-tight font-heading">{title}</h1>
+    <p className="mt-4 text-xl text-gray-600 dark:text-muted-foreground">{subtitle}</p>
   </div>
 );
 
@@ -28,23 +28,23 @@ const ProjectCard = ({ project }: { project: Project }) => {
       <CardHeader>
         <CardTitle>{project.name}</CardTitle>
         <div className={`text-sm font-bold px-2 py-1 rounded-full inline-block ${
-          project.status === 'operational' ? 'bg-green-100 text-green-700' :
-          project.status === 'construction' ? 'bg-yellow-100 text-yellow-700' :
-          'bg-blue-100 text-blue-700'
+          project.status === 'operational' ? 'bg-green-100 dark:bg-primary/20 text-green-700 dark:text-primary' :
+          project.status === 'construction' ? 'bg-yellow-100 dark:bg-accent/20 text-yellow-700 dark:text-accent' :
+          'bg-blue-100 dark:bg-secondary/20 text-blue-700 dark:text-secondary-foreground'
         }`}>
           {getStatusLabel(project.status)}
         </div>
       </CardHeader>
       <CardContent className="space-y-2">
-        <div className="flex items-center text-gray-600">
+        <div className="flex items-center text-gray-600 dark:text-muted-foreground">
           <MapPin className="w-4 h-4 mr-2" />
           <span>{project.region}</span>
         </div>
-        <div className="flex items-center text-gray-600">
+        <div className="flex items-center text-gray-600 dark:text-muted-foreground">
           <Zap className="w-4 h-4 mr-2" />
           <span>{project.capacityMW}MW / {project.energyMWh}MWh</span>
         </div>
-        <div className="flex items-center text-gray-600">
+        <div className="flex items-center text-gray-600 dark:text-muted-foreground">
           <Clock className="w-4 h-4 mr-2" />
           <span>
             {project.status === 'operational' ? `稼働開始: ${project.startDate}` : `稼働予定: ${project.plannedDate}`}
@@ -52,7 +52,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
         </div>
       </CardContent>
       <CardFooter>
-        <p className="text-sm text-gray-500">{project.description}</p>
+        <p className="text-sm text-gray-500 dark:text-muted-foreground">{project.description}</p>
       </CardFooter>
     </Card>
   );
