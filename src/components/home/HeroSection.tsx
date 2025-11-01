@@ -5,7 +5,7 @@ import { HeroVideoBackground } from "./HeroVideoBackground";
 
 export function HeroSection() {
   return (
-    <section className="relative w-full h-[60vh] md:aspect-video flex items-center justify-center text-white overflow-hidden border-b border-white/20">
+    <section className="relative w-full h-[60vh] md:aspect-video flex items-center justify-center text-white overflow-hidden border-b border-white/20 cursor-default">
       <HeroVideoBackground />
       
       <div className="absolute inset-0 z-[1] pointer-events-none noise-texture" />

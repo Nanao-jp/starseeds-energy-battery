@@ -43,7 +43,7 @@ export function HeroTypingAnimation() {
 
   return (
     <h1
-      className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-wide"
+      className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-wide cursor-default"
       style={{ fontFamily: 'var(--font-hero)' }}
     >
       <div className="relative">

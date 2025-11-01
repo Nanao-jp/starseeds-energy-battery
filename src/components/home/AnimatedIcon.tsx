@@ -1,0 +1,131 @@
+"use client";
+
+import { motion } from "framer-motion";
+import type { LucideIcon } from "lucide-react";
+
+/**
+ * AnimatedIcon Component
+ * 近未来的なアイコンアニメーションコンポーネント
+ * 
+ * 特徴:
+ * - 回転するグラデーションリング
+ * - 粒子が回る軌道アニメーション
+ * - ホバー時のインタラクティブな効果
+ * - パフォーマンス最適化済み
+ */
+
+// 回転するエネルギーリングのアニメーション
+const rotateRingVariants = {
+  animate: {
+    rotate: [0, 360],
+    transition: {
+      duration: 8,
+      repeat: Infinity,
+      ease: "linear",
+    },
+  },
+};
+
+// 粒子が回るアニメーション
+const particleOrbitVariants = (delay: number) => ({
+  animate: {
+    rotate: [0, 360],
+    transition: {
+      duration: 6 + delay,
+      repeat: Infinity,
+      ease: "linear",
+    },
+  },
+});
+
+interface AnimatedIconProps {
+  /** Lucide Reactアイコンコンポーネント */
+  icon: LucideIcon;
+  /** アニメーション開始の遅延時間（秒） */
+  delay?: number;
+  /** カスタムクラス名 */
+  className?: string;
+}
+
+const PARTICLE_COUNT = 3;
+
+export function AnimatedIcon({ icon: IconComponent, delay = 0, className }: AnimatedIconProps) {
+  return (
+    <div className={`relative flex justify-center ${className || ""}`}>
+      <motion.div
+        initial={{ scale: 0, opacity: 0 }}
+        whileInView={{ scale: 1, opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{
+          type: "spring",
+          stiffness: 200,
+          damping: 15,
+          delay: delay,
+        }}
+        className="relative w-24 h-24 flex items-center justify-center"
+      >
+        {/* 回転するグラデーションリング */}
+        <motion.div
+          variants={rotateRingVariants}
+          animate="animate"
+          className="absolute inset-0 rounded-full"
+          style={{
+            background: 'conic-gradient(from 0deg, transparent, oklch(0.72 0.15 210 / 30%), transparent, oklch(0.72 0.15 210 / 30%), transparent)',
+            mask: 'radial-gradient(circle, transparent 60%, black 75%, transparent 85%)',
+            WebkitMask: 'radial-gradient(circle, transparent 60%, black 75%, transparent 85%)',
+            willChange: 'transform',
+          }}
+        />
+
+        {/* 粒子が回る軌道（複数層） */}
+        {Array.from({ length: PARTICLE_COUNT }).map((_, i) => (
+          <motion.div
+            key={i}
+            variants={particleOrbitVariants(i * 0.5)}
+            animate="animate"
+            className="absolute inset-0"
+            style={{
+              transformOrigin: 'center center',
+              willChange: 'transform',
+            }}
+          >
+            <div
+              className="absolute rounded-full"
+              style={{
+                left: '50%',
+                top: '0%',
+                transform: 'translate(-50%, -50%)',
+                background: `oklch(0.72 0.15 210 / ${0.6 - i * 0.2})`,
+                boxShadow: `0 0 ${4 + i * 2}px oklch(0.72 0.15 210 / ${0.8 - i * 0.2})`,
+                width: `${4 + i * 1}px`,
+                height: `${4 + i * 1}px`,
+              }}
+            />
+          </motion.div>
+        ))}
+        
+        {/* アイコン本体 */}
+        <motion.div
+          whileHover={{ scale: 1.15 }}
+          transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
+          className="relative z-10"
+        >
+          <IconComponent 
+            className="h-12 w-12 text-primary"
+            style={{
+              filter: 'drop-shadow(0 0 12px oklch(0.72 0.15 210 / 70%))',
+            }}
+          />
+        </motion.div>
+
+        {/* 静的なグロー背景 */}
+        <div 
+          className="absolute inset-0 rounded-full blur-2xl -z-10"
+          style={{
+            background: 'radial-gradient(circle, oklch(0.72 0.15 210 / 25%), transparent 70%)',
+          }}
+        />
+      </motion.div>
+    </div>
+  );
+}

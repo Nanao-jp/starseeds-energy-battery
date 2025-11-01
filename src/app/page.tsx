@@ -1,9 +1,7 @@
-import { ArrowRight } from 'lucide-react';
-import Link from 'next/link';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { KpiSection } from '@/components/home/KpiSection';
 import { HeroSection } from '@/components/home/HeroSection';
+import { NavigationCard } from '@/components/home/NavigationCard';
 
 
 const navigationCards = [
@@ -86,24 +84,15 @@ export default function HomePage() {
           </p>
         </div>
         <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {navigationCards.map((card) => (
-            <Card key={card.href} className="flex flex-col overflow-hidden hover:shadow-lg dark:hover:shadow-primary/20 transition-shadow dark:border-primary/30 dark:backdrop-blur-sm">
-              <CardHeader className="p-0">
-                <div className="relative h-48 w-full">
-                  <Image src={card.imgSrc} alt={card.title} fill className="object-cover dark:opacity-85" />
-                </div>
-              </CardHeader>
-              <CardContent className="flex-grow p-6">
-                <CardTitle className="dark:text-foreground">{card.title}</CardTitle>
-                <p className="mt-2 text-sm text-muted-foreground">{card.description}</p>
-              </CardContent>
-              <CardFooter className="p-6 pt-0">
-                <Link href={card.href} className="flex items-center font-semibold text-green-600 dark:text-primary hover:text-green-700 dark:hover:text-primary/80 transition-colors">
-                  詳しく見る
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </CardFooter>
-            </Card>
+          {navigationCards.map((card, index) => (
+            <NavigationCard
+              key={card.href}
+              href={card.href}
+              title={card.title}
+              description={card.description}
+              imgSrc={card.imgSrc}
+              index={index}
+            />
           ))}
         </div>
       </section>
