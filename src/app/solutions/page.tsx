@@ -27,7 +27,7 @@ export default function SolutionsPage() {
     <div>
       <PageHeader title="事業紹介" subtitle="系統用蓄電が拓く、エネルギーの新たな可能性" />
 
-      <Section>
+      <Section className="border-t border-white/20">
         <SectionTitle>系統用蓄電池の役割</SectionTitle>
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>
@@ -48,11 +48,11 @@ export default function SolutionsPage() {
         </div>
       </Section>
 
-      <Section className="bg-gray-50 dark:bg-card">
+      <Section className="border-t border-white/20">
         <SectionTitle>提供サービス</SectionTitle>
         <div className="grid md:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <div key={index} className="p-8 bg-white dark:bg-card rounded-lg shadow-md text-center">
+            <div key={index} className="p-8 rounded-lg shadow-md text-center">
               <div className="flex justify-center mb-4">{service.icon}</div>
               <h3 className="text-xl font-bold mb-2">{service.title}</h3>
               <p className="text-gray-600 dark:text-muted-foreground">{service.description}</p>
@@ -61,7 +61,7 @@ export default function SolutionsPage() {
         </div>
       </Section>
 
-      <Section>
+      <Section className="border-t border-white/20">
         <SectionTitle>収益モデル概要</SectionTitle>
         <div className="space-y-12">
           {/* Arbitrage Model */}
@@ -111,7 +111,7 @@ export default function SolutionsPage() {
         </div>
       </Section>
 
-      <Section className="bg-green-700 text-white">
+      <Section className="bg-green-700 text-white border-t border-white/20">
         <div className="text-center max-w-3xl mx-auto">
           <Recycle className="h-16 w-16 mx-auto mb-4" />
           <h2 className="text-3xl font-bold">脱炭素社会とSDGsへの貢献</h2>

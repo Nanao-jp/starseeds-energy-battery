@@ -69,7 +69,7 @@ export function HeroVideoBackground() {
   }, [currentVideo]);
 
   return (
-    <div className="absolute inset-0 z-0">
+    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
       <motion.video
         ref={videoRef1}
         src="/video/hero.mp4"
@@ -77,7 +77,17 @@ export function HeroVideoBackground() {
         muted
         loop={false}
         playsInline
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute"
+        style={{ 
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover', 
+          objectPosition: 'center',
+          display: 'block',
+          pointerEvents: 'none'
+        }}
         initial={{ opacity: 1 }}
         animate={{ opacity: currentVideo === 1 ? 1 : 0 }}
         transition={{ duration: FADE_DURATION / 1000, ease: "easeInOut" }}
@@ -88,7 +98,17 @@ export function HeroVideoBackground() {
         muted
         loop={false}
         playsInline
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute"
+        style={{ 
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover', 
+          objectPosition: 'center',
+          display: 'block',
+          pointerEvents: 'none'
+        }}
         initial={{ opacity: 0 }}
         animate={{ opacity: currentVideo === 2 ? 1 : 0 }}
         transition={{ duration: FADE_DURATION / 1000, ease: "easeInOut" }}

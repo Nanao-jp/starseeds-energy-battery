@@ -163,7 +163,7 @@
   }
   
   /* Futuristic dark background gradient */
-  body.dark {
+  .dark body {
     position: relative;
     background: 
       radial-gradient(
@@ -177,8 +177,8 @@
     min-height: 100vh;
   }
   
-  /* Subtle grid overlay */
-  body.dark::before {
+  /* Subtle grid overlay - 背景グラデーションの上、パーティクルの下 */
+  .dark body::before {
     content: '';
     position: fixed;
     top: 0;
@@ -190,7 +190,7 @@
       linear-gradient(90deg, oklch(0.72 0.15 210 / 3%) 1px, transparent 1px);
     background-size: 50px 50px;
     pointer-events: none;
-    z-index: 0;
+    z-index: 1;
     animation: grid-shift 60s linear infinite;
   }
   
@@ -332,6 +332,55 @@
   }
 }
 
+/* Energy Pulse Animation - 中央から外側へ広がる波 */
+@keyframes energy-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.4;
+  }
+  10% {
+    opacity: 0.35;
+  }
+  25% {
+    opacity: 0.28;
+  }
+  40% {
+    opacity: 0.2;
+  }
+  60% {
+    opacity: 0.12;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(15);
+    opacity: 0;
+  }
+}
+
+.energy-pulse {
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(
+    circle,
+    oklch(0.72 0.15 210 / 45%) 0%,
+    oklch(0.72 0.15 210 / 32%) 25%,
+    oklch(0.72 0.15 210 / 24%) 40%,
+    oklch(0.72 0.15 210 / 16%) 60%,
+    oklch(0.72 0.15 210 / 8%) 80%,
+    transparent 100%
+  );
+  border: 1px solid oklch(0.72 0.15 210 / 18%);
+  box-shadow: 
+    0 0 40px oklch(0.72 0.15 210 / 28%),
+    0 0 80px oklch(0.72 0.15 210 / 18%),
+    0 0 120px oklch(0.72 0.15 210 / 10%),
+    inset 0 0 40px oklch(0.72 0.15 210 / 20%);
+  animation: energy-pulse 8s ease-out infinite;
+  will-change: transform, opacity;
+  /* 画面の中央やや上部に配置 */
+  top: 35%;
+  left: 50%;
+}
+
 /* Respect prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -344,6 +393,11 @@
   }
   
   body.dark::before {
+    animation: none !important;
+  }
+  
+  .particle-energy-flow,
+  .energy-pulse {
     animation: none !important;
   }
 }

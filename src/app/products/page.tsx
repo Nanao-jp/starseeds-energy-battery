@@ -44,7 +44,7 @@ export default function ProductsPage() {
     <div>
       <PageHeader title="製品・技術" subtitle="最先端のテクノロジーで、エネルギーの未来を創造する" />
 
-      <Section>
+      <Section className="border-t border-white/20">
         <SectionTitle>コンテナ型BESSラインナップ</SectionTitle>
         <div className="grid md:grid-cols-2 gap-8 items-center mb-12">
           <div>
@@ -90,11 +90,11 @@ export default function ProductsPage() {
         </Table>
       </Section>
       
-      <Section className="bg-gray-50 dark:bg-card">
+      <Section className="border-t border-white/20">
         <SectionTitle>最高水準の安全性</SectionTitle>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {safetyFeatures.map((feature) => (
-            <div key={feature.title} className="p-6 bg-white dark:bg-card rounded-lg shadow-md">
+            <div key={feature.title} className="p-6 rounded-lg shadow-md">
               <div className="flex items-center gap-4 mb-4">
                 {feature.icon}
                 <h3 className="text-xl font-bold">{feature.title}</h3>
@@ -105,7 +105,7 @@ export default function ProductsPage() {
         </div>
       </Section>
 
-      <Section>
+      <Section className="border-t border-white/20">
         <SectionTitle>統合制御システム (EMS / BMS)</SectionTitle>
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>

@@ -4,6 +4,7 @@ import "@fontsource-variable/orbitron";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { BackgroundParticles } from "@/components/layout/BackgroundParticles";
 import { Toaster } from "@/components/ui/sonner";
 
 const notoSansJp = Noto_Sans_JP({
@@ -34,6 +35,7 @@ export default function RootLayout({
   return (
     <html lang="ja" className={`dark ${notoSansJp.variable} ${dancingScript.variable}`} suppressHydrationWarning>
       <body>
+        <BackgroundParticles />
         <div className="flex flex-col min-h-screen relative">
           <Header />
           <main className="flex-grow relative z-10">{children}</main>

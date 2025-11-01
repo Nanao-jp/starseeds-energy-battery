@@ -13,7 +13,6 @@ export function PageHeader({ title, subtitle, className }: PageHeaderProps) {
   return (
     <div className={cn(
       'text-center py-16',
-      'bg-gray-50 dark:bg-card',
       className
     )}>
       <h1 className="text-4xl font-bold tracking-tight font-heading">{title}</h1>

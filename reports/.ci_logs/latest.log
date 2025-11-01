@@ -1,27 +1,10 @@
 CI Execution Log
-Started at: 2025-11-01T14:58:26.913464
+Started at: 2025-11-01T15:06:28.732706
 Project: starseeds-energy-battery
 
 ============================================================
 Build: npm run build
 ============================================================
-
-STDOUT:
-
-> starseeds-battery@0.1.0 build
-> next build
-
-   笆ｲ Next.js 15.5.4
-
-   Creating an optimized production build ...
-
-STDERR:
-uncaughtException [Error: EPERM: operation not permitted, open 'C:\Users\7sena\Desktop\02_Creation\web-site\starseeds-energy\.next\trace'] {
-  errno: -4048,
-  code: 'EPERM',
-  syscall: 'open',
-  path: 'C:\\Users\\7sena\\Desktop\\02_Creation\\web-site\\starseeds-energy\\.next\\trace'
-}
 
 
 ============================================================
@@ -35,5 +18,5 @@ Format: npm run lint
 
 
 ============================================================
-Completed at: 2025-11-01T14:58:34.124768
+Completed at: 2025-11-01T15:06:53.475588
 ============================================================

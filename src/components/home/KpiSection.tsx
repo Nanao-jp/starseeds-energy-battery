@@ -44,7 +44,7 @@ const itemVariants = {
 
 export function KpiSection() {
   return (
-    <section className="bg-gray-50 dark:bg-card/30">
+    <section>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <motion.div
           className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center"

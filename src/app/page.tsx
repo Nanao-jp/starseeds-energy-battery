@@ -35,7 +35,7 @@ export default function HomePage() {
       <KpiSection />
 
       {/* Strengths Section */}
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 space-y-24 dark:bg-card/20 py-16">
+      <section className="container mx-auto px-4 sm:px-6 lg:px-8 space-y-24 py-16 border-t border-white/20">
         {/* Strength 1: Grid Stabilization */}
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="relative group">
@@ -48,7 +48,7 @@ export default function HomePage() {
             />
             <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
           </div>
-          <div className="p-6 dark:bg-card/40 dark:backdrop-blur-sm dark:rounded-xl dark:border dark:border-primary/20">
+          <div className="p-6 dark:backdrop-blur-sm dark:rounded-xl dark:border dark:border-primary/20">
             <h2 className="text-3xl font-bold tracking-tight mb-4 font-heading dark:text-foreground">再生可能エネルギーを、<br/>安定した主力電源へ。</h2>
             <p className="text-muted-foreground leading-relaxed">
               天候に左右される太陽光や風力発電の不安定な電力を大規模蓄電池に貯蔵。クリーンなエネルギーを安定的にお届けし、脱炭素社会の実現に貢献します。
@@ -78,7 +78,7 @@ export default function HomePage() {
       </section>
 
       {/* Navigation Cards Section */}
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 dark:bg-card/40">
+      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-white/20">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold tracking-tight font-heading dark:text-foreground">さらに詳しく</h2>
           <p className="mt-2 text-lg text-muted-foreground">
@@ -87,7 +87,7 @@ export default function HomePage() {
         </div>
         <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {navigationCards.map((card) => (
-            <Card key={card.href} className="flex flex-col overflow-hidden hover:shadow-lg dark:hover:shadow-primary/20 transition-shadow dark:border-primary/30 dark:bg-card/60 dark:backdrop-blur-sm">
+            <Card key={card.href} className="flex flex-col overflow-hidden hover:shadow-lg dark:hover:shadow-primary/20 transition-shadow dark:border-primary/30 dark:backdrop-blur-sm">
               <CardHeader className="p-0">
                 <div className="relative h-48 w-full">
                   <Image src={card.imgSrc} alt={card.title} fill className="object-cover dark:opacity-85" />

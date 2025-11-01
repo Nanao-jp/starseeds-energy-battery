@@ -24,7 +24,7 @@ export default function CompanyPage() {
     <div>
       <PageHeader title="会社情報" subtitle="私たちのビジョンと歩み" />
 
-      <Section id="overview">
+      <Section id="overview" className="border-t border-white/20">
         <SectionTitle>会社概要</SectionTitle>
         <div className="max-w-3xl mx-auto">
           <dl className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-4">
@@ -38,7 +38,7 @@ export default function CompanyPage() {
         </div>
       </Section>
       
-      <Section id="history" className="bg-gray-50 dark:bg-card">
+      <Section id="history" className="border-t border-white/20">
         <SectionTitle>沿革</SectionTitle>
         <div className="max-w-3xl mx-auto">
           <dl>
@@ -52,11 +52,11 @@ export default function CompanyPage() {
         </div>
       </Section>
 
-      <Section id="message">
+      <Section id="message" className="border-t border-white/20">
         <SectionTitle>代表メッセージ</SectionTitle>
         <div className="grid md:grid-cols-3 gap-12 items-center max-w-5xl mx-auto">
           <div className="md:col-span-1">
-            <div className="bg-gray-50 dark:bg-card rounded-lg p-8 flex items-center justify-center aspect-square">
+            <div className="rounded-lg p-8 flex items-center justify-center aspect-square">
               <Image
                 src="/images/logo.png"
                 alt="Starseeds energy Battery Logo"
