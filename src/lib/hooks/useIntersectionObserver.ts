@@ -42,7 +42,11 @@ export function useIntersectionObserver<T extends HTMLElement = HTMLDivElement>(
     return () => {
       observer.disconnect();
     };
-  }, [threshold, rootMargin, enabled, hasIntersected]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [threshold, rootMargin, enabled]);
+  // 注意: hasIntersectedとelementRefを依存配列から除外
+  // - hasIntersected: 状態更新のためのみで、Observer再作成は不要
+  // - elementRef: refオブジェクトは変更されないため不要
 
   return { elementRef, isIntersecting, hasIntersected };
 }

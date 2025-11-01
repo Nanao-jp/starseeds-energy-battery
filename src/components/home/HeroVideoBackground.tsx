@@ -87,6 +87,11 @@ export function HeroVideoBackground() {
     const activeVideo = currentVideo === 1 ? video1 : video2;
     const nextVideo = currentVideo === 1 ? video2 : video1;
 
+    // timeupdateイベントのハンドラーを保持（クリーンアップ用）
+    let timeUpdateHandler: (() => void) | null = null;
+    let loadedMetadataHandler: (() => void) | null = null;
+    let videoEndHandler: (() => void) | null = null;
+
     const setupFade = () => {
       if (activeVideo.duration && !isNaN(activeVideo.duration)) {
         const duration = activeVideo.duration;
@@ -99,40 +104,62 @@ export function HeroVideoBackground() {
           return;
         }
 
-        const checkTime = () => {
+        // ハンドラーを定義して保持
+        timeUpdateHandler = () => {
           if (activeVideo.currentTime >= fadeStartTime) {
             nextVideo.currentTime = 0;
             nextVideo.play().catch(console.error);
             setCurrentVideo(currentVideo === 1 ? 2 : 1);
-            activeVideo.removeEventListener('timeupdate', checkTime);
+            // イベントを削除
+            if (timeUpdateHandler) {
+              activeVideo.removeEventListener('timeupdate', timeUpdateHandler);
+              timeUpdateHandler = null;
+            }
           }
         };
         
-        activeVideo.addEventListener('timeupdate', checkTime);
+        activeVideo.addEventListener('timeupdate', timeUpdateHandler);
       }
     };
 
     if (activeVideo.readyState >= 1) {
       setupFade();
     } else {
-      activeVideo.addEventListener('loadedmetadata', setupFade, { once: true });
+      loadedMetadataHandler = setupFade;
+      activeVideo.addEventListener('loadedmetadata', loadedMetadataHandler, { once: true });
     }
 
-    const handleVideoEnd = () => {
+    videoEndHandler = () => {
       nextVideo.currentTime = 0;
       nextVideo.play().catch(console.error);
       setCurrentVideo(currentVideo === 1 ? 2 : 1);
     };
 
-    activeVideo.addEventListener('ended', handleVideoEnd);
+    activeVideo.addEventListener('ended', videoEndHandler);
     
     if (activeVideo.paused) {
       activeVideo.play().catch(console.error);
     }
 
+    // クリーンアップ: すべてのイベントリスナーを確実に削除
     return () => {
-      activeVideo.removeEventListener('ended', handleVideoEnd);
-      activeVideo.removeEventListener('loadedmetadata', setupFade);
+      // 保存したハンドラー参照を使用して確実に削除
+      if (videoEndHandler) {
+        activeVideo.removeEventListener('ended', videoEndHandler);
+        video1.removeEventListener('ended', videoEndHandler);
+        video2.removeEventListener('ended', videoEndHandler);
+      }
+      if (loadedMetadataHandler) {
+        activeVideo.removeEventListener('loadedmetadata', loadedMetadataHandler);
+        video1.removeEventListener('loadedmetadata', loadedMetadataHandler);
+        video2.removeEventListener('loadedmetadata', loadedMetadataHandler);
+      }
+      if (timeUpdateHandler) {
+        activeVideo.removeEventListener('timeupdate', timeUpdateHandler);
+        // 念のため、両方の動画からも削除
+        video1.removeEventListener('timeupdate', timeUpdateHandler);
+        video2.removeEventListener('timeupdate', timeUpdateHandler);
+      }
     };
   }, [currentVideo, videoSource]);
 

@@ -34,21 +34,28 @@ export function AnimatedIcon({ icon: IconComponent, delay = 0, className }: Anim
     rootMargin: "50px",
   });
 
-  // 表示外の時はアニメーションを停止
+  // DOM要素をuseRefで保持（querySelectorの繰り返しを避ける）
+  const ringRef = useRef<HTMLDivElement | null>(null);
+  const particlesRef = useRef<NodeListOf<HTMLElement> | null>(null);
+
+  // 初期化時にDOM要素を取得
   useEffect(() => {
     if (!elementRef.current) return;
 
-    const ring = elementRef.current.querySelector(".animated-icon-ring");
-    const particles = elementRef.current.querySelectorAll(`[class*="animated-icon-particle"]`);
+    ringRef.current = elementRef.current.querySelector(".animated-icon-ring") as HTMLDivElement | null;
+    particlesRef.current = elementRef.current.querySelectorAll(`[class*="animated-icon-particle"]`) as NodeListOf<HTMLElement> | null;
+  }, [elementRef]);
 
+  // 表示外の時はアニメーションを停止
+  useEffect(() => {
     if (isIntersecting) {
-      ring?.classList.remove("animation-paused");
-      particles.forEach((p) => p.classList.remove("animation-paused"));
+      ringRef.current?.classList.remove("animation-paused");
+      particlesRef.current?.forEach((p) => p.classList.remove("animation-paused"));
     } else {
-      ring?.classList.add("animation-paused");
-      particles.forEach((p) => p.classList.add("animation-paused"));
+      ringRef.current?.classList.add("animation-paused");
+      particlesRef.current?.forEach((p) => p.classList.add("animation-paused"));
     }
-  }, [isIntersecting, elementRef]);
+  }, [isIntersecting]);
 
   return (
     <div ref={elementRef} className={`relative flex justify-center ${className || ""}`}>
