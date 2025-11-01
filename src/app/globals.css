@@ -89,7 +89,7 @@
 }
 
 .dark {
-  /* Futuristic Dark Base */
+  /* Futuristic Dark Base - Simple black */
   --background: oklch(0.09 0.01 240); /* Deep dark blue-tinted */
   --foreground: oklch(0.92 0.005 240); /* High-contrast light text */
   

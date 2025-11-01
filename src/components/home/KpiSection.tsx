@@ -44,7 +44,7 @@ const itemVariants = {
 
 export function KpiSection() {
   return (
-    <section className="bg-gray-50">
+    <section className="bg-gray-50 dark:bg-card/30">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <motion.div
           className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center"
@@ -56,12 +56,12 @@ export function KpiSection() {
           {kpiData.map((item, index) => (
             <motion.div
               key={index}
-              className="p-8 bg-white rounded-2xl shadow-lg border border-gray-100"
+              className="p-8 bg-white dark:bg-card/60 dark:backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 dark:border-primary/30 dark:shadow-primary/5"
               variants={itemVariants}
             >
               <div className="flex justify-center mb-4">{item.icon}</div>
-              <p className="text-3xl font-bold text-gray-800">{item.value}</p>
-              <p className="mt-2 text-md font-medium text-gray-500">{item.label}</p>
+              <p className="text-3xl font-bold text-gray-800 dark:text-foreground">{item.value}</p>
+              <p className="mt-2 text-md font-medium text-gray-500 dark:text-muted-foreground">{item.label}</p>
             </motion.div>
           ))}
         </motion.div>
