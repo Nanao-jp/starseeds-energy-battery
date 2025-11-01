@@ -51,7 +51,7 @@ export const HERO_CONFIG = {
     mobileBreakpoint: 768, // モバイル判定のブレークポイント（px）
     sources: {
       desktop: '/video/hero_light.webm',
-      mobile: '/video/hero_ultralight.webm',
+      mobile: '/video/hero_mobile.webm', // 最軽量版（1MB以下を目標）
     },
   },
   typing: {

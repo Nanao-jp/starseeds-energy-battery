@@ -35,7 +35,8 @@ export default function RootLayout({
   return (
     <html lang="ja" className={`dark ${notoSansJp.variable} ${dancingScript.variable}`} suppressHydrationWarning>
       <body>
-        <BackgroundParticles />
+        {/* テスト用：一時的に無効化（パフォーマンステスト） */}
+        {/* <BackgroundParticles /> */}
         <div className="flex flex-col min-h-screen relative">
           <Header />
           <main className="flex-grow relative z-10">{children}</main>

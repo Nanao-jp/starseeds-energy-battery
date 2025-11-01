@@ -182,7 +182,9 @@
         oklch(0.09 0.01 240) 100%
       ),
       oklch(0.08 0.01 240);
-    background-attachment: fixed;
+    /* テスト用：一時的に無効化（スクロールがたつき対策） */
+    /* background-attachment: fixed; */
+    background-attachment: scroll;
     min-height: 100vh;
   }
   
@@ -200,7 +202,9 @@
     background-size: 50px 50px;
     pointer-events: none;
     z-index: 1;
-    animation: grid-shift 60s linear infinite;
+    /* テスト用：一時的に無効化（スクロールがたつき対策） */
+    /* animation: grid-shift 60s linear infinite; */
+    animation: none;
   }
   
   @keyframes grid-shift {
@@ -410,8 +414,10 @@
     0 0 80px oklch(0.72 0.15 210 / 18%),
     0 0 120px oklch(0.72 0.15 210 / 10%),
     inset 0 0 40px oklch(0.72 0.15 210 / 20%);
-  animation: energy-pulse 8s ease-out infinite;
-  will-change: transform, opacity;
+  /* テスト用：一時的に無効化（パフォーマンステスト） */
+  /* animation: energy-pulse 8s ease-out infinite; */
+  animation: none;
+  /* will-change: transform, opacity; */
   /* 画面の中央やや上部に配置 */
   top: 35%;
   left: 50%;
