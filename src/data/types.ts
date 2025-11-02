@@ -6,6 +6,7 @@ export interface Project {
   id: string;
   name: string;
   region: string;
+  coordinates: [number, number]; // [経度, 緯度]
   capacityMW: number;
   energyMWh: number;
   status: ProjectStatus;
