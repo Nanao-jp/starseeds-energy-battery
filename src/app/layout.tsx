@@ -6,6 +6,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { BackgroundParticles } from "@/components/layout/BackgroundParticles";
 import { Toaster } from "@/components/ui/sonner";
+import { ChatbotClient } from "@/components/chatbot/ChatbotClient";
 
 const notoSansJp = Noto_Sans_JP({
   subsets: ["latin"],
@@ -43,6 +44,7 @@ export default function RootLayout({
           <Footer />
         </div>
         <Toaster />
+        <ChatbotClient />
       </body>
     </html>
   );
