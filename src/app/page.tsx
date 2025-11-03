@@ -16,7 +16,7 @@ const NavigationCardsSection = dynamic(() => import('@/components/home/Navigatio
 
 export default function HomePage() {
   return (
-    <div className="space-y-24 mb-24">
+    <div className="space-y-24 mb-24 overflow-x-clip">
       <HeroSection />
 
       <KpiSection />

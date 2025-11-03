@@ -2,20 +2,15 @@
 
 import { Sparkles } from "lucide-react";
 import { Avatar } from "./Avatar";
+import { ChatbotGradientBackground } from "./ChatbotGradientBackground";
 import { useViewport } from "@/lib/hooks/useViewport";
 
 interface ChatbotSimpleButtonProps {
   onClick: () => void;
-  isOpen: boolean;
 }
 
-export function ChatbotSimpleButton({ onClick, isOpen }: ChatbotSimpleButtonProps) {
+export function ChatbotSimpleButton({ onClick }: ChatbotSimpleButtonProps) {
   const { isMobile } = useViewport();
-
-  // チャットが開いている時は非表示
-  if (isOpen) {
-    return null;
-  }
 
   // モバイル: テキストのみのコンパクトなボタン
   if (isMobile) {
@@ -39,16 +34,12 @@ export function ChatbotSimpleButton({ onClick, isOpen }: ChatbotSimpleButtonProp
           color: "white",
           fontSize: "0.75rem",
           cursor: "pointer",
-          maxWidth: "calc(100vw - 2rem)",
+          maxWidth: "calc(100svw - 2rem)",
           pointerEvents: "auto",
         }}
         aria-label="Star seeds AIに相談"
       >
-        {/* グラデーションアニメーション背景 */}
-        <div className="chatbot-gradient-bg" />
-        
-        {/* グロー効果 */}
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 via-blue-400/20 to-purple-400/20" />
+        <ChatbotGradientBackground />
 
         {/* テキストのみ */}
         <span className="relative z-10 flex items-center gap-1.5 whitespace-nowrap">
@@ -87,14 +78,10 @@ export function ChatbotSimpleButton({ onClick, isOpen }: ChatbotSimpleButtonProp
       }}
       aria-label="Star seeds AIに相談"
     >
-      {/* グラデーションアニメーション背景 */}
-      <div className="chatbot-gradient-bg" />
+      <ChatbotGradientBackground />
       
       {/* サイバーテックな光る効果 */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-      
-      {/* グロー効果 */}
-      <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 via-blue-400/20 to-purple-400/20" />
 
       {/* アイコン画像 */}
       <div className="relative z-10 flex-shrink-0">

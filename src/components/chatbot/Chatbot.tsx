@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChatbotSimpleButton } from "./ChatbotSimpleButton";
@@ -15,10 +15,15 @@ export function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const messagesRef = useRef<Message[]>([]);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
 
   const handleSendMessage = useCallback(async (content: string) => {
     // ユーザーメッセージを追加
@@ -41,7 +46,7 @@ export function Chatbot() {
         },
         body: JSON.stringify({
           message: content,
-          history: messages,
+          history: messagesRef.current,
         }),
       });
 
@@ -75,7 +80,7 @@ export function Chatbot() {
     } finally {
       setIsLoading(false);
     }
-  }, [messages]);
+  }, []);
 
   const handleOpen = useCallback(() => {
     setIsOpen(true);
@@ -95,7 +100,8 @@ export function Chatbot() {
         {!isOpen && (
           <motion.div
             key="button"
-            layoutId="chatbot-container"
+            {...(!isMobile && { layoutId: "chatbot-container" })}
+            layout={false}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -103,12 +109,12 @@ export function Chatbot() {
             style={{
               position: "fixed",
               bottom: "1rem",
-              right: "1rem",
+              right: `max(1rem, env(safe-area-inset-right, 1rem))`,
               zIndex: 99999,
               pointerEvents: "auto",
             }}
           >
-            <ChatbotSimpleButton onClick={handleOpen} isOpen={isOpen} />
+            <ChatbotSimpleButton onClick={handleOpen} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -125,7 +131,8 @@ export function Chatbot() {
               onClick={handleClose}
             />
             <motion.div
-              layoutId="chatbot-container"
+              {...(!isMobile && { layoutId: "chatbot-container" })}
+              layout={false}
               transition={{ 
                 type: "spring",
                 stiffness: 300,
@@ -136,13 +143,13 @@ export function Chatbot() {
                 ...(isMobile
                   ? {
                       top: "1rem",
-                      right: "1rem",
+                      right: `max(1rem, env(safe-area-inset-right, 1rem))`,
                       bottom: "1rem",
                       left: "1rem",
                     }
                   : {
                       bottom: "1rem",
-                      right: "1rem",
+                      right: `max(1rem, env(safe-area-inset-right, 1rem))`,
                       top: "auto",
                       left: "auto",
                       width: "28rem",
