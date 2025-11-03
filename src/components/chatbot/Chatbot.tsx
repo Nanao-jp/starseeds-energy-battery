@@ -15,11 +15,42 @@ export function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const messagesRef = useRef<Message[]>([]);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // キーボードの高さを検知（モバイルのみ）
+  useEffect(() => {
+    if (!isMobile || typeof window === 'undefined' || !window.visualViewport) {
+      return;
+    }
+
+    const handleResize = () => {
+      const viewport = window.visualViewport;
+      if (viewport) {
+        // ビューポートの高さとウィンドウの高さの差がキーボードの高さ
+        const heightDiff = window.innerHeight - viewport.height;
+        setKeyboardHeight(Math.max(0, heightDiff));
+      }
+    };
+
+    const viewport = window.visualViewport;
+    if (viewport) {
+      viewport.addEventListener('resize', handleResize);
+      viewport.addEventListener('scroll', handleResize);
+      handleResize(); // 初期値の設定
+    }
+
+    return () => {
+      if (viewport) {
+        viewport.removeEventListener('resize', handleResize);
+        viewport.removeEventListener('scroll', handleResize);
+      }
+    };
+  }, [isMobile, isOpen]);
 
   useEffect(() => {
     messagesRef.current = messages;
@@ -164,8 +195,10 @@ export function Chatbot() {
                   ? {
                       top: "1rem",
                       right: `max(1rem, env(safe-area-inset-right, 1rem))`,
-                      bottom: "1rem",
+                      bottom: keyboardHeight > 0 ? `${keyboardHeight + 1}rem` : "1rem",
                       left: "1rem",
+                      maxHeight: keyboardHeight > 0 ? `calc(100dvh - ${keyboardHeight}px - 2rem)` : "calc(100dvh - 2rem)",
+                      transition: keyboardHeight > 0 ? "bottom 0.2s ease-out, max-height 0.2s ease-out" : undefined,
                     }
                   : {
                       bottom: "1rem",

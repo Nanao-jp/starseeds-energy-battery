@@ -34,13 +34,17 @@ export function ChatbotWindowContent({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // ウィンドウが開いたら入力欄にフォーカス（モバイルではアニメーション完了後に遅延）
+  // ウィンドウが開いたら入力欄にフォーカス（モバイルでは自動フォーカスを無効化）
+  // モバイルではキーボード表示によるレイアウト崩れを防ぐため、ユーザーが手動でタップするまで待つ
   useEffect(() => {
-    const delay = isMobile ? 600 : 100; // モバイルはアニメーション完了後にフォーカス
-    const timer = setTimeout(() => {
-      inputRef.current?.focus();
-    }, delay);
-    return () => clearTimeout(timer);
+    if (!isMobile) {
+      // デスクトップは即座にフォーカス
+      const timer = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+    // モバイルは自動フォーカスしない（ユーザーがタップするまで待つ）
   }, [isMobile]);
 
   const handleSubmit = (e: React.FormEvent) => {
