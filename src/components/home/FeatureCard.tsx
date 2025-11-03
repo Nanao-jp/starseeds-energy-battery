@@ -38,24 +38,29 @@ export function FeatureCard({ imageSrc, imageAlt, title, description, iconName =
 
 
   return (
-    <div className="relative">
-      <motion.div
-        className="group relative overflow-hidden rounded-2xl border border-primary/20 backdrop-blur-md transition-all duration-300 hover:border-primary/40"
-        style={{
-          background: cardStyles.background,
-          boxShadow: cardStyles.defaultShadow
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.boxShadow = cardStyles.hoverShadow;
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.boxShadow = cardStyles.defaultShadow;
-        }}
-        initial={{ y: 20, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        viewport={{ ...VIEWPORT.once, amount: 0.3 }}
-        transition={ANIMATION.normal}
-      >
+    <motion.div
+      className="group relative overflow-hidden rounded-2xl border border-primary/20 backdrop-blur-md transition-all duration-300 hover:border-primary/40"
+      style={{
+        background: cardStyles.background,
+        boxShadow: cardStyles.defaultShadow
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.boxShadow = cardStyles.hoverShadow;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.boxShadow = cardStyles.defaultShadow;
+      }}
+      initial={{ 
+        opacity: 0, 
+        ...(reverse ? { x: 40 } : { x: -40 })
+      }}
+      whileInView={{ 
+        opacity: 1, 
+        x: 0 
+      }}
+      viewport={{ ...VIEWPORT.once, amount: 0.3 }}
+      transition={ANIMATION.normal}
+    >
         {/* ホバー時のエネルギーフロー効果 */}
         <div 
           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-10"
@@ -144,13 +149,7 @@ export function FeatureCard({ imageSrc, imageAlt, title, description, iconName =
 
             {/* アイコン装飾 */}
             <div className="relative mb-6">
-              <motion.div
-                className="relative inline-flex items-center gap-3"
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
+              <div className="relative inline-flex items-center gap-3">
                 <div className="relative">
                   <IconComponent className="h-8 w-8 text-primary" style={{ filter: `drop-shadow(0 0 8px ${PRIMARY_COLOR.glow.intense})` }} />
                   {/* アイコンのグロー効果 */}
@@ -164,7 +163,7 @@ export function FeatureCard({ imageSrc, imageAlt, title, description, iconName =
                 {/* 装飾的なドット（CSSアニメーション化） */}
                 <div className="flex gap-1">
                   {[0, 1, 2].map((i) => (
-                    <motion.div
+                    <div
                       key={i}
                       className={`w-1.5 h-1.5 rounded-full ${
                         i === 0 ? 'animate-pulse-dot' : i === 1 ? 'animate-pulse-dot-delay-1' : 'animate-pulse-dot-delay-2'
@@ -173,57 +172,38 @@ export function FeatureCard({ imageSrc, imageAlt, title, description, iconName =
                         background: PRIMARY_COLOR.glow.medium.replace('/ 40%', `/${40 + i * 20}%`),
                         boxShadow: `0 0 ${4 + i * 2}px ${PRIMARY_COLOR.glow.medium.replace('/ 40%', `/${60 + i * 20}%`)}`
                       }}
-                      initial={{ opacity: 0, scale: 0 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.3, delay: 0.3 + i * 0.1 }}
                     />
                   ))}
                 </div>
-              </motion.div>
+              </div>
             </div>
 
             {/* タイトル */}
-            <motion.h2 
-              className="text-3xl md:text-4xl font-bold tracking-tight mb-4 font-heading text-foreground relative"
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 font-heading text-foreground relative">
               <span className="relative">
                 {title}
-                {/* タイトルの下に装飾的なアンダーライン */}
+                {/* タイトルの下に装飾的なアンダーライン（伸びるアニメーション） */}
                 <motion.div
                   className="absolute -bottom-2 left-0 h-0.5 bg-primary/50 rounded-full"
                   initial={{ width: 0 }}
                   whileInView={{ width: "60%" }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 0.5 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
                   style={{
                     boxShadow: `0 0 8px ${PRIMARY_COLOR.glow.normal}`
                   }}
                 />
               </span>
-            </motion.h2>
+            </h2>
 
             {/* 説明文 */}
-            <motion.p 
-              className="text-muted-foreground leading-relaxed text-base md:text-lg relative z-10"
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              <span className="relative">
-                {description}
-              </span>
-            </motion.p>
+            <p className="text-muted-foreground leading-relaxed text-base md:text-lg relative z-10">
+              {description}
+            </p>
 
           </div>
         </div>
-      </motion.div>
-    </div>
+    </motion.div>
   );
 }
 

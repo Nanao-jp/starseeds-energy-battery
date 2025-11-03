@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { cardStyles, backgroundPatterns, rotatingGlowStyles, cornerAccentStyles } from '@/lib/styles';
+import { cardStyles, backgroundPatterns, rotatingGlowStyles } from '@/lib/styles';
 import { PRIMARY_COLOR, CARD_COLORS } from '@/lib/theme';
 import { ANIMATION, VIEWPORT } from '@/lib/animation';
 
@@ -29,10 +29,10 @@ interface NavigationCardProps {
 export function NavigationCard({ href, title, description, imgSrc, index }: NavigationCardProps) {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={VIEWPORT.once}
-      transition={ANIMATION.fast}
+      transition={ANIMATION.normal}
       className="h-full"
     >
       <Link href={href} className="group block h-full">
@@ -117,13 +117,9 @@ export function NavigationCard({ href, title, description, imgSrc, index }: Navi
             <h3 className="relative text-xl font-bold tracking-tight font-heading mb-3 text-foreground cursor-default z-10">
               <span className="relative inline-block">
                 {title}
-                {/* タイトル下のアンダーライン（常時表示） */}
-                <motion.div
-                  className="absolute -bottom-1 left-0 h-0.5 bg-primary/50 rounded-full"
-                  initial={{ width: 0 }}
-                  whileInView={{ width: "100%" }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
+                {/* タイトル下のアンダーライン（静止表示） */}
+                <div
+                  className="absolute -bottom-1 left-0 h-0.5 w-full bg-primary/50 rounded-full"
                   style={{
                     boxShadow: `0 0 8px ${PRIMARY_COLOR.glow.normal}`
                   }}

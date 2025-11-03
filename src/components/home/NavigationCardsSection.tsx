@@ -1,11 +1,9 @@
 "use client";
 
-import { motion } from 'framer-motion';
 import { BookOpen } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { HOME_NAVIGATION_CARDS } from '@/lib/constants';
 import { SectionContainer } from '@/components/layout/SectionContainer';
-import { ANIMATION, VIEWPORT } from '@/lib/animation';
 import { PRIMARY_COLOR } from '@/lib/theme';
 
 // NavigationCardを動的インポート
@@ -30,14 +28,8 @@ export function NavigationCardsSection() {
     >
       <SectionContainer py="md" withDivider dividerClassName="mb-16">
 
-      {/* リッチなセクションタイトル（シンプル化：一括表示） */}
-      <motion.div
-        className="relative text-center mb-16"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={VIEWPORT.once}
-        transition={ANIMATION.normal}
-      >
+      {/* リッチなセクションタイトル */}
+      <div className="relative text-center mb-16">
         {/* 装飾的な背景パターン */}
         <div 
           className="absolute inset-0 opacity-5 pointer-events-none"
@@ -90,16 +82,10 @@ export function NavigationCardsSection() {
             background: `radial-gradient(circle, ${PRIMARY_COLOR.glow.medium}, transparent 70%)`
           }}
         />
-      </motion.div>
+      </div>
 
-      {/* ナビゲーションカード（シンプル化：一括表示） */}
-      <motion.div
-        className="grid gap-8 md:grid-cols-2 lg:grid-cols-3"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={VIEWPORT.once}
-        transition={ANIMATION.normal}
-      >
+      {/* ナビゲーションカード */}
+      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         {HOME_NAVIGATION_CARDS.map((card, index) => (
           <NavigationCard
             key={card.href}
@@ -110,7 +96,7 @@ export function NavigationCardsSection() {
             index={index}
           />
         ))}
-      </motion.div>
+      </div>
       </SectionContainer>
     </section>
   );

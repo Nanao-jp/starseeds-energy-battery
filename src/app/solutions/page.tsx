@@ -1,3 +1,14 @@
+// ソリューションページを一時的に非表示
+// 戻す場合は下記のコメントアウトを外してください
+
+// 一時的に空のページを返す（404を避けるため）
+export default function SolutionsPage() {
+  return null;
+}
+
+/*
+元のコードは以下の通りです（コメントアウト内のJSXコメントは通常のコメントに変換済み）：
+
 import { Handshake, Target, BarChart3, Recycle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -20,7 +31,6 @@ const services = [
     description: "24時間365日の遠隔監視体制と、迅速な現地対応で、システムの安定稼働を長期的に保証します。",
   },
 ];
-
 
 export default function SolutionsPage() {
   return (
@@ -67,7 +77,6 @@ export default function SolutionsPage() {
       <Section className="border-t border-white/20">
         <SectionTitle>収益モデル概要</SectionTitle>
         <div className="space-y-12">
-          {/* Arbitrage Model */}
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
               <h3 className="text-2xl font-bold mb-4">アービトラージ（価格差益取引）</h3>
@@ -89,7 +98,6 @@ export default function SolutionsPage() {
               />
             </div>
           </div>
-          {/* Market Participation Model */}
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="md:order-2">
               <h3 className="text-2xl font-bold mb-4">需給調整市場・容量市場への参加</h3>
@@ -131,3 +139,4 @@ export default function SolutionsPage() {
     </div>
   );
 }
+*/
