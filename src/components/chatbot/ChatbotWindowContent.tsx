@@ -8,6 +8,7 @@ import { ChatbotGradientBackground } from "./ChatbotGradientBackground";
 import { ChatbotLoadingIndicator } from "./ChatbotLoadingIndicator";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useViewport } from "@/lib/hooks/useViewport";
 import type { Message } from "@/types/chatbot";
 
 interface ChatbotWindowContentProps {
@@ -23,6 +24,7 @@ export function ChatbotWindowContent({
   onSendMessage,
   onClose,
 }: ChatbotWindowContentProps) {
+  const { isMobile } = useViewport();
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -32,12 +34,14 @@ export function ChatbotWindowContent({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // ウィンドウが開いたら入力欄にフォーカス
+  // ウィンドウが開いたら入力欄にフォーカス（モバイルではアニメーション完了後に遅延）
   useEffect(() => {
-    setTimeout(() => {
+    const delay = isMobile ? 600 : 100; // モバイルはアニメーション完了後にフォーカス
+    const timer = setTimeout(() => {
       inputRef.current?.focus();
-    }, 100);
-  }, []);
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [isMobile]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

@@ -133,7 +133,27 @@ export function Chatbot() {
             <motion.div
               {...(!isMobile && { layoutId: "chatbot-container" })}
               layout={false}
-              transition={{ 
+              initial={isMobile ? {
+                scale: 0.8,
+                opacity: 0,
+                y: 100,
+              } : undefined}
+              animate={isMobile ? {
+                scale: 1,
+                opacity: 1,
+                y: 0,
+              } : undefined}
+              exit={isMobile ? {
+                scale: 0.8,
+                opacity: 0,
+                y: 100,
+              } : undefined}
+              transition={isMobile ? {
+                type: "spring",
+                stiffness: 300,
+                damping: 30,
+                duration: 0.4,
+              } : {
                 type: "spring",
                 stiffness: 300,
                 damping: 30,
