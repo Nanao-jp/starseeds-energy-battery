@@ -794,16 +794,6 @@
   }
 }
 
-/* チャットボット - 固定位置 */
-.chatbot-fixed-button {
-  position: fixed !important;
-  bottom: 1rem !important;
-  right: 1rem !important;
-  z-index: 99999 !important;
-  transform: none !important;
-}
-
-
 /* サイバーグロー効果（シンプル版） */
 .chatbot-window-glow {
   position: relative;
@@ -839,3 +829,9 @@
     opacity: 0.5;
   }
 }
+
+/* チャットボット - アバター背景の白グレーグラデーション */
+.chatbot-avatar-bg {
+  background: linear-gradient(135deg, rgb(255, 255, 255), rgb(160, 160, 160), rgb(255, 255, 255));
+}
+

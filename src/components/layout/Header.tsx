@@ -1,6 +1,7 @@
 import { NAV_ITEMS } from '@/lib/constants';
 import { Logo } from './Logo';
 import { NavLink } from './NavLink';
+import { MobileMenu } from './MobileMenu';
 
 export function Header() {
   return (
@@ -13,7 +14,7 @@ export function Header() {
               <NavLink key={item.href} item={item} variant="header" />
             ))}
           </nav>
-          {/* Mobile menu button will be added later */}
+          <MobileMenu />
         </div>
       </div>
     </header>

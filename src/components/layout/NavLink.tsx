@@ -6,9 +6,10 @@ interface NavLinkProps {
   item: NavItem;
   className?: string;
   variant?: 'header' | 'footer';
+  onClick?: () => void;
 }
 
-export function NavLink({ item, className, variant = 'header' }: NavLinkProps) {
+export function NavLink({ item, className, variant = 'header', onClick }: NavLinkProps) {
   const baseClasses = 'transition-colors';
   
   const variantClasses = {
@@ -20,6 +21,7 @@ export function NavLink({ item, className, variant = 'header' }: NavLinkProps) {
     <Link
       href={item.href}
       className={cn(baseClasses, variantClasses[variant], className)}
+      onClick={onClick}
     >
       {item.label}
     </Link>

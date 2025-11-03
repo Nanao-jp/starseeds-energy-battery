@@ -30,7 +30,7 @@ export function Avatar({ src, alt, size = "sm", className, fallback = "AI" }: Av
   return (
     <div
       className={cn(
-        "rounded-full overflow-hidden bg-gradient-to-br from-cyan-400 to-blue-500 ring-2 ring-cyan-400/30 flex items-center justify-center flex-shrink-0",
+        "rounded-full overflow-hidden chatbot-avatar-bg ring-2 ring-cyan-400/30 flex items-center justify-center flex-shrink-0",
         SIZE_CLASSES[size],
         className
       )}

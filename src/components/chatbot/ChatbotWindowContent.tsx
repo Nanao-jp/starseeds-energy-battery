@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Send, Loader2, Sparkles } from "lucide-react";
+import { Send, Loader2, Sparkles, X } from "lucide-react";
 import { ChatMessage } from "./ChatMessage";
 import { Avatar } from "./Avatar";
+import { ChatbotGradientBackground } from "./ChatbotGradientBackground";
+import { ChatbotLoadingIndicator } from "./ChatbotLoadingIndicator";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import type { Message } from "@/types/chatbot";
 
 interface ChatbotWindowContentProps {
@@ -58,19 +59,9 @@ export function ChatbotWindowContent({
     <div className="flex flex-col h-full">
       {/* ヘッダー - ボタンと統一されたデザイン */}
       <div className="relative flex items-center justify-between p-4 border-b border-cyan-500/30 overflow-hidden">
-        {/* グラデーションアニメーション背景 */}
-        <div className="chatbot-gradient-bg" />
-        
-        {/* グロー効果 */}
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 via-blue-400/20 to-purple-400/20" />
+        <ChatbotGradientBackground />
         
         <div className="relative z-10 flex items-center gap-2 md:gap-3 flex-1">
-          <Avatar
-            src="/images/chatbot/chatbot-avatar.png"
-            alt="チャットボット"
-            size="md"
-            className="ring-2 ring-white/30"
-          />
           <div className="min-w-0 flex-1">
             <h3 className="font-bold text-sm md:text-base flex items-center gap-1.5">
               <span className="bg-gradient-to-r from-white to-cyan-100 bg-clip-text text-transparent">
@@ -88,17 +79,7 @@ export function ChatbotWindowContent({
           className="relative z-10 h-8 w-8 text-cyan-200 hover:text-white hover:bg-cyan-500/20"
           aria-label="閉じる"
         >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <X className="w-4 h-4" />
         </Button>
       </div>
 
@@ -125,22 +106,7 @@ export function ChatbotWindowContent({
             {messages.map((message) => (
               <ChatMessage key={message.id} message={message} />
             ))}
-            {isLoading && (
-              <div className="flex gap-3 mb-4">
-                <Avatar
-                  src="/images/chatbot/chatbot-avatar.png"
-                  alt="チャットボット"
-                  size="sm"
-                />
-                <div className="bg-card border border-border rounded-2xl px-4 py-3">
-                  <div className="flex gap-1">
-                    <div className="w-2 h-2 rounded-full bg-cyan-500 animate-bounce" style={{ animationDelay: "0ms" }} />
-                    <div className="w-2 h-2 rounded-full bg-cyan-500 animate-bounce" style={{ animationDelay: "150ms" }} />
-                    <div className="w-2 h-2 rounded-full bg-cyan-500 animate-bounce" style={{ animationDelay: "300ms" }} />
-                  </div>
-                </div>
-              </div>
-            )}
+            {isLoading && <ChatbotLoadingIndicator />}
             <div ref={messagesEndRef} />
           </>
         )}

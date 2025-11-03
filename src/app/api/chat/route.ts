@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { buildMessages } from "@/lib/chatbot/prompt";
 import type { ChatRequest, ChatResponse } from "@/types/chatbot";
 
 export async function POST(request: NextRequest) {
   try {
     const body: ChatRequest = await request.json();
-    const { message, history } = body;
+    const { message } = body;
+    // historyは将来のAPI実装時に使用予定
 
     if (!message || typeof message !== "string") {
       return NextResponse.json<ChatResponse>(
@@ -14,48 +14,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // OpenAI APIキーの確認
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
-      console.error("OPENAI_API_KEYが設定されていません");
-      return NextResponse.json<ChatResponse>(
-        { message: "", error: "APIキーが設定されていません" },
-        { status: 500 }
-      );
-    }
+    // テスト用の固定レスポンス
+    const testResponse = `※これはテストテキストです※
 
-    // メッセージ配列を構築
-    const messages = buildMessages(message, history);
+ご質問ありがとうございます。現在、システムのテスト中です。製品や工事に関するお問い合わせは、お問い合わせフォームからご連絡いただくか、担当者まで直接お問い合わせください。
 
-    // OpenAI APIを呼び出し
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini", // または "gpt-4", "gpt-3.5-turbo" など
-        messages,
-        temperature: 0.7,
-        max_tokens: 1000,
-      }),
-    });
+ご不便をおかけして申し訳ございません。`;
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      console.error("OpenAI APIエラー:", errorData);
-      return NextResponse.json<ChatResponse>(
-        { message: "", error: "AIの応答を取得できませんでした" },
-        { status: response.status }
-      );
-    }
-
-    const data = await response.json();
-    const assistantMessage = data.choices?.[0]?.message?.content || "回答を生成できませんでした。";
+    // 実際のAPI応答時間を想定した遅延（2秒）
+    // 実際のOpenAI APIは通常1-3秒程度の応答時間がかかるため、それに合わせて調整
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
     return NextResponse.json<ChatResponse>({
-      message: assistantMessage,
+      message: testResponse,
     });
   } catch (error) {
     console.error("チャットAPIエラー:", error);

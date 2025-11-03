@@ -23,9 +23,8 @@ export interface Region {
 
 /**
  * 地域定義を取得
- * @param baseScale 初期スケール値
  */
-export function getRegions(baseScale: number): Region[] {
+export function getRegions(): Region[] {
   return [
     {
       id: "hokkaido",

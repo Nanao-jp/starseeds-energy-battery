@@ -18,10 +18,7 @@ import { ANIMATION, VIEWPORT } from "@/lib/animation";
  * - アクセシビリティ対応
  */
 
-interface KpiCardProps extends KpiData {
-  /** カードのインデックス（アニメーション遅延に使用） */
-  index: number;
-}
+type KpiCardProps = KpiData;
 
 // カードの背景スタイル
 const cardBackgroundStyle: React.CSSProperties = {
@@ -48,8 +45,7 @@ export const KpiCard = memo(function KpiCard({
   icon, 
   label, 
   value, 
-  description, 
-  index 
+  description 
 }: KpiCardProps) {
   return (
     <motion.div

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   Dialog,
   DialogContent,
@@ -121,10 +122,12 @@ export function ProjectDetailModal({
               <div className="grid grid-cols-2 gap-3">
                 {project.photos.map((photo, index) => (
                   <div key={index} className="relative aspect-video bg-muted rounded-lg overflow-hidden border border-primary/20 hover:border-primary/40 transition-all">
-                    <img 
+                    <Image 
                       src={photo} 
                       alt={`${project.name} - 画像${index + 1}`}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 50vw, 25vw"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.style.display = 'none';

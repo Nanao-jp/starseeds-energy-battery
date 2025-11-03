@@ -163,7 +163,7 @@ export function JapanMap({
 
   // d3-geo投影法とパスジェネレーターの設定（動的に更新）
   const projection = useMemo(() => {
-    const regions = getRegions(initialScale);
+    const regions = getRegions();
     const center = selectedRegion 
       ? regions.find(r => r.id === selectedRegion)?.center || JAPAN_CENTER
       : JAPAN_CENTER;
@@ -172,7 +172,7 @@ export function JapanMap({
       .center(center)
       .scale(scale)
       .translate(translate);
-  }, [scale, translate, selectedRegion, initialScale]);
+  }, [scale, translate, selectedRegion]);
 
   const pathGenerator = useMemo(() => {
     return geoPath().projection(projection);
@@ -227,7 +227,7 @@ export function JapanMap({
 
   // 地域フォーカス機能
   const handleRegionFocus = (regionId: RegionId) => {
-    const regions = getRegions(initialScale);
+    const regions = getRegions();
     const region = regions.find((r) => r.id === regionId);
     if (!region) return;
 
@@ -254,7 +254,7 @@ export function JapanMap({
   const visibleProjects = useMemo(() => {
     if (selectedRegion) {
       // 地域選択時：その地域のプロジェクトのみ（暫定的に座標から判断）
-      const regions = getRegions(initialScale);
+      const regions = getRegions();
       const region = regions.find((r) => r.id === selectedRegion);
       if (!region) return [];
 
@@ -284,7 +284,7 @@ export function JapanMap({
     }
 
     return projects;
-  }, [projects, selectedRegion, selectedStatus, initialScale]);
+  }, [projects, selectedRegion, selectedStatus]);
 
   const shouldShowPins = visibleProjects.length > 0;
 
@@ -493,7 +493,7 @@ export function JapanMap({
                 </button>
                 
                 {/* 地域ボタン */}
-                {getRegions(initialScale).map((region) => (
+                {getRegions().map((region) => (
                   <button
                     key={region.id}
                     onClick={() => handleRegionFocus(region.id)}

@@ -21,7 +21,6 @@ export function KpiSection() {
             <KpiCard
               key={`${item.label}-${index}`}
               {...item}
-              index={index}
             />
           ))}
         </div>

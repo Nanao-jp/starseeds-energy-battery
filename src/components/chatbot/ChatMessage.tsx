@@ -3,6 +3,8 @@
 import type { Message } from "@/types/chatbot";
 import { cn } from "@/lib/utils";
 import { Avatar } from "./Avatar";
+import { UserAvatar } from "./UserAvatar";
+import { motion } from "framer-motion";
 
 interface ChatMessageProps {
   message: Message;
@@ -12,7 +14,10 @@ export function ChatMessage({ message }: ChatMessageProps) {
   const isUser = message.role === "user";
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
       className={cn(
         "flex gap-3 mb-4",
         isUser ? "justify-end" : "justify-start"
@@ -22,7 +27,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
         <Avatar
           src="/images/chatbot/chatbot-avatar.png"
           alt="チャットボット"
-          size="sm"
+          size="md"
         />
       )}
       
@@ -48,12 +53,8 @@ export function ChatMessage({ message }: ChatMessageProps) {
         </span>
       </div>
 
-      {isUser && (
-        <div className="flex-shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center text-white text-[10px] md:text-xs font-medium">
-          あなた
-        </div>
-      )}
-    </div>
+      {isUser && <UserAvatar />}
+    </motion.div>
   );
 }
 

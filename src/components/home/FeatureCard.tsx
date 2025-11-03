@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Zap, Radio, LucideIcon } from 'lucide-react';
 import { cardStyles, backgroundPatterns, cornerAccentStyles, TEXT_GRADIENT } from '@/lib/styles';
-import { PRIMARY_COLOR, CARD_COLORS } from '@/lib/theme';
+import { PRIMARY_COLOR } from '@/lib/theme';
 import { ANIMATION, VIEWPORT } from '@/lib/animation';
 
 interface FeatureCardProps {
