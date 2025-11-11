@@ -6,7 +6,6 @@ import { geoPath, geoMercator } from "d3-geo";
 import type { FeatureCollection, GeoJsonProperties, Geometry } from "geojson";
 import type { Project, ProjectStatus } from "@/data/types";
 import { getRegions, getRegionScale, type RegionId } from "@/data/regions";
-import { RotateCcw } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import {
   JAPAN_CENTER,
@@ -22,7 +21,6 @@ interface JapanMapProps {
   width?: number;
   height?: number;
   projects?: Project[];
-  selectedStatus?: ProjectStatus;
   onProjectClick?: (project: Project) => void;
 }
 
@@ -74,13 +72,20 @@ export function JapanMap({
   width: propWidth, 
   height: propHeight,
   projects = [],
-  selectedStatus,
   onProjectClick
 }: JapanMapProps) {
+  // フィルター状態を内部で管理（デフォルトは稼働中）
+  const [selectedStatus, setSelectedStatus] = useState<ProjectStatus | null>("operational");
   const [mounted, setMounted] = useState(false);
   const [geoData, setGeoData] = useState<FeatureCollection<Geometry, GeoJsonProperties> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isPrefectureAnimationComplete, setIsPrefectureAnimationComplete] = useState(false);
+  const rafRef = useRef<number | null>(null);
+  const pendingTranslateRef = useRef<[number, number] | null>(null);
+  const lastFrameTimeRef = useRef<number>(0);
+  const TARGET_FPS = 20;
+  const FRAME_INTERVAL = 1000 / TARGET_FPS; // 50ms
   
   // SSR/ハイドレーション対応: クライアント側でのみ初期化
   useEffect(() => {
@@ -133,6 +138,7 @@ export function JapanMap({
     return [MAP_DEFAULT_SIZE.width / 2, MAP_DEFAULT_SIZE.height / 2 + 50];
   });
   const [isDragging, setIsDragging] = useState(false);
+  const [isZooming, setIsZooming] = useState(false);
   const [dragStart, setDragStart] = useState<[number, number] | null>(null);
   // 地域選択機能（コメントアウト：将来的に必要になった場合に有効化可能）
   // const [selectedRegion, setSelectedRegion] = useState<RegionId | null>(null);
@@ -140,9 +146,6 @@ export function JapanMap({
   const svgRef = useRef<SVGSVGElement>(null);
   const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
-  // ピンチズーム用の状態（モバイル）
-  const [pinchStartDistance, setPinchStartDistance] = useState<number | null>(null);
-  const [pinchStartScale, setPinchStartScale] = useState<number | null>(null);
   
   // ズームの最小/最大値
   const MIN_SCALE = useMemo(() => initialScale * 0.5, [initialScale]);
@@ -225,14 +228,20 @@ export function JapanMap({
     loadGeoData();
   }, []);
 
+  // 都道府県アニメーション完了の検知（最大遅延0.5秒 + アニメーション時間0.8秒 = 約1.3秒後）
+  useEffect(() => {
+    if (!geoData || isPrefectureAnimationComplete) return;
+    
+    const timer = setTimeout(() => {
+      setIsPrefectureAnimationComplete(true);
+    }, 1300); // 最大遅延0.5秒 + アニメーション時間0.8秒
+
+    return () => clearTimeout(timer);
+  }, [geoData, isPrefectureAnimationComplete]);
+
+
   // d3-geo投影法とパスジェネレーターの設定（動的に更新）
   const projection = useMemo(() => {
-    // 地域選択機能（コメントアウト：将来的に必要になった場合に有効化可能）
-    // const regions = getRegions();
-    // const center = selectedRegion 
-    //   ? regions.find(r => r.id === selectedRegion)?.center || JAPAN_CENTER
-    //   : JAPAN_CENTER;
-    
     return geoMercator()
       .center(JAPAN_CENTER) // 常に日本中心
       .scale(scale)
@@ -240,12 +249,15 @@ export function JapanMap({
   }, [scale, translate, width, height]);
 
   const pathGenerator = useMemo(() => {
+    if (!projection) return null;
     return geoPath().projection(projection);
   }, [projection]);
 
   // 都道府県座標をSVG座標に変換（ピン用）
+  // ドラッグ中・ズーム中は再計算をスキップ（ピンが非表示のため）
   const projectPoint = useMemo(() => {
     return (coordinates: [number, number]): [number, number] => {
+      if (!projection) return [0, 0];
       const projected = projection(coordinates);
       if (!projected || projected.length < 2) {
         return [0, 0];
@@ -255,106 +267,122 @@ export function JapanMap({
   }, [projection]);
 
 
+
   // ドラッグ開始
-  const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
+  const handleMouseDown = useCallback((e: React.MouseEvent<SVGSVGElement>) => {
     if (e.button !== 0) return; // 左クリックのみ
     setIsDragging(true);
     setDragStart([e.clientX, e.clientY]);
-  };
+  }, []);
 
-  // ドラッグ中
-  const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
+  // ドラッグ中（FPS制限付き）
+  const handleMouseMove = useCallback((e: React.MouseEvent<SVGSVGElement>) => {
     if (!isDragging || !dragStart) return;
     
     const dx = e.clientX - dragStart[0];
     const dy = e.clientY - dragStart[1];
     
-    setTranslate([translate[0] + dx, translate[1] + dy]);
-    setDragStart([e.clientX, e.clientY]);
-  };
+    const currentTranslate = translate;
+    const newTranslate: [number, number] = [currentTranslate[0] + dx, currentTranslate[1] + dy];
+    
+    // FPS制限付きで状態更新
+    const now = performance.now();
+    if (now - lastFrameTimeRef.current >= FRAME_INTERVAL) {
+      lastFrameTimeRef.current = now;
+      pendingTranslateRef.current = newTranslate;
+      setDragStart([e.clientX, e.clientY]);
+      
+      if (rafRef.current === null) {
+        rafRef.current = requestAnimationFrame(() => {
+          if (pendingTranslateRef.current) {
+            setTranslate(pendingTranslateRef.current);
+            pendingTranslateRef.current = null;
+          }
+          rafRef.current = null;
+        });
+      }
+    } else {
+      // FPS制限内の場合は、dragStartのみ更新
+      setDragStart([e.clientX, e.clientY]);
+    }
+  }, [isDragging, dragStart, translate]);
 
   // ドラッグ終了
-  const handleMouseUp = () => {
+  const handleMouseUp = useCallback(() => {
     setIsDragging(false);
     setDragStart(null);
-  };
-
-  // マウスホイールでズーム（デスクトップ）
-  const handleWheel = (e: React.WheelEvent<SVGSVGElement>) => {
-    e.preventDefault();
-    
-    const delta = e.deltaY > 0 ? 0.9 : 1.1; // スクロールダウンで縮小、アップで拡大
-    const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale * delta));
-    
-    // マウス位置を中心にズーム
-    const rect = svgRef.current?.getBoundingClientRect();
-    if (rect) {
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const [lon, lat] = projection.invert?.([x, y]) || [0, 0];
-      
-      if (lon && lat) {
-        const scaleRatio = newScale / scale;
-        const newTranslate: [number, number] = [
-          x - (x - translate[0]) * scaleRatio,
-          y - (y - translate[1]) * scaleRatio,
-        ];
-        setTranslate(newTranslate);
-      }
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
     }
-    
-    setScale(newScale);
-  };
+    // 保留中の更新を適用
+    if (pendingTranslateRef.current) {
+      setTranslate(pendingTranslateRef.current);
+      pendingTranslateRef.current = null;
+    }
+  }, []);
 
-  // タッチ開始（ピンチズーム用）
-  const handleTouchStart = (e: React.TouchEvent<SVGSVGElement>) => {
-    if (e.touches.length === 2) {
-      const touch1 = e.touches[0];
-      const touch2 = e.touches[1];
-      const distance = Math.hypot(
-        touch2.clientX - touch1.clientX,
-        touch2.clientY - touch1.clientY
-      );
-      setPinchStartDistance(distance);
-      setPinchStartScale(scale);
-    } else if (e.touches.length === 1) {
+  // タッチ開始（ドラッグのみ）
+  const handleTouchStart = useCallback((e: React.TouchEvent<SVGSVGElement>) => {
+    if (e.touches.length === 1) {
       // シングルタッチはドラッグとして扱う
+      // ページスクロールを防ぐ
+      e.preventDefault();
       setIsDragging(true);
       setDragStart([e.touches[0].clientX, e.touches[0].clientY]);
     }
-  };
+  }, []);
 
-  // タッチ移動（ピンチズーム用）
-  const handleTouchMove = (e: React.TouchEvent<SVGSVGElement>) => {
-    if (e.touches.length === 2 && pinchStartDistance !== null && pinchStartScale !== null) {
-      // ピンチズーム
-      const touch1 = e.touches[0];
-      const touch2 = e.touches[1];
-      const distance = Math.hypot(
-        touch2.clientX - touch1.clientX,
-        touch2.clientY - touch1.clientY
-      );
-      
-      const scaleRatio = distance / pinchStartDistance;
-      const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, pinchStartScale * scaleRatio));
-      setScale(newScale);
-    } else if (e.touches.length === 1 && isDragging && dragStart) {
+  // タッチ移動（ドラッグのみ、FPS制限付き）
+  const handleTouchMove = useCallback((e: React.TouchEvent<SVGSVGElement>) => {
+    if (e.touches.length === 1 && isDragging && dragStart) {
+      // ページスクロールを防ぐ
+      e.preventDefault();
       // ドラッグ
       const dx = e.touches[0].clientX - dragStart[0];
       const dy = e.touches[0].clientY - dragStart[1];
       
-      setTranslate([translate[0] + dx, translate[1] + dy]);
-      setDragStart([e.touches[0].clientX, e.touches[0].clientY]);
+      const currentTranslate = translate;
+      const newTranslate: [number, number] = [currentTranslate[0] + dx, currentTranslate[1] + dy];
+      
+      // FPS制限付きで状態更新
+      const now = performance.now();
+      if (now - lastFrameTimeRef.current >= FRAME_INTERVAL) {
+        lastFrameTimeRef.current = now;
+        pendingTranslateRef.current = newTranslate;
+        setDragStart([e.touches[0].clientX, e.touches[0].clientY]);
+        
+        if (rafRef.current === null) {
+          rafRef.current = requestAnimationFrame(() => {
+            if (pendingTranslateRef.current) {
+              setTranslate(pendingTranslateRef.current);
+              pendingTranslateRef.current = null;
+            }
+            rafRef.current = null;
+          });
+        }
+      } else {
+        // FPS制限内の場合は、dragStartのみ更新
+        setDragStart([e.touches[0].clientX, e.touches[0].clientY]);
+      }
     }
-  };
+  }, [isDragging, dragStart, translate]);
 
   // タッチ終了
-  const handleTouchEnd = () => {
+  const handleTouchEnd = useCallback((e: React.TouchEvent<SVGSVGElement>) => {
+    e.preventDefault();
     setIsDragging(false);
     setDragStart(null);
-    setPinchStartDistance(null);
-    setPinchStartScale(null);
-  };
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+    // 保留中の更新を適用
+    if (pendingTranslateRef.current) {
+      setTranslate(pendingTranslateRef.current);
+      pendingTranslateRef.current = null;
+    }
+  }, []);
 
   // ズームイン（モバイル用、スライダーでは使用しない）
   const handleZoomIn = useCallback(() => {
@@ -379,20 +407,15 @@ export function JapanMap({
     const value = values[0];
     const range = MAX_SCALE - MIN_SCALE;
     const newScale = MIN_SCALE + (value / 100) * range;
+    setIsZooming(true);
     setScale(newScale);
+    
+    // ズーム終了を検知（少し遅延させて連続操作を検知）
+    setTimeout(() => {
+      setIsZooming(false);
+    }, 150);
   }, [MIN_SCALE, MAX_SCALE]);
 
-  // リセット機能（全体表示に戻る）
-  const handleReset = useCallback(() => {
-    setScale(initialScale);
-    // モバイル時は少し上にシフト、デスクトップ時は下にシフト
-    const resetTranslate = mounted && typeof window !== "undefined" && window.innerWidth < 768
-      ? [width / 2, height / 2 - 20] as [number, number]
-      : [width / 2, height / 2 + 50] as [number, number];
-    setTranslate(resetTranslate);
-    // 地域選択機能（コメントアウト）
-    // setSelectedRegion(null);
-  }, [initialScale, width, height, mounted]);
 
   // 地域フォーカス機能（コメントアウト：将来的に必要になった場合に有効化可能）
   // const handleRegionFocus = useCallback((regionId: RegionId) => {
@@ -456,7 +479,23 @@ export function JapanMap({
     return projects;
   }, [projects, selectedStatus]);
 
-  const shouldShowPins = visibleProjects.length > 0;
+  // ステータス名のマッピング
+  const statusLabels: Record<ProjectStatus, string> = {
+    operational: "稼働中",
+    construction: "工事中",
+    planning: "計画中",
+  };
+
+  // モバイル判定（ピンサイズ調整用）
+  const isMobile = useMemo(() => {
+    if (!mounted || typeof window === "undefined") return false;
+    return window.innerWidth < 768;
+  }, [mounted]);
+
+  // ピンサイズ（モバイルでは大きく）
+  const pinRadius = isMobile ? 12 : 6;
+  const pulseRadius = isMobile ? 16 : 8;
+  const glowRadius = isMobile ? 24 : 12;
 
   // ローディング中の表示
   if (isLoading) {
@@ -484,11 +523,11 @@ export function JapanMap({
 
   return (
     <div className="relative w-full h-full min-h-[400px] md:min-h-[600px] flex items-center justify-center overflow-hidden pt-16 md:pt-0">
-      {/* サイドバー式ズームスライダー（デスクトップのみ） */}
-      <div className="hidden md:block absolute right-4 top-1/2 -translate-y-1/2 z-20">
-        <div className="bg-black/90 backdrop-blur-md border border-primary/20 rounded-lg p-4">
-          <div className="flex flex-col items-center gap-4 h-64">
-            <span className="text-xs text-primary/70 font-medium">ズーム</span>
+      {/* サイドバー式ズームスライダー */}
+      <div className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20">
+        <div className="bg-black/90 backdrop-blur-md border border-primary/20 rounded-lg p-2 md:p-4">
+          <div className="flex flex-col items-center gap-2 md:gap-4 h-48 md:h-64">
+            <span className="text-[10px] md:text-xs text-primary/70 font-medium">ズーム</span>
             <Slider
               orientation="vertical"
               value={[zoomSliderValue]}
@@ -498,7 +537,7 @@ export function JapanMap({
               step={1}
               className="h-full"
             />
-            <div className="flex flex-col items-center gap-1 text-xs text-primary/50">
+            <div className="flex flex-col items-center gap-1 text-[10px] md:text-xs text-primary/50">
               <span>{Math.round((zoomSliderValue / 100) * 100)}%</span>
             </div>
           </div>
@@ -506,7 +545,14 @@ export function JapanMap({
       </div>
 
       {/* SVGコンテナ - レスポンシブ対応 */}
-      <div className="relative w-full h-full max-w-full" style={{ aspectRatio: `${width} / ${height}`, minHeight: '400px' }}>
+      <div 
+        className="relative w-full h-full max-w-full" 
+        style={{ 
+          aspectRatio: `${width} / ${height}`, 
+          minHeight: '400px',
+          touchAction: "none", // モバイルでのスクロール競合を防ぐ
+        }}
+      >
         {/* 背景グリッドパターン */}
         <div
           className="absolute inset-0 opacity-20"
@@ -520,12 +566,7 @@ export function JapanMap({
         />
       
       {/* 地図コンテナ */}
-      <motion.div
-        className="relative w-full h-full"
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-      >
+      <div className="relative w-full h-full">
         <svg
           ref={svgRef}
           width="100%"
@@ -538,12 +579,12 @@ export function JapanMap({
             cursor: isDragging ? "grabbing" : "grab",
             maxWidth: "100%",
             maxHeight: "100%",
+            touchAction: "none",
           }}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
-          onWheel={handleWheel}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -551,10 +592,25 @@ export function JapanMap({
           {/* 日本列島の輪郭線（GeoJSONから生成） */}
           <g className="japan-outline">
             {geoData.features.map((feature, index) => {
+              if (!pathGenerator) return null;
               const pathData = pathGenerator(feature);
               if (!pathData) return null;
 
-              return (
+              return isPrefectureAnimationComplete ? (
+                <path
+                  key={`feature-${index}`}
+                  d={pathData}
+                  fill="transparent"
+                  stroke={MAP_STYLES.stroke.color}
+                  strokeWidth={MAP_STYLES.stroke.width}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{
+                    filter: `drop-shadow(0 0 4px ${MAP_STYLES.glow.dropShadow})`,
+                  }}
+                  className="hover:stroke-[2px] transition-all duration-300"
+                />
+              ) : (
                 <motion.path
                   key={`feature-${index}`}
                   d={pathData}
@@ -568,7 +624,7 @@ export function JapanMap({
                   transition={{
                     duration: 0.8,
                     ease: "easeInOut",
-                    delay: Math.min(index * 0.02, 0.5), // 最大0.5秒まで（47都道府県でも約1秒）
+                    delay: Math.min(index * 0.02, 0.5),
                   }}
                   style={{
                     filter: `drop-shadow(0 0 4px ${MAP_STYLES.glow.dropShadow})`,
@@ -579,21 +635,15 @@ export function JapanMap({
             })}
           </g>
 
-          {/* プロジェクトピン */}
-          {visibleProjects.map((project, index) => {
+          {/* プロジェクトピン（ドラッグ中・ズーム中は非表示） */}
+          {!isDragging && !isZooming && projection && visibleProjects.map((project, index) => {
             const [x, y] = projectPoint(project.coordinates);
             const pinColor = getStatusColorForPin(project.status);
             const rgb = getPinColorRGB(project.status);
             
             return (
-              <motion.g
+              <g
                 key={project.id}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 0.9, scale: 1 }}
-                transition={{
-                  duration: 0.3,
-                  delay: Math.min(index * 0.02, 0.3), // 最大0.3秒まで
-                }}
                 onClick={() => onProjectClick?.(project)}
                 style={{ cursor: 'pointer' }}
               >
@@ -601,7 +651,7 @@ export function JapanMap({
                 <circle
                   cx={x}
                   cy={y}
-                  r={6}
+                  r={pinRadius}
                   fill={pinColor}
                   style={{
                     filter: `drop-shadow(0 0 8px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.8))`,
@@ -613,10 +663,10 @@ export function JapanMap({
                 <motion.circle
                   cx={x}
                   cy={y}
-                  r={8}
+                  r={pulseRadius}
                   fill="transparent"
                   stroke={pinColor}
-                  strokeWidth={1.5}
+                  strokeWidth={isMobile ? 2 : 1.5}
                   animate={{
                     scale: [1, 2.5, 1],
                     opacity: [0.7, 0, 0.7],
@@ -636,10 +686,10 @@ export function JapanMap({
                 <motion.circle
                   cx={x}
                   cy={y}
-                  r={12}
+                  r={glowRadius}
                   fill="transparent"
                   stroke={`rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.4)`}
-                  strokeWidth={0.5}
+                  strokeWidth={isMobile ? 0.8 : 0.5}
                   animate={{
                     scale: [1, 3, 1],
                     opacity: [0.3, 0, 0.3],
@@ -651,7 +701,7 @@ export function JapanMap({
                     delay: index * 0.15,
                   }}
                 />
-              </motion.g>
+              </g>
             );
           })}
         </svg>
@@ -663,39 +713,26 @@ export function JapanMap({
             background: `radial-gradient(circle at center, ${MAP_STYLES.glow.radialGradient}, transparent 70%)`,
           }}
         />
-      </motion.div>
+      </div>
       </div>
 
-      {/* コントロールUI - 上部バー */}
-      <div className="absolute top-0 left-0 right-0 z-10">
-        <div className="bg-black/90 backdrop-blur-md border-b border-primary/20">
-          <div className="container mx-auto px-4 py-3">
-            <div className="flex items-center justify-between gap-4">
-              {/* 左側: リセットボタンとピン表示インジケーター */}
-              <div className="flex items-center gap-4">
-                {/* リセットボタン */}
-                <button
-                  onClick={handleReset}
-                  className="px-4 py-2 text-sm rounded transition-all duration-300 bg-black/60 text-primary/70 hover:text-primary hover:bg-primary/10 border border-primary/20 flex items-center gap-2"
-                  aria-label="全体表示に戻る"
-                >
-                  <RotateCcw className="w-4 h-4" />
-                  <span className="hidden sm:inline">リセット</span>
-                </button>
-                
-                {/* ピン表示中のインジケーター */}
-                {shouldShowPins && (
-                  <div className="flex items-center gap-2 text-primary text-xs">
-                    <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-                    <span>{visibleProjects.length}件表示</span>
-                  </div>
-                )}
-              </div>
-
-              {/* 右側: ズームコントロール（デスクトップのみ） */}
-              {/* ボタンは削除、サイドバー式スライダーに変更 */}
-            </div>
-          </div>
+      {/* フィルターUI - 地図上に直接配置 */}
+      <div className="absolute top-4 left-4 z-10">
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* ステータスフィルターボタン */}
+          {(Object.keys(statusLabels) as ProjectStatus[]).map((status) => (
+            <button
+              key={status}
+              onClick={() => setSelectedStatus(selectedStatus === status ? null : status)}
+              className={`px-4 py-2 text-sm rounded transition-all duration-300 whitespace-nowrap ${
+                selectedStatus === status
+                  ? "bg-primary/20 text-primary border border-primary/40"
+                  : "bg-black/80 backdrop-blur-sm text-primary/70 hover:text-primary hover:bg-primary/10 border border-primary/20"
+              }`}
+            >
+              {statusLabels[status]}
+            </button>
+          ))}
         </div>
       </div>
 

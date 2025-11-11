@@ -102,7 +102,6 @@ export default function StatusPage() {
             width={MAP_DEFAULT_SIZE.width}
             height={MAP_DEFAULT_SIZE.height}
             projects={projects}
-            selectedStatus={activeTab}
             onProjectClick={handleProjectClick}
           />
         </div>
