@@ -652,7 +652,7 @@ export function JapanMap({
           </g>
 
           {/* プロジェクトピン（ドラッグ中・ズーム中は非表示） */}
-          {!isDragging && !isZooming && projection && visibleProjects.map((project, index) => {
+          {!isDragging && !isZooming && pathGenerator && visibleProjects.map((project, index) => {
             const [x, y] = projectPoint(project.coordinates);
             const pinColor = getStatusColorForPin(project.status);
             const rgb = getPinColorRGB(project.status);
