@@ -4,7 +4,7 @@
  */
 
 export interface KnowledgeItem {
-  category: "product" | "construction" | "faq";
+  category: "product" | "construction" | "faq" | "company";
   title: string;
   content: string;
   keywords: string[];

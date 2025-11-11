@@ -26,6 +26,14 @@ export default function StatusPage() {
     setIsModalOpen(true);
   };
 
+  const handleModalOpenChange = (open: boolean) => {
+    setIsModalOpen(open);
+    if (!open) {
+      // モーダルが閉じられた時にselectedProjectをクリア
+      setSelectedProject(null);
+    }
+  };
+
   return (
     <div>
       {/* リッチなセクションタイトル */}
@@ -134,7 +142,7 @@ export default function StatusPage() {
       <ProjectDetailModal
         project={selectedProject}
         open={isModalOpen}
-        onOpenChange={setIsModalOpen}
+        onOpenChange={handleModalOpenChange}
       />
     </div>
   );

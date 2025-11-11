@@ -40,9 +40,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# HQ-Cursor Bridge
-reports/.ci_logs/
-.agent/state/
-
 # material files (heavy assets)
 public/material/

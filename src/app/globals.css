@@ -588,11 +588,17 @@
 /* Radix UI Dialogのdata-state属性に対応（Content専用） */
 [data-radix-dialog-content][data-state="open"] {
   animation: fade-slide-up 0.3s ease-out;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) !important;
 }
 
 [data-radix-dialog-content][data-state="closed"] {
   animation: fade-slide-down 0.3s ease-out;
+  transform: translate(-50%, -50%) !important;
+}
+
+/* アニメーション終了後も位置を維持 */
+[data-radix-dialog-content],
+.dialog-content-centered {
   transform: translate(-50%, -50%);
 }
 

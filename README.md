@@ -16,6 +16,7 @@
 - [Framer Motion](https://www.framer.com/motion/) (アニメーション)
 - [Lucide React](https://lucide.dev/guide/packages/lucide-react) (アイコン)
 - [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/) (フォームバリデーション)
+- [OpenAI](https://platform.openai.com/) (チャットボット)
 - [ESLint](https://eslint.org/) & [Prettier](https://prettier.io/) (コード品質)
 
 ## 現在の構成と実装済み機能
@@ -105,8 +106,6 @@ TOPページのリファクタリングを完了し、コードの保守性と�
 - **保守性向上**: 色やスタイルの変更が1箇所で完結
 - **一貫性向上**: デザインシステムの統一管理
 
-詳細は `REFACTORING_REPORT.md` と `PERFORMANCE_ANALYSIS.md` を参照してください。
-
 ## 今後やること (Next Steps)
 
 このベースラインから、さらに以下の機能改善やタスクが考えられます。
@@ -135,64 +134,6 @@ TOPページのリファクタリングを完了し、コードの保守性と�
 - **アクセシビリティの向上**:
     - WCAG AA準拠をより厳密にチェックし、改善する。
 
-## 🤖 Agent HQ ↔ Cursor ブリッジ
-
-このプロジェクトは **Agent HQ（複数AI討論）** と **Cursor（実装）** を連携させた AI 協働開発ワークフローを採用しています。
-
-### 🔄 開発サイクル
-
-```
-1. Agent HQ（GPT + Claude + その他LLM）が討論
-   ↓ 最適なプロンプト・実装戦略を合意
-2. prompts/ にタスクを配置
-   ↓ Cursor が実装指示を読み取る
-3. Cursor で実装・コミット
-   ↓ pre-push フックでローカルCI実行（Build + Lint）
-4. CI成功 → main に push
-   ↓ レポート生成スクリプトを実行
-5. reports/ にレポート出力
-   ↓ Agent HQ が結果を確認
-6. 次のステップを討論（1に戻る）
-```
-
-### 📁 ブリッジ関連ディレクトリ
-
-- **`prompts/`**: Agent HQ からの指示受信 inbox
-- **`reports/`**: Cursor からのレポート送信 outbox
-- **`scripts/`**: CI・レポート生成の自動化スクリプト
-- **`.agent/`**: プロジェクト設定・状態管理
-- **`.githooks/`**: pre-push フック（ローカルCI）
-
-### 🛠️ ブリッジ用コマンド
-
-```bash
-# ローカルCIを手動実行
-python scripts/ci_local.py
-
-# レポート生成（成功時）
-python scripts/make_report.py \
-  --conversation-id <タスクID> \
-  --step 1 \
-  --status success \
-  --duration 300
-
-# レポート生成（失敗時）
-python scripts/make_report.py \
-  --conversation-id <タスクID> \
-  --step 1 \
-  --status failed
-```
-
-### 🔐 安全策
-
-- ✅ **PRなし・ローカルCI**: pre-push フックで Build + Lint を自動実行
-- ✅ **allow_paths 制限**: `.agent/project.json` で編集可能なディレクトリを制限
-- ✅ **依存ゼロ**: Python標準ライブラリのみ（pip不要）
-- ✅ **冪等性**: スクリプトは何度実行しても安全
-
-詳細は `.cursorrules` および `prompts/_SCHEMA.md`、`reports/_SCHEMA.md` を参照してください。
-
----
 
 ## セットアップと開発
 
@@ -200,7 +141,6 @@ python scripts/make_report.py \
 
 - Node.js 18.17 以降
 - npm (または pnpm/yarn)
-- Python 3.7+ (ブリッジスクリプト用)
 
 ### インストール
 
@@ -215,20 +155,31 @@ python scripts/make_report.py \
     npm install
     ```
 
-3.  Git hooks をインストール（初回のみ）:
+3.  環境変数を設定します:
+    
+    プロジェクトルートに `.env.local` ファイルを作成し、以下の環境変数を設定してください:
+    
     ```bash
-    python scripts/install_hooks.py
-    ```
-
-### 開発サーバーの起動
-
-1.  プロジェクトルートに `.env.local` ファイルを作成し、以下の変数を追加します:
-    ```env
+    # OpenAI API設定（チャットボット機能用）
+    OPENAI_API_KEY=your-api-key-here
+    OPENAI_MODEL=gpt-4o-mini  # オプション: デフォルトは gpt-4o-mini
+    
+    # その他の設定（オプション）
     NEXT_PUBLIC_SITE_NAME="Starseeds energy Battery"
     NEXT_TELEMETRY_DISABLED=1
     ```
+    
+    **OpenAI APIキーの取得方法:**
+    1. [OpenAI Platform](https://platform.openai.com/) にアクセス
+    2. アカウントを作成またはログイン
+    3. [API Keys](https://platform.openai.com/api-keys) ページから新しいAPIキーを作成
+    4. 作成したAPIキーを `.env.local` に設定
+    
+    **注意:** `.env.local` ファイルは `.gitignore` に含まれているため、Gitにコミットされません。
 
-2.  開発サーバーを起動します:
+### 開発サーバーの起動
+
+1.  開発サーバーを起動します:
     ```bash
     npm run dev
     ```
@@ -243,8 +194,3 @@ python scripts/make_report.py \
 - `npm run start`: プロダクションサーバーを起動
 - `npm run lint`: ESLint を実行
 - `npm run optimize:images`: 画像を最適化（`.webp`形式に変換）
-
-#### ブリッジコマンド（Python）
-- `python scripts/ci_local.py`: ローカルCI実行
-- `python scripts/make_report.py`: レポート生成
-- `python scripts/install_hooks.py`: Git hooks 再インストール

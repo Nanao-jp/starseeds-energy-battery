@@ -39,7 +39,7 @@ const DialogContent = React.forwardRef<
       ref={ref}
       className={cn(
         "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg gap-4 border bg-background p-6 shadow-lg sm:rounded-lg",
-        "data-[state=open]:modal-open data-[state=closed]:modal-closed",
+        "dialog-content-centered",
         className
       )}
       {...props}

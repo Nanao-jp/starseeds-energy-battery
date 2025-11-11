@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { geoPath, geoMercator } from "d3-geo";
 import type { FeatureCollection, GeoJsonProperties, Geometry } from "geojson";
@@ -75,60 +75,112 @@ export function JapanMap({
   selectedStatus,
   onProjectClick
 }: JapanMapProps) {
+  const [mounted, setMounted] = useState(false);
   const [geoData, setGeoData] = useState<FeatureCollection<Geometry, GeoJsonProperties> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
+  // SSR/ハイドレーション対応: クライアント側でのみ初期化
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // レスポンシブ対応: 画面サイズに応じた寸法とスケール
   const [dimensions, setDimensions] = useState(() => {
     if (propWidth && propHeight) {
       return { width: propWidth, height: propHeight, scale: MAP_INITIAL_SCALE };
     }
-    return getResponsiveDimensions();
+    // SSR時はデフォルト値を使用
+    return {
+      width: MAP_DEFAULT_SIZE.width,
+      height: MAP_DEFAULT_SIZE.height,
+      scale: MAP_INITIAL_SCALE,
+    };
   });
 
   const { width, height } = dimensions;
-  const initialScale = dimensions.scale;
+  
+  // initialScaleを動的に計算（dimensions変更時に更新される）
+  const initialScale = useMemo(() => dimensions.scale, [dimensions.scale]);
   
   // モバイル時の初期translateを計算（北海道が見えるように少し上にシフト）
-  const getInitialTranslate = (): [number, number] => {
+  const getInitialTranslate = useCallback((): [number, number] => {
     if (propWidth && propHeight) {
       return [propWidth / 2, propHeight / 2 + 50]; // デスクトップ: 下にシフト
     }
-    if (typeof window !== "undefined" && window.innerWidth < 768) {
+    if (mounted && typeof window !== "undefined" && window.innerWidth < 768) {
       // モバイル時: 少し上にシフト（北海道が見えるように）
       return [width / 2, height / 2 - 20];
     }
     // デスクトップ: 下にシフトして北海道の上部が見えるように
     return [width / 2, height / 2 + 50];
-  };
+  }, [propWidth, propHeight, width, height, mounted]);
 
   // ズーム・パンの状態管理
-  const [scale, setScale] = useState(initialScale);
-  const [translate, setTranslate] = useState<[number, number]>(getInitialTranslate());
+  const [scale, setScale] = useState(() => {
+    if (propWidth && propHeight) {
+      return MAP_INITIAL_SCALE;
+    }
+    return MAP_INITIAL_SCALE; // SSR時はデフォルト値
+  });
+  const [translate, setTranslate] = useState<[number, number]>(() => {
+    // SSR時はデフォルト値
+    if (propWidth && propHeight) {
+      return [propWidth / 2, propHeight / 2 + 50];
+    }
+    return [MAP_DEFAULT_SIZE.width / 2, MAP_DEFAULT_SIZE.height / 2 + 50];
+  });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState<[number, number] | null>(null);
   const [selectedRegion, setSelectedRegion] = useState<RegionId | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 画面リサイズ時の対応
+  // クライアント側での初期化（mounted後）
   useEffect(() => {
-    if (propWidth && propHeight) return; // プロパティで指定されている場合は変更しない
+    if (!mounted) return;
     
-    const handleResize = () => {
+    // クライアント側で正しいサイズを設定
+    if (!propWidth || !propHeight) {
       const newDims = getResponsiveDimensions();
       setDimensions(newDims);
       setScale(newDims.scale);
-      // モバイル時は少し上にシフト、デスクトップ時は下にシフト
-      const newTranslate = window.innerWidth < 768
-        ? [newDims.width / 2, newDims.height / 2 - 20] as [number, number]
-        : [newDims.width / 2, newDims.height / 2 + 50] as [number, number];
-      setTranslate(newTranslate);
+      setTranslate(getInitialTranslate());
+    }
+  }, [mounted, propWidth, propHeight, getInitialTranslate]);
+
+  // 画面リサイズ時の対応（debounce付き）
+  useEffect(() => {
+    if (!mounted) return;
+    if (propWidth && propHeight) return; // プロパティで指定されている場合は変更しない
+    
+    const handleResize = () => {
+      // 既存のタイマーをクリア
+      if (resizeTimeoutRef.current) {
+        clearTimeout(resizeTimeoutRef.current);
+      }
+      
+      // 150ms後に実行（debounce）
+      resizeTimeoutRef.current = setTimeout(() => {
+        const newDims = getResponsiveDimensions();
+        setDimensions(newDims);
+        setScale(newDims.scale);
+        // モバイル時は少し上にシフト、デスクトップ時は下にシフト
+        const newTranslate = window.innerWidth < 768
+          ? [newDims.width / 2, newDims.height / 2 - 20] as [number, number]
+          : [newDims.width / 2, newDims.height / 2 + 50] as [number, number];
+        setTranslate(newTranslate);
+      }, 150);
     };
     
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [propWidth, propHeight]);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (resizeTimeoutRef.current) {
+        clearTimeout(resizeTimeoutRef.current);
+      }
+    };
+  }, [propWidth, propHeight, mounted]);
 
   // GeoJSONデータの読み込み
   useEffect(() => {
@@ -172,7 +224,7 @@ export function JapanMap({
       .center(center)
       .scale(scale)
       .translate(translate);
-  }, [scale, translate, selectedRegion]);
+  }, [scale, translate, selectedRegion, width, height]);
 
   const pathGenerator = useMemo(() => {
     return geoPath().projection(projection);
@@ -215,18 +267,18 @@ export function JapanMap({
   };
 
   // リセット機能（全体表示に戻る）
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     setScale(initialScale);
     // モバイル時は少し上にシフト、デスクトップ時は下にシフト
-    const resetTranslate = typeof window !== "undefined" && window.innerWidth < 768
+    const resetTranslate = mounted && typeof window !== "undefined" && window.innerWidth < 768
       ? [width / 2, height / 2 - 20] as [number, number]
       : [width / 2, height / 2 + 50] as [number, number];
     setTranslate(resetTranslate);
     setSelectedRegion(null);
-  };
+  }, [initialScale, width, height, mounted]);
 
   // 地域フォーカス機能
-  const handleRegionFocus = (regionId: RegionId) => {
+  const handleRegionFocus = useCallback((regionId: RegionId) => {
     const regions = getRegions();
     const region = regions.find((r) => r.id === regionId);
     if (!region) return;
@@ -248,7 +300,7 @@ export function JapanMap({
 
     setScale(regionScale);
     setTranslate([width / 2 + offsetX, height / 2 + offsetY]);
-  };
+  }, [initialScale, width, height]);
 
   // プロジェクトのピン表示判定とフィルタリング
   const visibleProjects = useMemo(() => {
@@ -371,9 +423,9 @@ export function JapanMap({
                   initial={{ pathLength: 0, opacity: 0 }}
                   animate={{ pathLength: 1, opacity: 1 }}
                   transition={{
-                    duration: 1,
+                    duration: 0.8,
                     ease: "easeInOut",
-                    delay: index * 0.05,
+                    delay: Math.min(index * 0.02, 0.5), // 最大0.5秒まで（47都道府県でも約1秒）
                   }}
                   style={{
                     filter: `drop-shadow(0 0 4px ${MAP_STYLES.glow.dropShadow})`,
@@ -397,7 +449,7 @@ export function JapanMap({
                 animate={{ opacity: 0.9, scale: 1 }}
                 transition={{
                   duration: 0.3,
-                  delay: index * 0.05,
+                  delay: Math.min(index * 0.02, 0.3), // 最大0.3秒まで
                 }}
                 onClick={() => onProjectClick?.(project)}
                 style={{ cursor: 'pointer' }}

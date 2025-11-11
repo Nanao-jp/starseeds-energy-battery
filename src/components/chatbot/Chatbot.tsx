@@ -81,11 +81,19 @@ export function Chatbot() {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("API呼び出しに失敗しました");
-      }
-
       const data = await response.json();
+
+      // エラーレスポンスのチェック
+      if (!response.ok || data.error) {
+        const errorMessage = data.error || `API呼び出しに失敗しました (ステータス: ${response.status})`;
+        console.error("APIエラー詳細:", {
+          status: response.status,
+          statusText: response.statusText,
+          error: data.error,
+          data: data
+        });
+        throw new Error(errorMessage);
+      }
 
       // アシスタントメッセージを追加
       const assistantMessage: Message = {
@@ -103,7 +111,9 @@ export function Chatbot() {
       const errorMessage: Message = {
         id: `error-${Date.now()}`,
         role: "assistant",
-        content: "申し訳ございませんが、エラーが発生しました。しばらく時間をおいてから再度お試しください。",
+        content: error instanceof Error 
+          ? `申し訳ございませんが、エラーが発生しました: ${error.message}`
+          : "申し訳ございませんが、エラーが発生しました。しばらく時間をおいてから再度お試しください。",
         timestamp: new Date(),
       };
 
