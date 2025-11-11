@@ -392,6 +392,14 @@
     }
   }
 
+  /* LINEブラウザ用：アニメーション無効化 */
+  .animated-grid-disabled .animated-grid-lines,
+  .animated-grid-disabled .animated-grid-glow,
+  .animated-grid-disabled .animated-grid-dots {
+    animation: none !important;
+    will-change: auto !important;
+  }
+
   /* prefers-reduced-motion対応 */
   @media (prefers-reduced-motion: reduce) {
     .animated-grid-background {

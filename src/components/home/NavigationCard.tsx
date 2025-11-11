@@ -6,7 +6,7 @@ import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cardStyles, backgroundPatterns, rotatingGlowStyles } from '@/lib/styles';
 import { PRIMARY_COLOR, CARD_COLORS } from '@/lib/theme';
-import { ANIMATION, VIEWPORT } from '@/lib/animation';
+import { getAnimation, getViewport } from '@/lib/animation';
 
 interface NavigationCardProps {
   href: string;
@@ -31,8 +31,8 @@ export function NavigationCard({ href, title, description, imgSrc, index }: Navi
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={VIEWPORT.once}
-      transition={ANIMATION.normal}
+      viewport={getViewport().once}
+      transition={getAnimation().normal}
       className="h-full"
     >
       <Link href={href} className="group block h-full">

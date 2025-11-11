@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { AnimatedIcon } from "./AnimatedIcon";
 import type { KpiData } from "@/data/types";
 import { cardStyles } from "@/lib/styles";
-import { ANIMATION, VIEWPORT } from "@/lib/animation";
+import { getAnimation, getViewport } from "@/lib/animation";
 
 /**
  * KpiCard Component
@@ -55,8 +55,8 @@ export const KpiCard = memo(function KpiCard({
       onMouseLeave={handleMouseLeave}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={VIEWPORT.once}
-      transition={ANIMATION.normal}
+      viewport={getViewport().once}
+      transition={getAnimation().normal}
       whileHover={{ y: -4 }}
       role="article"
       aria-label={`${label}: ${description}`}

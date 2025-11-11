@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Zap, Radio, LucideIcon } from 'lucide-react';
 import { cardStyles, backgroundPatterns, cornerAccentStyles, TEXT_GRADIENT } from '@/lib/styles';
 import { PRIMARY_COLOR } from '@/lib/theme';
-import { ANIMATION, VIEWPORT } from '@/lib/animation';
+import { getAnimation, getViewport } from '@/lib/animation';
 
 interface FeatureCardProps {
   imageSrc: string;
@@ -58,8 +58,8 @@ export function FeatureCard({ imageSrc, imageAlt, title, description, iconName =
         opacity: 1, 
         x: 0 
       }}
-      viewport={{ ...VIEWPORT.once, amount: 0.3 }}
-      transition={ANIMATION.normal}
+      viewport={{ ...getViewport().once, amount: 0.3 }}
+      transition={getAnimation().normal}
     >
         {/* ホバー時のエネルギーフロー効果 */}
         <div 
