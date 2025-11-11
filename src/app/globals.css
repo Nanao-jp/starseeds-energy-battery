@@ -219,6 +219,202 @@
     0% { transform: translate(0, 0); }
     100% { transform: translate(50px, 50px); }
   }
+
+  /* 光るグリッドアニメーション */
+  .animated-grid-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  /* 背景画像レイヤー（グリッドの裏側） */
+  .animated-grid-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/images/grid-background.png');
+    background-size: cover; /* モバイル用 */
+    background-position: center top; /* 上部をしっかり映す */
+    background-repeat: no-repeat;
+    opacity: 0.12; /* 少しくっきりさせる */
+    filter: grayscale(100%) brightness(1.2); /* グレースケール化して明るく */
+    z-index: 0; /* グリッドの裏側に配置 */
+  }
+
+  /* デスクトップでは画像を小さく */
+  @media (min-width: 768px) {
+    .animated-grid-background::before {
+      background-size: contain; /* デスクトップでは画像全体を表示 */
+      background-position: center top;
+      max-width: 1200px; /* 最大幅を大きく（800px → 1200px） */
+      max-height: 100vh; /* 高さも制限 */
+      left: 50%;
+      transform: translateX(-50%); /* 中央配置 */
+      width: auto; /* 幅を自動調整 */
+      height: auto; /* 高さを自動調整 */
+    }
+  }
+
+  /* メイングリッドライン */
+  .animated-grid-lines {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(oklch(0.72 0.15 210 / 25%) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(0.72 0.15 210 / 25%) 1px, transparent 1px);
+    background-size: 100px 100px;
+    background-position: 0 0;
+    animation: grid-move 20s linear infinite;
+    will-change: background-position;
+    transform: translateZ(0); /* GPU アクセラレーション */
+    filter: blur(1px); /* ブラーで光る効果を強化 */
+  }
+
+  /* グロー効果（パルス） */
+  .animated-grid-glow {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(oklch(0.72 0.15 210 / 40%) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(0.72 0.15 210 / 40%) 1px, transparent 1px);
+    background-size: 100px 100px;
+    background-position: 0 0;
+    animation: grid-move 20s linear infinite, grid-glow-pulse 4s ease-in-out infinite;
+    will-change: background-position, opacity;
+    transform: translateZ(0);
+    opacity: 1;
+    filter: blur(2px); /* ブラーで光る効果を強化 */
+    box-shadow: 
+      inset 0 0 150px oklch(0.72 0.15 210 / 20%),
+      inset 0 0 300px oklch(0.72 0.15 210 / 10%),
+      0 0 200px oklch(0.72 0.15 210 / 15%); /* 外側にもグロー */
+  }
+
+  /* 交差点の光点 */
+  .animated-grid-dots {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(
+      circle 3px at center,
+      oklch(0.72 0.15 210 / 80%) 0%,
+      oklch(0.72 0.15 210 / 50%) 40%,
+      oklch(0.72 0.15 210 / 20%) 70%,
+      transparent 100%
+    );
+    background-size: 100px 100px;
+    background-position: 0 0;
+    animation: grid-move 20s linear infinite, grid-dots-pulse 3s ease-in-out infinite;
+    will-change: background-position, opacity;
+    transform: translateZ(0);
+    opacity: 1;
+    filter: blur(2px); /* ブラーで光点を拡散 */
+    box-shadow: 
+      0 0 50px oklch(0.72 0.15 210 / 30%),
+      0 0 100px oklch(0.72 0.15 210 / 15%); /* 光点の拡散 */
+  }
+
+  /* グリッド移動アニメーション */
+  @keyframes grid-move {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 100px 100px;
+    }
+  }
+
+  /* グロー効果のパルス */
+  @keyframes grid-glow-pulse {
+    0%, 100% {
+      opacity: 0.8;
+      filter: blur(2px);
+    }
+    50% {
+      opacity: 1;
+      filter: blur(3.5px); /* パルス時にブラーを強く */
+    }
+  }
+
+  /* 光点のパルス */
+  @keyframes grid-dots-pulse {
+    0%, 100% {
+      opacity: 0.9;
+      filter: blur(2px);
+    }
+    50% {
+      opacity: 1;
+      filter: blur(4px); /* パルス時にブラーを強く */
+    }
+  }
+
+  /* ライトモード対応（薄く表示） */
+  :root:not(.dark) .animated-grid-lines {
+    background-image: 
+      linear-gradient(oklch(0.1 0.02 240 / 5%) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(0.1 0.02 240 / 5%) 1px, transparent 1px);
+  }
+
+  :root:not(.dark) .animated-grid-glow {
+    background-image: 
+      linear-gradient(oklch(0.1 0.02 240 / 8%) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(0.1 0.02 240 / 8%) 1px, transparent 1px);
+    opacity: 0.3;
+  }
+
+  :root:not(.dark) .animated-grid-dots {
+    background-image: radial-gradient(
+      circle 1px at center,
+      oklch(0.1 0.02 240 / 15%) 0%,
+      transparent 50%
+    );
+    opacity: 0.4;
+  }
+
+  /* パフォーマンス最適化：モバイルでは軽量化 */
+  @media (max-width: 768px) {
+    .animated-grid-glow,
+    .animated-grid-dots {
+      opacity: 0.5;
+      animation-duration: 30s, 6s; /* アニメーション速度を遅く */
+    }
+
+    .animated-grid-lines {
+      background-size: 120px 120px; /* グリッドサイズを大きく（描画負荷軽減） */
+      animation-duration: 30s;
+    }
+
+    .animated-grid-glow {
+      background-size: 120px 120px;
+    }
+
+    .animated-grid-dots {
+      background-size: 120px 120px;
+    }
+  }
+
+  /* prefers-reduced-motion対応 */
+  @media (prefers-reduced-motion: reduce) {
+    .animated-grid-background {
+      animation: none !important;
+    }
+    
+    .animated-grid-lines,
+    .animated-grid-glow,
+    .animated-grid-dots {
+      animation: none !important;
+      will-change: auto !important;
+    }
+  }
 }
 
 /* Glass morphism utilities */
@@ -420,17 +616,18 @@
 
   .section-divider {
     position: relative;
-    height: 1px;
+    height: 3px; /* 2px → 3pxにさらに太く */
     background: linear-gradient(
       90deg,
       transparent 0%,
-      oklch(0.72 0.15 210 / 20%) 20%,
-      oklch(0.72 0.15 210 / 40%) 50%,
-      oklch(0.72 0.15 210 / 20%) 80%,
+      oklch(0.72 0.15 210 / 30%) 20%,
+      oklch(0.72 0.15 210 / 55%) 50%,
+      oklch(0.72 0.15 210 / 30%) 80%,
       transparent 100%
     );
     background-size: 200% 100%;
     animation: section-divider-shimmer 8s ease-in-out infinite;
+    margin: 2rem 0; /* 上下にマージンを追加して見やすく */
   }
 
   .section-divider::before {
@@ -438,12 +635,12 @@
     position: absolute;
     left: 0;
     right: 0;
-    top: -0.5px;
-    height: 1px;
+    top: -1.5px; /* -1px → -1.5pxに調整 */
+    height: 3px; /* 2px → 3pxに太く */
     background: linear-gradient(
       90deg,
       transparent 0%,
-      oklch(0.72 0.15 210 / 60%) 50%,
+      oklch(0.72 0.15 210 / 75%) 50%,
       transparent 100%
     );
     opacity: 0;
@@ -454,12 +651,12 @@
     content: '';
     position: absolute;
     left: 50%;
-    top: -2px;
-    width: 4px;
-    height: 4px;
+    top: -4px; /* -3px → -4pxに調整 */
+    width: 8px; /* 6px → 8pxに大きく */
+    height: 8px; /* 6px → 8pxに大きく */
     border-radius: 50%;
-    background: oklch(0.72 0.15 210 / 80%);
-    box-shadow:0 0 8px oklch(0.72 0.15 210 / 60%);
+    background: oklch(0.72 0.15 210 / 95%);
+    box-shadow: 0 0 16px oklch(0.72 0.15 210 / 75%), 0 0 32px oklch(0.72 0.15 210 / 50%); /* グローをさらに強化 */
     transform: translateX(-50%);
     animation: section-divider-glow 2s ease-in-out infinite;
   }

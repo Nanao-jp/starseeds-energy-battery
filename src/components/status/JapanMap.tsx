@@ -6,6 +6,8 @@ import { geoPath, geoMercator } from "d3-geo";
 import type { FeatureCollection, GeoJsonProperties, Geometry } from "geojson";
 import type { Project, ProjectStatus } from "@/data/types";
 import { getRegions, getRegionScale, type RegionId } from "@/data/regions";
+import { RotateCcw } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
 import {
   JAPAN_CENTER,
   MAP_INITIAL_SCALE,
@@ -132,9 +134,19 @@ export function JapanMap({
   });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState<[number, number] | null>(null);
-  const [selectedRegion, setSelectedRegion] = useState<RegionId | null>(null);
+  // 地域選択機能（コメントアウト：将来的に必要になった場合に有効化可能）
+  // const [selectedRegion, setSelectedRegion] = useState<RegionId | null>(null);
+  const selectedRegion: RegionId | null = null; // 常にnull（全体表示のみ）
   const svgRef = useRef<SVGSVGElement>(null);
   const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // ピンチズーム用の状態（モバイル）
+  const [pinchStartDistance, setPinchStartDistance] = useState<number | null>(null);
+  const [pinchStartScale, setPinchStartScale] = useState<number | null>(null);
+  
+  // ズームの最小/最大値
+  const MIN_SCALE = useMemo(() => initialScale * 0.5, [initialScale]);
+  const MAX_SCALE = useMemo(() => initialScale * 5, [initialScale]);
 
   // クライアント側での初期化（mounted後）
   useEffect(() => {
@@ -215,16 +227,17 @@ export function JapanMap({
 
   // d3-geo投影法とパスジェネレーターの設定（動的に更新）
   const projection = useMemo(() => {
-    const regions = getRegions();
-    const center = selectedRegion 
-      ? regions.find(r => r.id === selectedRegion)?.center || JAPAN_CENTER
-      : JAPAN_CENTER;
+    // 地域選択機能（コメントアウト：将来的に必要になった場合に有効化可能）
+    // const regions = getRegions();
+    // const center = selectedRegion 
+    //   ? regions.find(r => r.id === selectedRegion)?.center || JAPAN_CENTER
+    //   : JAPAN_CENTER;
     
     return geoMercator()
-      .center(center)
+      .center(JAPAN_CENTER) // 常に日本中心
       .scale(scale)
       .translate(translate);
-  }, [scale, translate, selectedRegion, width, height]);
+  }, [scale, translate, width, height]);
 
   const pathGenerator = useMemo(() => {
     return geoPath().projection(projection);
@@ -266,6 +279,109 @@ export function JapanMap({
     setDragStart(null);
   };
 
+  // マウスホイールでズーム（デスクトップ）
+  const handleWheel = (e: React.WheelEvent<SVGSVGElement>) => {
+    e.preventDefault();
+    
+    const delta = e.deltaY > 0 ? 0.9 : 1.1; // スクロールダウンで縮小、アップで拡大
+    const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale * delta));
+    
+    // マウス位置を中心にズーム
+    const rect = svgRef.current?.getBoundingClientRect();
+    if (rect) {
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const [lon, lat] = projection.invert?.([x, y]) || [0, 0];
+      
+      if (lon && lat) {
+        const scaleRatio = newScale / scale;
+        const newTranslate: [number, number] = [
+          x - (x - translate[0]) * scaleRatio,
+          y - (y - translate[1]) * scaleRatio,
+        ];
+        setTranslate(newTranslate);
+      }
+    }
+    
+    setScale(newScale);
+  };
+
+  // タッチ開始（ピンチズーム用）
+  const handleTouchStart = (e: React.TouchEvent<SVGSVGElement>) => {
+    if (e.touches.length === 2) {
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      const distance = Math.hypot(
+        touch2.clientX - touch1.clientX,
+        touch2.clientY - touch1.clientY
+      );
+      setPinchStartDistance(distance);
+      setPinchStartScale(scale);
+    } else if (e.touches.length === 1) {
+      // シングルタッチはドラッグとして扱う
+      setIsDragging(true);
+      setDragStart([e.touches[0].clientX, e.touches[0].clientY]);
+    }
+  };
+
+  // タッチ移動（ピンチズーム用）
+  const handleTouchMove = (e: React.TouchEvent<SVGSVGElement>) => {
+    if (e.touches.length === 2 && pinchStartDistance !== null && pinchStartScale !== null) {
+      // ピンチズーム
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      const distance = Math.hypot(
+        touch2.clientX - touch1.clientX,
+        touch2.clientY - touch1.clientY
+      );
+      
+      const scaleRatio = distance / pinchStartDistance;
+      const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, pinchStartScale * scaleRatio));
+      setScale(newScale);
+    } else if (e.touches.length === 1 && isDragging && dragStart) {
+      // ドラッグ
+      const dx = e.touches[0].clientX - dragStart[0];
+      const dy = e.touches[0].clientY - dragStart[1];
+      
+      setTranslate([translate[0] + dx, translate[1] + dy]);
+      setDragStart([e.touches[0].clientX, e.touches[0].clientY]);
+    }
+  };
+
+  // タッチ終了
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    setDragStart(null);
+    setPinchStartDistance(null);
+    setPinchStartScale(null);
+  };
+
+  // ズームイン（モバイル用、スライダーでは使用しない）
+  const handleZoomIn = useCallback(() => {
+    const newScale = Math.min(MAX_SCALE, scale * 1.2);
+    setScale(newScale);
+  }, [scale, MAX_SCALE]);
+
+  // ズームアウト（モバイル用、スライダーでは使用しない）
+  const handleZoomOut = useCallback(() => {
+    const newScale = Math.max(MIN_SCALE, scale * 0.8);
+    setScale(newScale);
+  }, [scale, MIN_SCALE]);
+
+  // スライダー用のズーム値（0-100の範囲に変換）
+  const zoomSliderValue = useMemo(() => {
+    const range = MAX_SCALE - MIN_SCALE;
+    return ((scale - MIN_SCALE) / range) * 100;
+  }, [scale, MIN_SCALE, MAX_SCALE]);
+
+  // スライダー変更時のハンドラー
+  const handleZoomSliderChange = useCallback((values: number[]) => {
+    const value = values[0];
+    const range = MAX_SCALE - MIN_SCALE;
+    const newScale = MIN_SCALE + (value / 100) * range;
+    setScale(newScale);
+  }, [MIN_SCALE, MAX_SCALE]);
+
   // リセット機能（全体表示に戻る）
   const handleReset = useCallback(() => {
     setScale(initialScale);
@@ -274,61 +390,63 @@ export function JapanMap({
       ? [width / 2, height / 2 - 20] as [number, number]
       : [width / 2, height / 2 + 50] as [number, number];
     setTranslate(resetTranslate);
-    setSelectedRegion(null);
+    // 地域選択機能（コメントアウト）
+    // setSelectedRegion(null);
   }, [initialScale, width, height, mounted]);
 
-  // 地域フォーカス機能
-  const handleRegionFocus = useCallback((regionId: RegionId) => {
-    const regions = getRegions();
-    const region = regions.find((r) => r.id === regionId);
-    if (!region) return;
+  // 地域フォーカス機能（コメントアウト：将来的に必要になった場合に有効化可能）
+  // const handleRegionFocus = useCallback((regionId: RegionId) => {
+  //   const regions = getRegions();
+  //   const region = regions.find((r) => r.id === regionId);
+  //   if (!region) return;
 
-    setSelectedRegion(regionId);
+  //   setSelectedRegion(regionId);
 
-    const regionScale = getRegionScale(region, initialScale);
+  //   const regionScale = getRegionScale(region, initialScale);
 
-    // スムーズなアニメーションのために、投影法を計算してtranslateを設定
-    const tempProjection = geoMercator()
-      .center(region.center)
-      .scale(regionScale)
-      .translate([width / 2, height / 2]);
+  //   // スムーズなアニメーションのために、投影法を計算してtranslateを設定
+  //   const tempProjection = geoMercator()
+  //     .center(region.center)
+  //     .scale(regionScale)
+  //     .translate([width / 2, height / 2]);
 
-    // 地域の中心を画面中央に配置
-    const [x, y] = tempProjection(region.center) || [width / 2, height / 2];
-    const offsetX = width / 2 - x;
-    const offsetY = height / 2 - y;
+  //   // 地域の中心を画面中央に配置
+  //   const [x, y] = tempProjection(region.center) || [width / 2, height / 2];
+  //   const offsetX = width / 2 - x;
+  //   const offsetY = height / 2 - y;
 
-    setScale(regionScale);
-    setTranslate([width / 2 + offsetX, height / 2 + offsetY]);
-  }, [initialScale, width, height]);
+  //   setScale(regionScale);
+  //   setTranslate([width / 2 + offsetX, height / 2 + offsetY]);
+  // }, [initialScale, width, height]);
 
   // プロジェクトのピン表示判定とフィルタリング
   const visibleProjects = useMemo(() => {
-    if (selectedRegion) {
-      // 地域選択時：その地域のプロジェクトのみ（暫定的に座標から判断）
-      const regions = getRegions();
-      const region = regions.find((r) => r.id === selectedRegion);
-      if (!region) return [];
+    // 地域選択機能（コメントアウト：将来的に必要になった場合に有効化可能）
+    // if (selectedRegion) {
+    //   // 地域選択時：その地域のプロジェクトのみ（暫定的に座標から判断）
+    //   const regions = getRegions();
+    //   const region = regions.find((r) => r.id === selectedRegion);
+    //   if (!region) return [];
 
-      // 地域の中心座標から一定範囲内のプロジェクトを表示
-      // 簡易実装：地域に応じたフィルタリング（後で改善可能）
-      return projects.filter((project) => {
-        // ステータスフィルタ
-        if (selectedStatus && project.status !== selectedStatus) return false;
+    //   // 地域の中心座標から一定範囲内のプロジェクトを表示
+    //   // 簡易実装：地域に応じたフィルタリング（後で改善可能）
+    //   return projects.filter((project) => {
+    //     // ステータスフィルタ
+    //     if (selectedStatus && project.status !== selectedStatus) return false;
 
-        // 地域フィルタ（座標から大まかに判断）
-        const [lon, lat] = project.coordinates;
-        const [regionLon, regionLat] = region.center;
+    //     // 地域フィルタ（座標から大まかに判断）
+    //     const [lon, lat] = project.coordinates;
+    //     const [regionLon, regionLat] = region.center;
 
-        // 地域の中心から閾値以内（簡易実装）
-        const lonDiff = Math.abs(lon - regionLon);
-        const latDiff = Math.abs(lat - regionLat);
-        return (
-          lonDiff < REGION_FILTER_THRESHOLD &&
-          latDiff < REGION_FILTER_THRESHOLD
-        );
-      });
-    }
+    //     // 地域の中心から閾値以内（簡易実装）
+    //     const lonDiff = Math.abs(lon - regionLon);
+    //     const latDiff = Math.abs(lat - regionLat);
+    //     return (
+    //       lonDiff < REGION_FILTER_THRESHOLD &&
+    //       latDiff < REGION_FILTER_THRESHOLD
+    //     );
+    //   });
+    // }
 
     // 全体表示時：ステータスフィルタのみ
     if (selectedStatus) {
@@ -336,7 +454,7 @@ export function JapanMap({
     }
 
     return projects;
-  }, [projects, selectedRegion, selectedStatus]);
+  }, [projects, selectedStatus]);
 
   const shouldShowPins = visibleProjects.length > 0;
 
@@ -366,6 +484,27 @@ export function JapanMap({
 
   return (
     <div className="relative w-full h-full min-h-[400px] md:min-h-[600px] flex items-center justify-center overflow-hidden pt-16 md:pt-0">
+      {/* サイドバー式ズームスライダー（デスクトップのみ） */}
+      <div className="hidden md:block absolute right-4 top-1/2 -translate-y-1/2 z-20">
+        <div className="bg-black/90 backdrop-blur-md border border-primary/20 rounded-lg p-4">
+          <div className="flex flex-col items-center gap-4 h-64">
+            <span className="text-xs text-primary/70 font-medium">ズーム</span>
+            <Slider
+              orientation="vertical"
+              value={[zoomSliderValue]}
+              onValueChange={handleZoomSliderChange}
+              min={0}
+              max={100}
+              step={1}
+              className="h-full"
+            />
+            <div className="flex flex-col items-center gap-1 text-xs text-primary/50">
+              <span>{Math.round((zoomSliderValue / 100) * 100)}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* SVGコンテナ - レスポンシブ対応 */}
       <div className="relative w-full h-full max-w-full" style={{ aspectRatio: `${width} / ${height}`, minHeight: '400px' }}>
         {/* 背景グリッドパターン */}
@@ -404,6 +543,10 @@ export function JapanMap({
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
+          onWheel={handleWheel}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         >
           {/* 日本列島の輪郭線（GeoJSONから生成） */}
           <g className="japan-outline">
@@ -527,11 +670,41 @@ export function JapanMap({
       <div className="absolute top-0 left-0 right-0 z-10">
         <div className="bg-black/90 backdrop-blur-md border-b border-primary/20">
           <div className="container mx-auto px-4 py-3">
-            {/* 地域選択バー */}
-            {/* モバイル: 5列グリッド（2行）、デスクトップ: 横スクロール */}
+            <div className="flex items-center justify-between gap-4">
+              {/* 左側: リセットボタンとピン表示インジケーター */}
+              <div className="flex items-center gap-4">
+                {/* リセットボタン */}
+                <button
+                  onClick={handleReset}
+                  className="px-4 py-2 text-sm rounded transition-all duration-300 bg-black/60 text-primary/70 hover:text-primary hover:bg-primary/10 border border-primary/20 flex items-center gap-2"
+                  aria-label="全体表示に戻る"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  <span className="hidden sm:inline">リセット</span>
+                </button>
+                
+                {/* ピン表示中のインジケーター */}
+                {shouldShowPins && (
+                  <div className="flex items-center gap-2 text-primary text-xs">
+                    <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                    <span>{visibleProjects.length}件表示</span>
+                  </div>
+                )}
+              </div>
+
+              {/* 右側: ズームコントロール（デスクトップのみ） */}
+              {/* ボタンは削除、サイドバー式スライダーに変更 */}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 地域選択バー（コメントアウト：将来的に必要になった場合に有効化可能） */}
+      {/* <div className="absolute top-0 left-0 right-0 z-10">
+        <div className="bg-black/90 backdrop-blur-md border-b border-primary/20">
+          <div className="container mx-auto px-4 py-3">
             <div className="md:flex md:items-center md:gap-2 md:overflow-x-auto md:scrollbar-hide pb-1">
               <div className="grid grid-cols-5 gap-2 md:grid-cols-none md:flex md:flex-nowrap">
-                {/* 全体表示ボタン */}
                 <button
                   onClick={handleReset}
                   className={`px-4 py-2 text-sm rounded transition-all duration-300 whitespace-nowrap ${
@@ -544,7 +717,6 @@ export function JapanMap({
                   全体
                 </button>
                 
-                {/* 地域ボタン */}
                 {getRegions().map((region) => (
                   <button
                     key={region.id}
@@ -560,7 +732,6 @@ export function JapanMap({
                 ))}
               </div>
               
-              {/* ピン表示中のインジケーター */}
               {shouldShowPins && (
                 <div className="flex-shrink-0 md:ml-auto flex items-center gap-2 text-primary text-xs mt-2 md:mt-0 col-span-5 md:col-span-1">
                   <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
@@ -570,7 +741,7 @@ export function JapanMap({
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

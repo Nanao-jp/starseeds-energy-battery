@@ -1,5 +1,6 @@
 import dynamic from 'next/dynamic';
 import { HeroSection } from '@/components/home/HeroSection';
+import { AnimatedGrid } from '@/components/layout/AnimatedGrid';
 
 // 非クリティカルコンポーネントの遅延読み込み
 const KpiSection = dynamic(() => import('@/components/home/KpiSection').then(mod => ({ default: mod.KpiSection })), {
@@ -17,6 +18,7 @@ const NavigationCardsSection = dynamic(() => import('@/components/home/Navigatio
 export default function HomePage() {
   return (
     <div className="space-y-24 mb-24 overflow-x-clip">
+      <AnimatedGrid />
       <HeroSection />
 
       <KpiSection />
