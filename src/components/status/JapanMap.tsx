@@ -326,8 +326,13 @@ export function JapanMap({
   const handleTouchStart = useCallback((e: React.TouchEvent<SVGSVGElement>) => {
     if (e.touches.length === 1) {
       // シングルタッチはドラッグとして扱う
-      // ページスクロールを防ぐ
-      e.preventDefault();
+      // touchAction: "none"が設定されているため、preventDefaultは不要
+      // ただし、念のためtry-catchで囲む
+      try {
+        e.preventDefault();
+      } catch (err) {
+        // passive event listenerの場合は無視
+      }
       setIsDragging(true);
       setDragStart([e.touches[0].clientX, e.touches[0].clientY]);
     }
@@ -336,8 +341,13 @@ export function JapanMap({
   // タッチ移動（ドラッグのみ、FPS制限付き）
   const handleTouchMove = useCallback((e: React.TouchEvent<SVGSVGElement>) => {
     if (e.touches.length === 1 && isDragging && dragStart) {
-      // ページスクロールを防ぐ
-      e.preventDefault();
+      // touchAction: "none"が設定されているため、preventDefaultは不要
+      // ただし、念のためtry-catchで囲む
+      try {
+        e.preventDefault();
+      } catch (err) {
+        // passive event listenerの場合は無視
+      }
       // ドラッグ
       const dx = e.touches[0].clientX - dragStart[0];
       const dy = e.touches[0].clientY - dragStart[1];
@@ -370,7 +380,13 @@ export function JapanMap({
 
   // タッチ終了
   const handleTouchEnd = useCallback((e: React.TouchEvent<SVGSVGElement>) => {
-    e.preventDefault();
+    // touchAction: "none"が設定されているため、preventDefaultは不要
+    // ただし、念のためtry-catchで囲む
+    try {
+      e.preventDefault();
+    } catch (err) {
+      // passive event listenerの場合は無視
+    }
     setIsDragging(false);
     setDragStart(null);
     if (rafRef.current !== null) {
