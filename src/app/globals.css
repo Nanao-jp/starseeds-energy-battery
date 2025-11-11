@@ -274,10 +274,10 @@
       linear-gradient(90deg, oklch(0.72 0.15 210 / 25%) 1px, transparent 1px);
     background-size: 100px 100px;
     background-position: 0 0;
-    animation: grid-move 20s linear infinite;
+    animation: grid-move 20s steps(400, end) infinite; /* 20fps制限（20s × 20fps = 400ステップ） */
     will-change: background-position;
     transform: translateZ(0); /* GPU アクセラレーション */
-    filter: blur(1px); /* ブラーで光る効果を強化 */
+    filter: blur(1px); /* ブラーで光る効果を強化（固定値） */
   }
 
   /* グロー効果（パルス） */
@@ -289,15 +289,11 @@
       linear-gradient(90deg, oklch(0.72 0.15 210 / 40%) 1px, transparent 1px);
     background-size: 100px 100px;
     background-position: 0 0;
-    animation: grid-move 20s linear infinite, grid-glow-pulse 4s ease-in-out infinite;
+    animation: grid-move 20s steps(400, end) infinite, grid-glow-pulse 4s steps(80, end) infinite; /* 20fps制限 */
     will-change: background-position, opacity;
     transform: translateZ(0);
     opacity: 1;
-    filter: blur(2px); /* ブラーで光る効果を強化 */
-    box-shadow: 
-      inset 0 0 150px oklch(0.72 0.15 210 / 20%),
-      inset 0 0 300px oklch(0.72 0.15 210 / 10%),
-      0 0 200px oklch(0.72 0.15 210 / 15%); /* 外側にもグロー */
+    filter: blur(2px); /* ブラーで光る効果を強化（固定値） */
   }
 
   /* 交差点の光点 */
@@ -313,14 +309,11 @@
     );
     background-size: 100px 100px;
     background-position: 0 0;
-    animation: grid-move 20s linear infinite, grid-dots-pulse 3s ease-in-out infinite;
+    animation: grid-move 20s steps(400, end) infinite, grid-dots-pulse 3s steps(60, end) infinite; /* 20fps制限 */
     will-change: background-position, opacity;
     transform: translateZ(0);
     opacity: 1;
-    filter: blur(2px); /* ブラーで光点を拡散 */
-    box-shadow: 
-      0 0 50px oklch(0.72 0.15 210 / 30%),
-      0 0 100px oklch(0.72 0.15 210 / 15%); /* 光点の拡散 */
+    filter: blur(2px); /* ブラーで光点を拡散（固定値） */
   }
 
   /* グリッド移動アニメーション */
@@ -333,27 +326,23 @@
     }
   }
 
-  /* グロー効果のパルス */
+  /* グロー効果のパルス（opacityのみアニメーション） */
   @keyframes grid-glow-pulse {
     0%, 100% {
-      opacity: 0.8;
-      filter: blur(2px);
+      opacity: 0.75;
     }
     50% {
       opacity: 1;
-      filter: blur(3.5px); /* パルス時にブラーを強く */
     }
   }
 
-  /* 光点のパルス */
+  /* 光点のパルス（opacityのみアニメーション） */
   @keyframes grid-dots-pulse {
     0%, 100% {
-      opacity: 0.9;
-      filter: blur(2px);
+      opacity: 0.85;
     }
     50% {
       opacity: 1;
-      filter: blur(4px); /* パルス時にブラーを強く */
     }
   }
 
@@ -385,20 +374,21 @@
     .animated-grid-glow,
     .animated-grid-dots {
       opacity: 0.5;
-      animation-duration: 30s, 6s; /* アニメーション速度を遅く */
     }
 
     .animated-grid-lines {
       background-size: 120px 120px; /* グリッドサイズを大きく（描画負荷軽減） */
-      animation-duration: 30s;
+      animation: grid-move 30s steps(600, end) infinite; /* 20fps制限（30s × 20fps = 600ステップ） */
     }
 
     .animated-grid-glow {
       background-size: 120px 120px;
+      animation: grid-move 30s steps(600, end) infinite, grid-glow-pulse 6s steps(120, end) infinite; /* 20fps制限 */
     }
 
     .animated-grid-dots {
       background-size: 120px 120px;
+      animation: grid-move 30s steps(600, end) infinite, grid-dots-pulse 6s steps(120, end) infinite; /* 20fps制限 */
     }
   }
 
