@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { MapPin, Zap, Clock, Building2, Power, FileText, Tag } from "lucide-react";
+import { MapPin, Zap, Clock, Power, FileText } from "lucide-react";
 import type { Project } from "@/data/types";
 import { PRIMARY_COLOR } from "@/lib/theme";
 import {
@@ -94,17 +94,8 @@ export function ProjectDetailModal({
               </div>
             )}
 
-            {project.purchaseFrom && (
-              <div className="flex items-start gap-3 p-3 rounded-lg bg-black/30 border border-primary/10 hover:border-primary/30 transition-all">
-                <Building2 className="w-5 h-5 mt-0.5 text-primary flex-shrink-0" style={{ filter: `drop-shadow(0 0 4px ${PRIMARY_COLOR.glow.medium})` }} />
-                <div>
-                  <p className="font-medium text-xs text-primary/60 mb-1">購入元</p>
-                  <p className="text-sm text-foreground">{project.purchaseFrom}</p>
-                </div>
-              </div>
-            )}
-
-            {project.type && (
+            {/* 種別 - 一時的に非表示 */}
+            {/* {project.type && (
               <div className="flex items-start gap-3 p-3 rounded-lg bg-black/30 border border-primary/10 hover:border-primary/30 transition-all">
                 <Tag className="w-5 h-5 mt-0.5 text-primary flex-shrink-0" style={{ filter: `drop-shadow(0 0 4px ${PRIMARY_COLOR.glow.medium})` }} />
                 <div>
@@ -112,7 +103,7 @@ export function ProjectDetailModal({
                   <p className="text-sm text-foreground">{project.type}</p>
                 </div>
               </div>
-            )}
+            )} */}
 
             {project.lotNumber && (
               <div className="flex items-start gap-3 p-3 rounded-lg bg-black/30 border border-primary/10 hover:border-primary/30 transition-all">

@@ -329,14 +329,12 @@ export function JapanMap({
   // タッチ開始（ドラッグのみ）
   const handleTouchStart = useCallback((e: React.TouchEvent<SVGSVGElement>) => {
     if (e.touches.length === 1) {
+      // ピン要素のタッチは無視（ピン自体のタッチハンドラーで処理）
+      if ((e.target as SVGElement).closest('g[data-project-pin]')) {
+        return;
+      }
       // シングルタッチはドラッグとして扱う
       // touchAction: "none"が設定されているため、preventDefaultは不要
-      // ただし、念のためtry-catchで囲む
-      try {
-        e.preventDefault();
-      } catch (err) {
-        // passive event listenerの場合は無視
-      }
       setIsDragging(true);
       setDragStart([e.touches[0].clientX, e.touches[0].clientY]);
     }
@@ -346,12 +344,6 @@ export function JapanMap({
   const handleTouchMove = useCallback((e: React.TouchEvent<SVGSVGElement>) => {
     if (e.touches.length === 1 && isDragging && dragStart) {
       // touchAction: "none"が設定されているため、preventDefaultは不要
-      // ただし、念のためtry-catchで囲む
-      try {
-        e.preventDefault();
-      } catch (err) {
-        // passive event listenerの場合は無視
-      }
       // ドラッグ
       const dx = e.touches[0].clientX - dragStart[0];
       const dy = e.touches[0].clientY - dragStart[1];
@@ -385,12 +377,6 @@ export function JapanMap({
   // タッチ終了
   const handleTouchEnd = useCallback((e: React.TouchEvent<SVGSVGElement>) => {
     // touchAction: "none"が設定されているため、preventDefaultは不要
-    // ただし、念のためtry-catchで囲む
-    try {
-      e.preventDefault();
-    } catch (err) {
-      // passive event listenerの場合は無視
-    }
     setIsDragging(false);
     setDragStart(null);
     if (rafRef.current !== null) {
@@ -572,9 +558,9 @@ export function JapanMap({
   }, [mounted]);
 
   // ピンサイズ（モバイルでは大きく）
-  const pinRadius = isMobile ? 12 : 6;
-  const pulseRadius = isMobile ? 16 : 8;
-  const glowRadius = isMobile ? 24 : 12;
+  const pinRadius = isMobile ? 20 : 6;
+  const pulseRadius = isMobile ? 28 : 8;
+  const glowRadius = isMobile ? 36 : 12;
 
   // ローディング中の表示
   if (isLoading) {
@@ -734,7 +720,33 @@ export function JapanMap({
                 onMouseDown={(e) => {
                   e.stopPropagation();
                 }}
-                style={{ cursor: 'pointer', pointerEvents: 'all' }}
+                onTouchStart={(e) => {
+                  e.stopPropagation();
+                  // タッチ開始位置を記録（クリック判定用）
+                  const touch = e.touches[0];
+                  (e.currentTarget as SVGElement).setAttribute('data-touch-start-x', touch.clientX.toString());
+                  (e.currentTarget as SVGElement).setAttribute('data-touch-start-y', touch.clientY.toString());
+                }}
+                onTouchEnd={(e) => {
+                  e.stopPropagation();
+                  // タッチ開始位置と終了位置が近い場合はクリックとして扱う
+                  const startX = parseFloat((e.currentTarget as SVGElement).getAttribute('data-touch-start-x') || '0');
+                  const startY = parseFloat((e.currentTarget as SVGElement).getAttribute('data-touch-start-y') || '0');
+                  const touch = e.changedTouches[0];
+                  const endX = touch.clientX;
+                  const endY = touch.clientY;
+                  const distance = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+                  
+                  // 10ピクセル以内の移動はクリックとして扱う
+                  if (distance < 10) {
+                    onProjectClick?.(project);
+                  }
+                  
+                  // 属性をクリア
+                  (e.currentTarget as SVGElement).removeAttribute('data-touch-start-x');
+                  (e.currentTarget as SVGElement).removeAttribute('data-touch-start-y');
+                }}
+                style={{ cursor: 'pointer', pointerEvents: 'all', touchAction: 'manipulation' }}
               >
                 {/* メインピン */}
                 <circle
