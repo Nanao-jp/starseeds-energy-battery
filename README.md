@@ -164,6 +164,11 @@ TOPページのリファクタリングを完了し、コードの保守性と�
     OPENAI_API_KEY=your-api-key-here
     OPENAI_MODEL=gpt-4o-mini  # オプション: デフォルトは gpt-4o-mini
     
+    # プロジェクトデータAPI設定（実績・工事状況ページ用）
+    # 本番データのAPI URLを設定すると、そのAPIからデータを取得します
+    # 設定されていない場合は、モックデータ（src/data/projects.ts）が使用されます
+    PROJECTS_API_URL=https://your-api-endpoint.com/api/projects
+    
     # その他の設定（オプション）
     NEXT_PUBLIC_SITE_NAME="Starseeds energy Battery"
     NEXT_TELEMETRY_DISABLED=1

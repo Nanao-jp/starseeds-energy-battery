@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { MapPin, Zap, Clock } from "lucide-react";
+import { MapPin, Zap, Clock, Building2, Power, FileText, Tag } from "lucide-react";
 import type { Project } from "@/data/types";
 import { PRIMARY_COLOR } from "@/lib/theme";
 import {
@@ -74,13 +74,65 @@ export function ProjectDetailModal({
               </div>
             </div>
 
-            <div className="flex items-start gap-3 p-3 rounded-lg bg-black/30 border border-primary/10 hover:border-primary/30 transition-all">
-              <Zap className="w-5 h-5 mt-0.5 text-primary flex-shrink-0" style={{ filter: `drop-shadow(0 0 4px ${PRIMARY_COLOR.glow.medium})` }} />
-              <div>
-                <p className="font-medium text-xs text-primary/60 mb-1">容量・エネルギー</p>
-                <p className="text-sm text-foreground">{project.capacityMW}MW / {project.energyMWh}MWh</p>
+            {(project.capacityMW > 0 || project.energyMWh > 0) && (
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-black/30 border border-primary/10 hover:border-primary/30 transition-all">
+                <Zap className="w-5 h-5 mt-0.5 text-primary flex-shrink-0" style={{ filter: `drop-shadow(0 0 4px ${PRIMARY_COLOR.glow.medium})` }} />
+                <div>
+                  <p className="font-medium text-xs text-primary/60 mb-1">容量・エネルギー</p>
+                  <p className="text-sm text-foreground">{project.capacityMW}MW / {project.energyMWh}MWh</p>
+                </div>
               </div>
-            </div>
+            )}
+
+            {project.powerArea && (
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-black/30 border border-primary/10 hover:border-primary/30 transition-all">
+                <Power className="w-5 h-5 mt-0.5 text-primary flex-shrink-0" style={{ filter: `drop-shadow(0 0 4px ${PRIMARY_COLOR.glow.medium})` }} />
+                <div>
+                  <p className="font-medium text-xs text-primary/60 mb-1">電力エリア</p>
+                  <p className="text-sm text-foreground">{project.powerArea}</p>
+                </div>
+              </div>
+            )}
+
+            {project.purchaseFrom && (
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-black/30 border border-primary/10 hover:border-primary/30 transition-all">
+                <Building2 className="w-5 h-5 mt-0.5 text-primary flex-shrink-0" style={{ filter: `drop-shadow(0 0 4px ${PRIMARY_COLOR.glow.medium})` }} />
+                <div>
+                  <p className="font-medium text-xs text-primary/60 mb-1">購入元</p>
+                  <p className="text-sm text-foreground">{project.purchaseFrom}</p>
+                </div>
+              </div>
+            )}
+
+            {project.type && (
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-black/30 border border-primary/10 hover:border-primary/30 transition-all">
+                <Tag className="w-5 h-5 mt-0.5 text-primary flex-shrink-0" style={{ filter: `drop-shadow(0 0 4px ${PRIMARY_COLOR.glow.medium})` }} />
+                <div>
+                  <p className="font-medium text-xs text-primary/60 mb-1">種別</p>
+                  <p className="text-sm text-foreground">{project.type}</p>
+                </div>
+              </div>
+            )}
+
+            {project.lotNumber && (
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-black/30 border border-primary/10 hover:border-primary/30 transition-all">
+                <FileText className="w-5 h-5 mt-0.5 text-primary flex-shrink-0" style={{ filter: `drop-shadow(0 0 4px ${PRIMARY_COLOR.glow.medium})` }} />
+                <div>
+                  <p className="font-medium text-xs text-primary/60 mb-1">地番</p>
+                  <p className="text-sm text-foreground">{project.lotNumber}</p>
+                </div>
+              </div>
+            )}
+
+            {project.landCategory && (
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-black/30 border border-primary/10 hover:border-primary/30 transition-all">
+                <FileText className="w-5 h-5 mt-0.5 text-primary flex-shrink-0" style={{ filter: `drop-shadow(0 0 4px ${PRIMARY_COLOR.glow.medium})` }} />
+                <div>
+                  <p className="font-medium text-xs text-primary/60 mb-1">地目</p>
+                  <p className="text-sm text-foreground">{project.landCategory}</p>
+                </div>
+              </div>
+            )}
 
             <div className="flex items-start gap-3 p-3 rounded-lg bg-black/30 border border-primary/10 hover:border-primary/30 transition-all">
               <Clock className="w-5 h-5 mt-0.5 text-primary flex-shrink-0" style={{ filter: `drop-shadow(0 0 4px ${PRIMARY_COLOR.glow.medium})` }} />
@@ -91,23 +143,25 @@ export function ProjectDetailModal({
                 <p className="text-sm text-foreground">
                   {project.status === 'operational' 
                     ? project.startDate 
-                    : project.plannedDate}
+                    : project.plannedDate || '未定'}
                 </p>
               </div>
             </div>
           </div>
 
           {/* 説明 - サイバーテックな区切り */}
-          <div className="relative pt-4 border-t border-primary/20">
-            <div 
-              className="absolute top-0 left-0 right-0 h-px opacity-30"
-              style={{
-                background: `linear-gradient(90deg, transparent, ${PRIMARY_COLOR.base}, transparent)`,
-              }}
-            />
-            <h3 className="font-semibold mb-3 text-primary text-sm">プロジェクト概要</h3>
-            <p className="text-muted-foreground leading-relaxed text-sm">{project.description}</p>
-          </div>
+          {project.description && (
+            <div className="relative pt-4 border-t border-primary/20">
+              <div 
+                className="absolute top-0 left-0 right-0 h-px opacity-30"
+                style={{
+                  background: `linear-gradient(90deg, transparent, ${PRIMARY_COLOR.base}, transparent)`,
+                }}
+              />
+              <h3 className="font-semibold mb-3 text-primary text-sm">プロジェクト概要</h3>
+              <p className="text-muted-foreground leading-relaxed text-sm">{project.description}</p>
+            </div>
+          )}
 
           {/* 写真（あれば） */}
           {project.photos && project.photos.length > 0 && (

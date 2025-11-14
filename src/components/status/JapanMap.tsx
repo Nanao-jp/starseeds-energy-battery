@@ -74,8 +74,8 @@ export function JapanMap({
   projects = [],
   onProjectClick
 }: JapanMapProps) {
-  // フィルター状態を内部で管理（デフォルトは稼働中）
-  const [selectedStatus, setSelectedStatus] = useState<ProjectStatus | null>("operational");
+  // フィルター状態を内部で管理（デフォルトは全表示）
+  const [selectedStatus, setSelectedStatus] = useState<ProjectStatus | null>(null);
   const [mounted, setMounted] = useState(false);
   const [geoData, setGeoData] = useState<FeatureCollection<Geometry, GeoJsonProperties> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -271,6 +271,10 @@ export function JapanMap({
   // ドラッグ開始
   const handleMouseDown = useCallback((e: React.MouseEvent<SVGSVGElement>) => {
     if (e.button !== 0) return; // 左クリックのみ
+    // ピン要素のクリックは無視（ピン自体のクリックハンドラーで処理）
+    if ((e.target as SVGElement).closest('g[data-project-pin]')) {
+      return;
+    }
     setIsDragging(true);
     setDragStart([e.clientX, e.clientY]);
   }, []);
@@ -495,8 +499,67 @@ export function JapanMap({
     return projects;
   }, [projects, selectedStatus]);
 
-  // ステータス名のマッピング
-  const statusLabels: Record<ProjectStatus, string> = {
+  // 近接するプロジェクトのオフセットを計算（SVG座標系で使用）
+  const projectOffsets = useMemo(() => {
+    if (!projection || visibleProjects.length === 0) return new Map<string, [number, number]>();
+    
+    const offsets = new Map<string, [number, number]>();
+    const CLOSE_THRESHOLD = 15; // SVG座標系での近接判定閾値（ピクセル）
+    
+    // 各プロジェクトのSVG座標を計算
+    const svgCoords = visibleProjects.map(project => {
+      const [x, y] = projectPoint(project.coordinates);
+      return { project, x, y };
+    });
+    
+    // 近接するプロジェクトをグループ化
+    const groups: Array<Array<typeof svgCoords[0]>> = [];
+    const processed = new Set<string>();
+    
+    svgCoords.forEach((coord1, i) => {
+      if (processed.has(coord1.project.id)) return;
+      
+      const group = [coord1];
+      processed.add(coord1.project.id);
+      
+      svgCoords.forEach((coord2, j) => {
+        if (i === j || processed.has(coord2.project.id)) return;
+        
+        const dx = coord2.x - coord1.x;
+        const dy = coord2.y - coord1.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < CLOSE_THRESHOLD) {
+          group.push(coord2);
+          processed.add(coord2.project.id);
+        }
+      });
+      
+      if (group.length > 1) {
+        groups.push(group);
+      }
+    });
+    
+    // グループ内のプロジェクトを円形に配置
+    groups.forEach(group => {
+      const centerX = group.reduce((sum, c) => sum + c.x, 0) / group.length;
+      const centerY = group.reduce((sum, c) => sum + c.y, 0) / group.length;
+      const radius = Math.max(12, group.length * 4); // グループサイズに応じて半径を調整
+      
+      group.forEach((coord, index) => {
+        const angle = (2 * Math.PI * index) / group.length;
+        const offsetX = Math.cos(angle) * radius;
+        const offsetY = Math.sin(angle) * radius;
+        offsets.set(coord.project.id, [offsetX, offsetY]);
+      });
+    });
+    
+    return offsets;
+  }, [visibleProjects, projection, projectPoint]);
+
+  // ステータス名のマッピング（すべてを含む）
+  const statusLabels: Record<ProjectStatus | "all", string> = {
+    all: "すべて",
     operational: "稼働中",
     construction: "工事中",
     planning: "計画中",
@@ -653,15 +716,25 @@ export function JapanMap({
 
           {/* プロジェクトピン（ドラッグ中・ズーム中は非表示） */}
           {!isDragging && !isZooming && pathGenerator && visibleProjects.map((project, index) => {
-            const [x, y] = projectPoint(project.coordinates);
+            const [baseX, baseY] = projectPoint(project.coordinates);
+            const offset = projectOffsets.get(project.id) || [0, 0];
+            const x = baseX + offset[0];
+            const y = baseY + offset[1];
             const pinColor = getStatusColorForPin(project.status);
             const rgb = getPinColorRGB(project.status);
             
             return (
               <g
                 key={project.id}
-                onClick={() => onProjectClick?.(project)}
-                style={{ cursor: 'pointer' }}
+                data-project-pin="true"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onProjectClick?.(project);
+                }}
+                onMouseDown={(e) => {
+                  e.stopPropagation();
+                }}
+                style={{ cursor: 'pointer', pointerEvents: 'all' }}
               >
                 {/* メインピン */}
                 <circle
@@ -736,12 +809,12 @@ export function JapanMap({
       <div className="absolute top-4 left-4 z-10">
         <div className="flex items-center gap-2 flex-wrap">
           {/* ステータスフィルターボタン */}
-          {(Object.keys(statusLabels) as ProjectStatus[]).map((status) => (
+          {(Object.keys(statusLabels) as Array<ProjectStatus | "all">).map((status) => (
             <button
               key={status}
-              onClick={() => setSelectedStatus(selectedStatus === status ? null : status)}
+              onClick={() => setSelectedStatus(status === "all" ? null : (selectedStatus === status ? null : status))}
               className={`px-4 py-2 text-sm rounded transition-all duration-300 whitespace-nowrap ${
-                selectedStatus === status
+                (status === "all" && selectedStatus === null) || (status !== "all" && selectedStatus === status)
                   ? "bg-primary/20 text-primary border border-primary/40"
                   : "bg-black/80 backdrop-blur-sm text-primary/70 hover:text-primary hover:bg-primary/10 border border-primary/20"
               }`}

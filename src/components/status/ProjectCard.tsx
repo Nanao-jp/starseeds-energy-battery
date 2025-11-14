@@ -41,12 +41,14 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
           <MapPin className="w-3.5 h-3.5 mr-1.5" />
           <span className="truncate">{project.region}</span>
         </div>
-        <div className="flex items-center text-muted-foreground">
-          <Zap className="w-3.5 h-3.5 mr-1.5" />
-          <span>
-            {project.capacityMW}MW / {project.energyMWh}MWh
-          </span>
-        </div>
+        {(project.capacityMW > 0 || project.energyMWh > 0) && (
+          <div className="flex items-center text-muted-foreground">
+            <Zap className="w-3.5 h-3.5 mr-1.5" />
+            <span>
+              {project.capacityMW}MW / {project.energyMWh}MWh
+            </span>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

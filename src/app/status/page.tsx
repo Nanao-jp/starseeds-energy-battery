@@ -17,7 +17,7 @@ import { ANIMATION, VIEWPORT } from "@/lib/animation";
 import { PRIMARY_COLOR } from "@/lib/theme";
 
 export default function StatusPage() {
-  const [activeTab, setActiveTab] = useState<ProjectStatus>("operational");
+  const [activeTab, setActiveTab] = useState<ProjectStatus | "all">("all");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -110,7 +110,7 @@ export default function StatusPage() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <Tabs
           value={activeTab}
-          onValueChange={(value) => setActiveTab(value as ProjectStatus)}
+          onValueChange={(value) => setActiveTab(value as ProjectStatus | "all")}
         >
           <TabsList>
             {STATUS_TABS.map((tab) => (
@@ -123,7 +123,7 @@ export default function StatusPage() {
             <TabsContent key={tab.value} value={tab.value}>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
                 {projects
-                  .filter((p) => p.status === tab.value)
+                  .filter((p) => tab.value === "all" || p.status === tab.value)
                   .map((project) => (
                     <ProjectCard
                       key={project.id}

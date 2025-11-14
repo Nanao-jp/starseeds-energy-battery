@@ -89,9 +89,10 @@ export function getPinColorRGB(status: ProjectStatus): { r: number; g: number; b
 }
 
 /**
- * タブ定義
+ * タブ定義（すべてを含む）
  */
-export const STATUS_TABS: Array<{ value: ProjectStatus; label: string }> = [
+export const STATUS_TABS: Array<{ value: ProjectStatus | "all"; label: string }> = [
+  { value: "all", label: "すべて" },
   { value: "operational", label: STATUS_LABELS.operational },
   { value: "construction", label: STATUS_LABELS.construction },
   { value: "planning", label: STATUS_LABELS.planning },

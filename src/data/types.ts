@@ -14,6 +14,12 @@ export interface Project {
   plannedDate?: string;
   description: string;
   photos: string[];
+  // 追加情報
+  purchaseFrom?: string; // 購入元
+  powerArea?: string; // 電力エリア
+  lotNumber?: string; // 地番
+  landCategory?: string; // 地目
+  type?: string; // 種別（販売、運用）
 }
 
 export interface NewsArticle {
