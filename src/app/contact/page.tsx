@@ -16,7 +16,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { PageHeader } from '@/components/layout/PageLayout';
+import { PageHeader, Section } from '@/components/layout/PageLayout';
+import { PRIMARY_COLOR } from "@/lib/theme";
 
 const formSchema = z.object({
   companyName: z.string().min(1, { message: "会社名を入力してください。" }),
@@ -50,83 +51,143 @@ export default function ContactPage() {
   return (
     <div>
       <PageHeader title="お問い合わせ" subtitle="導入のご相談、お見積もりなど、お気軽にご連絡ください" />
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 max-w-2xl">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="companyName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>会社名</FormLabel>
-                  <FormControl>
-                    <Input placeholder="スターシーズ株式会社" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="contactPerson"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>担当者名</FormLabel>
-                  <FormControl>
-                    <Input placeholder="蓄電 太郎" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>メールアドレス</FormLabel>
-                  <FormControl>
-                    <Input placeholder="contact@starseeds.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="scale"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>検討中の規模 (MW級)</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="10" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="message"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>お問い合わせ内容</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="お問い合わせ内容を具体的にご記入ください..."
-                      className="resize-none"
-                      rows={6}
-                      {...field}
+      <Section className="border-t border-white/20">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 max-w-3xl">
+            <div className="bg-black/40 backdrop-blur-md border border-primary/20 rounded-lg p-8 md:p-12 shadow-2xl">
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                  {/* 基本情報セクション */}
+                  <div className="space-y-6">
+                    <h3 className="text-lg font-bold text-primary mb-6 pb-3 border-b border-primary/30">
+                      基本情報
+                    </h3>
+                    
+                    <FormField
+                      control={form.control}
+                      name="companyName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-semibold text-foreground mb-2 block">
+                            会社名 <span className="text-destructive">*</span>
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="スターシーズ株式会社" 
+                              className="h-12 text-base bg-black/50 border-primary/30 focus:border-primary focus:ring-primary/50"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage className="text-sm" />
+                        </FormItem>
+                      )}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit">送信する</Button>
-          </form>
-        </Form>
-      </div>
+                    
+                    <FormField
+                      control={form.control}
+                      name="contactPerson"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-semibold text-foreground mb-2 block">
+                            担当者名 <span className="text-destructive">*</span>
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="蓄電 太郎" 
+                              className="h-12 text-base bg-black/50 border-primary/30 focus:border-primary focus:ring-primary/50"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage className="text-sm" />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-semibold text-foreground mb-2 block">
+                            メールアドレス <span className="text-destructive">*</span>
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="email"
+                              placeholder="contact@starseeds.com" 
+                              className="h-12 text-base bg-black/50 border-primary/30 focus:border-primary focus:ring-primary/50"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage className="text-sm" />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="scale"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-semibold text-foreground mb-2 block">
+                            検討中の規模 (MW級)
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="number" 
+                              placeholder="10" 
+                              className="h-12 text-base bg-black/50 border-primary/30 focus:border-primary focus:ring-primary/50"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage className="text-sm" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {/* お問い合わせ内容セクション */}
+                  <div className="space-y-6 pt-4 border-t border-primary/20">
+                    <h3 className="text-lg font-bold text-primary mb-6 pb-3 border-b border-primary/30">
+                      お問い合わせ内容
+                    </h3>
+                    
+                    <FormField
+                      control={form.control}
+                      name="message"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-semibold text-foreground mb-2 block">
+                            メッセージ <span className="text-destructive">*</span>
+                          </FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="お問い合わせ内容を具体的にご記入ください..."
+                              className="resize-none text-base bg-black/50 border-primary/30 focus:border-primary focus:ring-primary/50 min-h-[160px]"
+                              rows={8}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-sm" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {/* 送信ボタン */}
+                  <div className="pt-6 border-t border-primary/20">
+                    <Button 
+                      type="button"
+                      disabled
+                      className="w-full md:w-auto min-w-[200px] h-12 text-base font-semibold opacity-50 cursor-not-allowed"
+                    >
+                      準備中
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </div>
+          </div>
+        </Section>
     </div>
   );
 }

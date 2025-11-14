@@ -25,7 +25,8 @@ export default function HomePage() {
 
       <StrengthsSection />
 
-      <NavigationCardsSection />
+      {/* さらに詳しくセクション - カードが1枚のみのため一時的に非表示 */}
+      {false && <NavigationCardsSection />}
     </div>
   );
 }
