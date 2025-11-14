@@ -114,9 +114,9 @@ export const SITE_CONFIG = {
 export const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "HOME" },
   // { href: "/solutions", label: "ソリューション" }, // 一時的に非表示
-  { href: "/products", label: "製品・サービス" },
+  // { href: "/products", label: "製品・サービス" }, // 一時的に非表示
   { href: "/status", label: "実績・工事状況" },
-  { href: "/news", label: "ニュース" },
+  // { href: "/news", label: "ニュース" }, // 一時的に非表示
   { href: "/company", label: "会社情報" },
   { href: "/contact", label: "お問い合わせ" },
 ] as const;
@@ -148,22 +148,22 @@ export const HOME_NAVIGATION_CARDS: HomeNavigationCard[] = [
   //   description: "系統用蓄電池の役割から、私たちのサービスと収益モデルについてご紹介します",
   //   imgSrc: "/images/nav-solutions.webp",
   // }, // 一時的に非表示
-  {
-    href: "/products",
-    title: "製品・技術",
-    description: "コンテナ型BESSのラインナップ、最先端のEMS/BMS、そして安全性への取り組みについて",
-    imgSrc: "/images/photo/photo-02.webp",
-  },
+  // {
+  //   href: "/products",
+  //   title: "製品・技術",
+  //   description: "コンテナ型BESSのラインナップ、最先端のEMS/BMS、そして安全性への取り組みについて",
+  //   imgSrc: "/images/photo/photo-02.webp",
+  // }, // 一時的に非表示
   {
     href: "/status",
     title: "実績・工事状況",
     description: "現在稼働中、建設中、そして計画中のプロジェクト一覧をご覧いただけます",
     imgSrc: "/images/nav-status.webp",
   },
-  {
-    href: "/news",
-    title: "ニュース",
-    description: "最新のお知らせ、プレスリリース、イベント情報などを随時更新しています",
-    imgSrc: "/images/nav-solutions.webp",
-  },
+  // {
+  //   href: "/news",
+  //   title: "ニュース",
+  //   description: "最新のお知らせ、プレスリリース、イベント情報などを随時更新しています",
+  //   imgSrc: "/images/nav-solutions.webp",
+  // }, // 一時的に非表示
 ] as const;
