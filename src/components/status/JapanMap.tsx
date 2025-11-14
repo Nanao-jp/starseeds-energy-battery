@@ -558,9 +558,9 @@ export function JapanMap({
   }, [mounted]);
 
   // ピンサイズ（モバイルでは大きく）
-  const pinRadius = isMobile ? 20 : 6;
-  const pulseRadius = isMobile ? 28 : 8;
-  const glowRadius = isMobile ? 36 : 12;
+  const pinRadius = isMobile ? 20 : 8;
+  const pulseRadius = isMobile ? 28 : 10;
+  const glowRadius = isMobile ? 36 : 14;
 
   // ローディング中の表示
   if (isLoading) {
