@@ -117,7 +117,6 @@ export const NAV_ITEMS: NavItem[] = [
   // { href: "/products", label: "製品・サービス" }, // 一時的に非表示
   { href: "/status", label: "実績・工事状況" },
   // { href: "/news", label: "ニュース" }, // 一時的に非表示
-  { href: "/company", label: "会社情報" },
   { href: "/contact", label: "お問い合わせ" },
 ] as const;
 
