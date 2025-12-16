@@ -109,6 +109,13 @@ export const SITE_CONFIG = {
 } as const;
 
 /**
+ * チャットボット設定
+ */
+export const CHATBOT_CONFIG = {
+  enabled: false, // UI表示を制御（ロジックは残す）
+} as const;
+
+/**
  * ヘッダー用ナビゲーション項目
  */
 export const NAV_ITEMS: NavItem[] = [

@@ -7,6 +7,7 @@ import { ChatbotSimpleButton } from "./ChatbotSimpleButton";
 import { ChatbotWindowContent } from "./ChatbotWindowContent";
 import { useViewport } from "@/lib/hooks/useViewport";
 import { cn } from "@/lib/utils";
+import { CHATBOT_CONFIG } from "@/lib/constants";
 import type { Message } from "@/types/chatbot";
 
 export function Chatbot() {
@@ -132,6 +133,11 @@ export function Chatbot() {
   }, []);
 
   if (!mounted) {
+    return null;
+  }
+
+  // UI表示を制御（ロジックは残す）
+  if (!CHATBOT_CONFIG.enabled) {
     return null;
   }
 
